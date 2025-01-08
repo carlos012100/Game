@@ -77,6 +77,8 @@ function drawGame(){
 
 
 }
+
+
 function renderSprite(sprite) {
 
     // Check if sprite is within the canvas bounds
@@ -87,7 +89,6 @@ function renderSprite(sprite) {
     // Calculate the initial tile position
     const xPosInit = sprite.imageSet.initCol * sprite.imageSet.xGridWidth;
     const yPosInit = sprite.imageSet.initFil * sprite.imageSet.yGridHeight;
-
     // Calculate the tilemap position to draw
     const xTile = xPosInit + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset;
     const yTile = yPosInit + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset;
@@ -104,10 +105,27 @@ function renderSprite(sprite) {
         xPos, yPos,                                     // the destination x and y position
         sprite.imageSet.xSize, sprite.imageSet.ySize    // the destination width and height
     );}
+    
 
 }
 
+function drawHitBox (sprite)
+{
+    const x1 = Math.floor(sprite.xPos) + Math.floor(sprite.hitBox.xOffset);
 
+    const y1 = Math.floor(sprite.yPos) + Math.floor(sprite.hitBox.yOffset);
+
+    const w1 = sprite.hitBox.xSize;
+
+    console.log(sprite.hitBox.xOffset);  // Debugging line
+    
+    const h1 = sprite.hitBox.ySize;
+
+    globals.ctx.strokeStyle = "red";
+
+    globals.ctx.strokeRect(x1, y1, w1, h1);
+
+}
 // console.log(tileSet);
     function drawSprites(){
 
@@ -117,11 +135,19 @@ function renderSprite(sprite) {
 
 
         //TEST: DIbuja un rectangulo alrededor del sprite
-        drawSpriteRectangle(sprite);
+        // drawSpriteRectangle(sprite);
 
         renderSprite(sprite);
 
+        if (sprite.hitBox) {
+            drawHitBox(sprite);  // Only draw hitbox for sprites with hitBox
+            // Other drawing logic for the sprite here
         }
+
+
+        }
+        
+        
 
     }
     function drawSpriteRectangle(sprite){

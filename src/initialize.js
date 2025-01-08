@@ -8,6 +8,7 @@ import {Level, level1} from "./Level.js";
 import Timer from "./Timer.js";
 import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
+import HitBox from "./HitBox.js";
 
 //Function que incializa los elementos HTML
 function initHTMLelements(){
@@ -250,17 +251,18 @@ function initTimer()
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
         const physics = new Physics(60); // Replace 40 with the appropriate vLimit
+
+        const hitBox = new HitBox(12, 30, 25, 16);
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 270, 170, imageSet, frames, physics, initTimeToChangeDirection);
-
-        console.log(State.RIGHT_ATTACK)
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 270, 170, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
         globals.sprites.push(player);
+        console.log(player);  // Logs the entire player object to check if hitBox is assigned
 
 
     }
@@ -285,14 +287,15 @@ function initTimer()
 
         const physics = new Physics(40); // Replace 40 with the appropriate vLimit
 
+        const hitBox = new HitBox (10, 18, 8, 3);
+
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 50, 260, imageSet, frames, physics, initTimeToChangeDirection);
-
+        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 50, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         bat.tileSetIndex = Tile.BAT_64; ; // Assign the correct tile set index for the orc
 
-
+        console.log(bat);  // Logs the bat object to check if hitBox is assigned
         globals.sprites.push(bat);
 
     }
