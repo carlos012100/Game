@@ -1,5 +1,6 @@
 import globals from "./globals.js";
 import {Game, State, SpriteID} from "./constants.js";
+import detectCollisions from "./collisions.js";
 import {createFire} from "./initialize.js";
 
 
@@ -94,7 +95,8 @@ function playGame(){
     updateSprites();
     updateGameTime();
     updateLevelTime();
-    
+    detectCollisions();
+    updateLife();    
 }
 
 function swapDirection(sprite)
@@ -280,10 +282,11 @@ function updatePlayer(sprite){
 
     function updateSprites(){
     
-        for (let i = 0; i < globals.sprites.length; ++i){
+        for (let i = 0; i < globals.sprites.length; ++i)
+            {
             const sprite = globals.sprites[i];
             updateSprite(sprite);
-        }
+            }
     }
     function updateSprite(sprite){
     
@@ -411,5 +414,18 @@ function updatePlayer(sprite){
     {
         swapDirection(sprite);
     }
-    console.log(isCollision)
+    }
+    
+    function updateLife()
+    {
+        for (let i = 1; i < globals.sprites.length; ++i)
+        {
+            const sprite = globals.sprites[i];
+            
+            if (sprite.isCollidingWithPlayer)
+            {
+                //Si hay colision reducimos la vida
+                globals.life--;
+            }
         }
+    }

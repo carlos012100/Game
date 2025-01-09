@@ -195,7 +195,7 @@ function drawHitBox (sprite)
     function renderHUD(){
         
         //TEST: Datos metidos en bruto
-        const life = 40;
+        // const life = 20;
         const mana = 10;
         const madness = 20;
         const junk = 2;
@@ -205,9 +205,13 @@ function drawHitBox (sprite)
         
 
         //Draw life 
+
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'darkred';
         globals.ctxHUD.fillText("Health", 10, 10);
+        globals.ctxHUD.fillStyle = 'red';
+        globals.ctxHUD.fillText(" " + globals.life, 10, 25);
+        // globals.ctxHUD.fillRect(10, 15 , life , 5);
         // const tileSize = 64; // Size of one tile in the tileset
         // const heartRow = 14; // Row of the heart sprite in the tileset (zero-based)
         
@@ -306,11 +310,11 @@ function drawHitBox (sprite)
 
         //ROund corners. (Remove 1 pixel per corner)
 
-        globals.ctxHUD.fillStyle = 'black';
-        globals.ctxHUD.fillRect(168, 9, 1, 1);
-        globals.ctxHUD.fillRect(168, 15, 1, 1);
-        globals.ctxHUD.fillRect(168 + life - 1, 9, 1, 1);
-        globals.ctxHUD.fillRect(168 + life - 1, 15, 1, 1);
+        // globals.ctxHUD.fillStyle = 'black';
+        // globals.ctxHUD.fillRect(168, 9, 1, 1);
+        // globals.ctxHUD.fillRect(168, 15, 1, 1);
+        // globals.ctxHUD.fillRect(168 + life - 1, 9, 1, 1);
+        // globals.ctxHUD.fillRect(168 + life - 1, 15, 1, 1);
 
 
 

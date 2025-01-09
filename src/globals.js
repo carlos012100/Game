@@ -23,6 +23,9 @@ export default {
     //Tiempo de juego
     gameTime: -1,
 
+    //Life
+    life: 0,
+
     //Temporizacion nivel
     levelTime: {},
 

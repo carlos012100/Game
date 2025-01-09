@@ -11,6 +11,7 @@ export default class Sprite
         this.frames = frames;
         this.physics = physics;
         this.hitBox = hitBox;
+        this.isCollidingWithPlayer = false;
     }
 }
 //Clase Player
