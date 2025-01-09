@@ -26,7 +26,6 @@ function init(){
 
     //Inicializamos el mapa del juego
     initLevel();
-
     initTimer();
 
     initEvents();
