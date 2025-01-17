@@ -117,7 +117,6 @@ function initTimer()
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 
 
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 
-    console.log("The ASCII value of " + 'k' + " is " + 'k'.charCodeAt(0));
 
     function loadAssets(){
 
@@ -298,7 +297,6 @@ function initTimer()
 
         bat.tileSetIndex = Tile.BAT_64; ; // Assign the correct tile set index for the orc
 
-        console.log(bat);  // Logs the bat object to check if hitBox is assigned
         globals.sprites.push(bat);
 
     }
@@ -316,6 +314,8 @@ function initTimer()
  
         
     }
+    console.log(globals.level.imageSet); // Should log the ImageSet instance
+
     function initORC(){
 
         const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
@@ -329,6 +329,8 @@ function initTimer()
         const orc = new Orc(SpriteID.ORC, State.ORC_UPRUN, 90, 205, imageSet, frames, physics, initTimeToChangeDirection);
 
         globals.sprites.push(orc);
+
+
 
     }
     function initHeart() {
@@ -347,11 +349,13 @@ function initTimer()
     function initLevel(){
 
         //Creamos las propiedades de las images del mapa: initFil, initCol, xSize, ySize, gridSize, xOffset, yOffset
-        const imageSet = new ImageSet(0, 0, 32, 32, 32, 0, 0);
+        const imageSet = new ImageSet(0, 0, 32, 32, 32, 32, 0, 0);
 
         //Creamos y guardamos nuestro nivel
         globals.level = new Level(level1, imageSet);
+        
     }  
+
 
     
 

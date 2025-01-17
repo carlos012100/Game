@@ -85,20 +85,41 @@ export const Tile = {
 export const Block = {
     EMPTY: 3,
     EMPTY2: 4,
-    EMPTY3: 15,
-    EMPTY4: 16,
+    EMPTY3: 1,
+    EMPTY4: 1,
     EMPTY5: 5,
+    //need to make collisions from this point on//
     FORT1: 1,
     FORT2: 2,
     FORT3: 13,
     FORT4: 14,
     FORT5: 25,
     FORT6: 26,
-    GATE1: 37,
+    GATE1: 15,
     GATE12: 38,
-    GATE2: 49,
+    GATE2: 14,
     GATE21: 50,
-    REDFLOOR: 121
+    //until up here//
+    REDFLOOR: 16
+
+    // EMPTY: 3,
+    // EMPTY2: 4,
+    // EMPTY3: 15,
+    // EMPTY4: 1,
+    // EMPTY5: 5,
+    // //need to make collisions from this point on//
+    // FORT1: 1,
+    // FORT2: 2,
+    // FORT3: 13,
+    // FORT4: 14,
+    // FORT5: 25,
+    // FORT6: 26,
+    // GATE1: 37,
+    // GATE12: 38,
+    // GATE2: 49,
+    // GATE21: 50,
+    // //until up here//
+    // REDFLOOR: 16
 }
 export const Key = {
     UP: 38,

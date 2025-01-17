@@ -177,6 +177,7 @@ function calculateCollisionWithBorders(sprite)
         isCollision = true; // Vertical collision
     }
         return isCollision;
+        
 }
 
 function updatePlayer(sprite){
@@ -235,8 +236,12 @@ function updatePlayer(sprite){
            sprite.physics.vy = 0;
     }
 
+    
     console.log(`State: ${sprite.state}`);
     console.log(`Action.attackRight: ${globals.action.attackRight}`);
+
+    console.log(sprite.isCollidingWithPlayer);
+
     
 // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
@@ -426,6 +431,8 @@ function updatePlayer(sprite){
             {
                 //Si hay colision reducimos la vida
                 globals.life--;
+
             }
+
         }
     }

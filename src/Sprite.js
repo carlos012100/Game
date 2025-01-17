@@ -12,6 +12,10 @@ export default class Sprite
         this.physics = physics;
         this.hitBox = hitBox;
         this.isCollidingWithPlayer = false;
+        this.isCollidingWithTopBLock = false;
+        this.isCollidingWithLeftBlock = false;
+        this.isCollidingWithBottomBlock = false;
+        this.isCollidingWithRightBlock = false;
     }
 }
 //Clase Player
@@ -24,6 +28,7 @@ export class Player extends Sprite
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
+
     }
 }
 export class Bat extends Sprite
@@ -35,6 +40,7 @@ export class Bat extends Sprite
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
+
     }
 }
 export class Orc extends Sprite
