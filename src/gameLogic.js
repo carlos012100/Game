@@ -97,6 +97,12 @@ function playGame(){
     updateLevelTime();
     detectCollisions();
     updateLife();    
+     // Update and redraw the HUD (e.g., hearts)
+     globals.sprites.forEach(sprite => {
+        if (sprite.id === SpriteID.HEART) {
+            updateHearts(sprite);
+        }
+    });
 }
 
 function swapDirection(sprite)
@@ -162,6 +168,9 @@ export function updateAnimationFrames(sprite) {
                 sprite.frames.framesCounter = 0;
             }
         // }
+
+
+
     }
 // }
 
@@ -307,7 +316,8 @@ function updatePlayer(sprite){
                 updateSKULL1(sprite);
                 break;
             //Caso del SKULL1
-            case SpriteID.ORC:
+            case SpriteID.ORC:       
+
                 updateORC(sprite);
                 break;
             
@@ -325,9 +335,21 @@ function updatePlayer(sprite){
     
         }
     }
-    function updateHearts(sprite){
-        updateAnimationFrames(sprite);
+    function updateHearts(sprite) {
+    // Get all heart sprites
+    const hearts = globals.sprites.filter(s => s.id === SpriteID.HEART);
 
+    // If there are hearts, get the last one
+    if (hearts.length > 0) {
+        const lastHeart = hearts[hearts.length - 1];
+        console.log(`Animating heart: ${sprite === lastHeart ? 'Last heart' : 'Not last heart'}`);
+
+        // Check if the current sprite is the last heart
+        if (sprite === lastHeart && sprite.state === State.BEATING) {
+            updateAnimationFrames(sprite);  // Update only the last heart's animation
+        }
+    }
+        
     }
     function updateSKULL1(sprite){
     
@@ -335,7 +357,8 @@ function updatePlayer(sprite){
         sprite.yPos = 150;
     
         sprite.state = State.DOWN_SKULLWALK;
-    
+        updateAnimationFrames(sprite);
+
         sprite.frames.framesCounter = 3;
     }
     function updateORC(sprite){
@@ -369,6 +392,7 @@ function updatePlayer(sprite){
 
 
     updateAnimationFrames(sprite);
+        
 
     // //Cambio de direccion aleatoria
     updateDirectionRandom(sprite);

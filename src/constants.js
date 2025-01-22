@@ -64,8 +64,8 @@ export const State = {
     LEFT_BAT: 2,
     RIGHT_BATIDLE: 0,
 
-    //PUMPING HEARTS
-    BEATING: -1,
+    //BEATING HEARTS
+    BEATING: 0,
     
 };
 

@@ -44,6 +44,7 @@ function gameLoop(timeStamp){
     //Keep requesting new frames
     window.requestAnimationFrame(gameLoop, globals.canvas);
 
+
     //Tiempo real de ciclo de ejecicion
     const elapsedCycleSeconds = (timeStamp - globals.previousCycleMilliseconds)/1000; //seconds
 

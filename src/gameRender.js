@@ -97,15 +97,14 @@ function renderSprite(sprite) {
     const yPos = Math.floor(sprite.yPos);
 
     // Draw the sprite's frame at the calculated position
-    if (sprite.id != SpriteID.HEART) {    
+
         globals.ctx.drawImage(
         globals.tileSets[Tile.PROTA_64],
         xTile, yTile,                                   // the source x and y position
         sprite.imageSet.xSize, sprite.imageSet.ySize,   // the source width and height
         xPos, yPos,                                     // the destination x and y position
         sprite.imageSet.xSize, sprite.imageSet.ySize    // the destination width and height
-    );}
-    
+    )
 
 }
 
@@ -136,13 +135,18 @@ function drawHitBox (sprite)
 
         //TEST: DIbuja un rectangulo alrededor del sprite
         // drawSpriteRectangle(sprite);
-
-        renderSprite(sprite);
-
-        if (sprite.hitBox) {
-            drawHitBox(sprite);  // Only draw hitbox for sprites with hitBox
-            // Other drawing logic for the sprite here
+        
+        if (sprite.id !== SpriteID.HEART){
+            renderSprite(sprite, globals.ctx);
+            if (sprite.hitBox){
+                drawHitBox (sprite)
+            }
         }
+
+        // if (sprite.hitBox) {
+        //     drawHitBox(sprite);  // Only draw hitbox for sprites with hitBox
+        //     // Other drawing logic for the sprite here
+        // }
 
 
         }
@@ -192,17 +196,50 @@ function drawHitBox (sprite)
             }
         }
     }
-    function renderHUD(){
+    function renderHUD(sprite){
         
         //TEST: Datos metidos en bruto
         // const life = 20;
+        const numHeart = 4;
+        const destWidth = 25; // Adjust as needed for HUD scaling
+        const destHeight = 25;  
+        const startX = 0;
+        const startY = 5;  
         const mana = 10;
         const madness = 20;
         const junk = 2;
         const score = 100;
         const highscore = 50000;
-        // const time = globals.levelTime.value;
-        
+        const time = globals.levelTime.value;
+           // Get all heart sprites
+    const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
+
+    // Get the last heart sprite for animation
+    const lastHeart = hearts[hearts.length - 1];
+
+    for (let i = 0; i < numHeart; i++) {
+        const destX = startX + i * 25;
+
+        // Filter out heart sprites for rendering
+        for (const sprite of hearts) {
+            // Only animate the last heart
+            let frameToDraw = sprite.frames.framesCounter;
+            if (sprite !== lastHeart) {
+                // For other hearts, don't update frame counter (static frame)
+                frameToDraw = 0;  // Or set it to the "static" frame
+            }
+
+            // Draw the heart sprite
+            globals.ctxHUD.drawImage(
+                globals.tileSets[Tile.PROTA_64],
+                sprite.imageSet.initCol * sprite.imageSet.xGridWidth + frameToDraw * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
+                sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
+                sprite.imageSet.xSize, sprite.imageSet.ySize,
+                destX, startY,
+                destWidth, destHeight           // Destination width, height
+            );
+        }
+    }
 
         //Draw life 
 
@@ -210,7 +247,7 @@ function drawHitBox (sprite)
         globals.ctxHUD.fillStyle = 'darkred';
         globals.ctxHUD.fillText("Health", 10, 10);
         globals.ctxHUD.fillStyle = 'red';
-        globals.ctxHUD.fillText(" " + globals.life, 10, 25);
+        // globals.ctxHUD.fillText(" " + globals.life, 10, 25);
         // globals.ctxHUD.fillRect(10, 15 , life , 5);
         // const tileSize = 64; // Size of one tile in the tileset
         // const heartRow = 14; // Row of the heart sprite in the tileset (zero-based)
@@ -239,8 +276,10 @@ function drawHitBox (sprite)
         //         destWidth, destHeight           // Destination width, height
         //     );
         // }
-        
-
+            // Check if sprite is within the canvas bounds
+    // if (sprite.xPos < 0 || sprite.xPos > globals.canvas.width || sprite.yPos < 0 || sprite.yPos > globals.canvas.height) {
+    //     return; // Skip rendering if sprite is out of bounds
+    // }
         //Mana
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'lightblue';

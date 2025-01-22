@@ -1,6 +1,6 @@
 import globals from "./globals.js";
 import {Game, SpriteID, State, FPS, Tile} from "./constants.js";
-import Sprite from "./Sprite.js";
+import Sprite, { Heart } from "./Sprite.js";
 import { Player, Bat, Orc } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
@@ -335,13 +335,16 @@ function initTimer()
     }
     function initHeart() {
 
-        const imageSet = new ImageSet(15, 0, 50, 50, 64, 64, 0, 0);
+        const imageSet = new ImageSet(14, 0, 50, 50, 64, 64, 0, 0);
 
-        const frames = new Frames(6, 2);
+        const frames = new Frames(6, 18);
 
         const physics = new Physics(20); // Replace 40 with the appropriate vLimit
 
-        const heart = new Sprite(SpriteID.HEART, State.BEATING, 0,0 , imageSet, frames, physics);
+        const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
+
+
+        const heart = new Heart(SpriteID.HEART, State.BEATING, 0, 5, imageSet, frames, physics, initTimeToChangeDirection);
 
         globals.sprites.push(heart);
 
@@ -355,8 +358,6 @@ function initTimer()
         globals.level = new Level(level1, imageSet);
         
     }  
-
-
     
 
     function initSprites(){
@@ -366,6 +367,7 @@ function initTimer()
         initBOSS();
         initBAT();
         initORC();
+        initHeart();
 
 
         
