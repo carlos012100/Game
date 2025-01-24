@@ -1,10 +1,10 @@
 import globals from "./globals.js";
 import {Game, SpriteID, State, FPS, Tile} from "./constants.js";
 import Sprite, { Heart } from "./Sprite.js";
-import { Player, Bat, Orc } from "./Sprite.js";
+import { Player, Bat, Orc, Skull } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
-import {Level, level1} from "./Level.js";
+import {Level, levelx} from "./Level.js";
 import Timer from "./Timer.js";
 import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
@@ -93,7 +93,7 @@ function initVars(){
     }
 
     //Variables logica juego
-    globals.life = 400;
+    globals.life = 4;
 
 }
 function initTimer()
@@ -160,9 +160,15 @@ function initTimer()
         // globals.assetsToLoad.push(tileSet);        
 
         //Load the map image
+        // tileSet = new Image();
+        // tileSet.addEventListener("load", loadHandler, false);
+        // tileSet.src = "./images/mapsmall.png"; //ruta es relativa al HTML, no al JS 
+        // globals.tileSets.push(tileSet);
+        // globals.assetsToLoad.push(tileSet);
+
         tileSet = new Image();
         tileSet.addEventListener("load", loadHandler, false);
-        tileSet.src = "./images/mapsmall.png"; //ruta es relativa al HTML, no al JS 
+        tileSet.src = "./images/fantasymapx.png"; //ruta es relativa al HTML, no al JS 
         globals.tileSets.push(tileSet);
         globals.assetsToLoad.push(tileSet);
 
@@ -270,14 +276,17 @@ function initTimer()
     }
     function initSKULL1(){
 
-        const imageSet =new ImageSet(51, 0, 50, 50, 64, 64, 5, 6);
+        const imageSet =new ImageSet(52, 0, 50, 50, 64, 64, 5, 6);
 
-        const frames = new Frames(7);
+        const frames = new Frames(5, 5);
 
-        const physics = new Physics(20); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(30); // Replace 40 with the appropriate vLimit
 
+        const hitBox = new HitBox (30, 25, 12, 6);
 
-        const skull = new Sprite(SpriteID.SKULL1, State.DOWN_1, 10, 250, imageSet, frames, physics);
+        const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
+
+        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 180, 200, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(skull);
     }
@@ -355,7 +364,10 @@ function initTimer()
         const imageSet = new ImageSet(0, 0, 32, 32, 32, 32, 0, 0);
 
         //Creamos y guardamos nuestro nivel
-        globals.level = new Level(level1, imageSet);
+        // globals.level = new Level(level1, imageSet);
+
+        globals.level = new Level (levelx, imageSet);
+        
         
     }  
     

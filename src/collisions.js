@@ -79,11 +79,6 @@ function getMapTileId (xPos, yPos)
         console.error("Out-of-bounds tile access:", fil, col);
         return null;
     }
-    console.log("Tile ID at (", xPos, ",", yPos, "):", levelData[fil][col]);
-    console.log("Tile Indices -> Row:", fil, "Column:", col);
-    console.log("Tile ID:", levelData[fil]?.[col]);
-
-
 
     return levelData[fil][col];
     

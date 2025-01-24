@@ -55,6 +55,8 @@ export default {
 
     sprites: [],
 
+    hearts: [],
+
     level: {},
 
     //Objecto que guarda el estado de la tecla pulsada

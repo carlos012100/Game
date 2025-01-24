@@ -96,7 +96,7 @@ function playGame(){
     updateGameTime();
     updateLevelTime();
     detectCollisions();
-    updateLife();    
+    // updateLife();    
      // Update and redraw the HUD (e.g., hearts)
      globals.sprites.forEach(sprite => {
         if (sprite.id === SpriteID.HEART) {
@@ -119,6 +119,9 @@ function swapDirection(sprite)
 
         case SpriteID.ORC:
             sprite.state = sprite.state === State.ORC_DOWNRUN ? State.ORC_UPRUN : State.ORC_DOWNRUN;
+            break;
+        case SpriteID.SKULL1:
+            sprite.state = sprite.state === State.DOWN_SKULLWALK ? State.UP_SKULLWALK: State.DOWN_SKULLWALK;
             break;
     }
 }
@@ -245,11 +248,7 @@ function updatePlayer(sprite){
            sprite.physics.vy = 0;
     }
 
-    
-    console.log(`State: ${sprite.state}`);
-    console.log(`Action.attackRight: ${globals.action.attackRight}`);
 
-    console.log(sprite.isCollidingWithPlayer);
 
     
 // Calculamos distancia que se mueve (X = X - Vt)
@@ -353,14 +352,57 @@ function updatePlayer(sprite){
     }
     function updateSKULL1(sprite){
     
-        sprite.xPos = 155;
-        sprite.yPos = 150;
-    
-        sprite.state = State.DOWN_SKULLWALK;
-        updateAnimationFrames(sprite);
+        //  Maquina de estdos del pirata
+       switch (sprite.state)
+       {       
+           case State.DOWN_SKULLWALK:
+   //si se mueve a la derecha asignamos velocidad en x posiiva
+               sprite.physics.vy = sprite.physics.vLimit;
+               break;
 
-        sprite.frames.framesCounter = 3;
+           case State.UP_SKULLWALK:
+           //Si se mueve a la izquierda asignamos velocidad en X negativa
+               sprite.physics.vy = -sprite.physics.vLimit;
+               break;
+
+           default:
+               console.error("Error: State invalid");
+       }
+
+   // Calculamos distancia que se mueve (X = X - Vt)
+   sprite.yPos += sprite.physics.vy * globals.deltaTime;
+   // sprite.xPos = 20;
+   // sprite.yPos = 200;
+
+   // sprite.state = State.ORC_DOWNRUN;
+
+//    sprite.frames.framesCounter = 0;
+
+
+
+   updateAnimationFrames(sprite);
+       
+
+   // //Cambio de direccion aleatoria
+   updateDirectionRandom(sprite);
+   // console.log(sprite.maxTimeToChangeDirection)
+   // //Calculamos colision con los borders de la pantalla
+   const isCollision = calculateCollisionWithBorders(sprite);
+   if (isCollision)
+   {
+       swapDirection(sprite);
+   }
+
+   if (sprite.isCollidingWithPlayer)
+    {
+        //Si hay colision reducimos la vida
+        globals.life--;
+
     }
+   
+       }
+
+    
     function updateORC(sprite){
 
         //   Maquina de estdos del pirata
@@ -403,9 +445,14 @@ function updatePlayer(sprite){
     {
         swapDirection(sprite);
     }
-    // console.log(isCollision)
-    
+    if (sprite.isCollidingWithPlayer)
+        {
+            //Si hay colision reducimos la vida
+            globals.life--;
+
         }
+    
+    }
 
     
     function updateBAT(sprite){
@@ -421,6 +468,7 @@ function updatePlayer(sprite){
             case State.LEFT_BAT:
             //Si se mueve a la izquierda asignamos velocidad en X negativa
                 sprite.physics.vx = -sprite.physics.vLimit;
+
                 break;
 
             default:
@@ -443,20 +491,30 @@ function updatePlayer(sprite){
     {
         swapDirection(sprite);
     }
-    }
-    
-    function updateLife()
-    {
-        for (let i = 1; i < globals.sprites.length; ++i)
+    if (sprite.isCollidingWithPlayer)
         {
-            const sprite = globals.sprites[i];
-            
-            if (sprite.isCollidingWithPlayer)
-            {
-                //Si hay colision reducimos la vida
-                globals.life--;
-
-            }
+            //Si hay colision reducimos la vida
+            globals.life--;
 
         }
+    }
+    
+    // function updateLife()
+    // {
+    //     for (let i = 1; i < globals.sprites.length; ++i)
+    //     {
+    //         const sprite = globals.sprites[i];
+            
+    //         if (sprite.isCollidingWithPlayer)
+    //         {
+    //             //Si hay colision reducimos la vida
+    //             globals.life--;
+
+    //         }
+
+    //     }
+    // }
+    function updateHudHearts()
+    {
+
     }

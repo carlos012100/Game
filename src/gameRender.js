@@ -166,45 +166,92 @@ function drawHitBox (sprite)
         globals.ctx.fillRect(x1, y1, w1, h1);
 
     }
-    //Funccion que dibuja el mapa
-    function renderMap(){
-
+    function renderMap() {
         const brickSize = globals.level.imageSet.xGridWidth;
-        const levelData = globals.level.data;
-
-        //Dibujamos el mapa 
-        const num_fil = levelData.length;
-        const num_col = levelData[0].length;
-
-        for (let i = 0; i < num_fil; ++i){
-            for (let j = 0; j < num_col; ++j){
-                
-                const xTile = (levelData[i][j] - 1)* brickSize;
-                const yTile = 0;
-                const xPos = j * brickSize;
-                const yPos = i * brickSize;
-
-                //Dibujamos el nuevo fotograma del sprite en la posicion adecuada
-
-                globals.ctx.drawImage(
-                    globals.tileSets[Tile.SIZE_32],     //the image file
-                    xTile, yTile,                       //The source x and y position
-                    brickSize, brickSize,               //The source height and width
-                    xPos, yPos,                         //The destination x and y position
-                    brickSize, brickSize                //The destination height and width
-                );
+        const levelData = globals.level.data; // 3D array with layers
+        const numRows = levelData[0].length;  // Number of rows
+        const numCols = levelData[0][0].length; // Number of columns
+    
+        // Loop through layers, rows, and columns in reverse for horizontal rendering
+        for (let layer = 0; layer < 3; ++layer) {
+            for (let row = 0; row < numRows; ++row) {
+                for (let col = numCols - 1; col >= 0; --col) { // Reverse column order
+                    const tileIndex = levelData[layer][row][col];
+    
+                    // Skip if the tile is empty (assuming 0 means empty)
+                    if (tileIndex === 0) continue;
+    
+                    // Calculate the tile position on the tilesheet
+                    const xTile = (tileIndex - 1) * brickSize;
+                    const yTile = 0;
+    
+                    // Calculate the destination position on the canvas
+                    const xPos = (numCols - col - 1) * brickSize; // Reverse the horizontal position
+                    const yPos = row * brickSize;
+    
+                    // Draw the tile on the canvas
+                    globals.ctx.drawImage(
+                        globals.tileSets[Tile.SIZE_32], // Tile sheet image
+                        xTile, yTile,                  // Source position on the tile sheet
+                        brickSize, brickSize,          // Source width and height
+                        xPos, yPos,                    // Destination position on the canvas
+                        brickSize, brickSize           // Destination width and height
+                    );
+                }
             }
         }
     }
-    function renderHUD(sprite){
-        
-        //TEST: Datos metidos en bruto
-        // const life = 20;
-        const numHeart = 4;
+    
+
+    let heartSprites = [];
+    function updateHudHearts ()
+    {
+        const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
         const destWidth = 25; // Adjust as needed for HUD scaling
         const destHeight = 25;  
         const startX = 0;
         const startY = 5;  
+
+          // Clear the array of heart sprites and HUD area
+        heartSprites = [];
+        globals.ctxHUD.clearRect(0, 0, globals.canvasHUD.width, globals.canvasHUD.height);
+
+
+          // Repopulate the array and draw hearts based on the current life value
+    for (let i = 0; i < globals.life; i++) {
+        const destX = startX + i * 25;
+
+        // Add a heart sprite's position to the heartSprites array
+        heartSprites.push({ x: destX, y: startY });
+
+        // Draw each heart sprite
+        for (const sprite of hearts) {
+            globals.ctxHUD.drawImage(
+                globals.tileSets[Tile.PROTA_64],
+                sprite.imageSet.initCol * sprite.imageSet.xGridWidth + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
+                sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
+                sprite.imageSet.xSize, sprite.imageSet.ySize,
+                destX, startY,
+                destWidth, destHeight
+            );
+        }
+    }
+        // for ( let i = 0; )
+        //     {
+
+        //     }
+    }
+    function renderHUD(sprite){
+
+        updateHudHearts();
+        
+        //TEST: Datos metidos en bruto
+        // const life = 20;
+        // const numHeart = 4;
+        // const destWidth = 25; // Adjust as needed for HUD scaling
+        // const destHeight = 25;  
+        // const startX = 0;
+        // const startY = 5;  
         const mana = 10;
         const madness = 20;
         const junk = 2;
@@ -212,36 +259,27 @@ function drawHitBox (sprite)
         const highscore = 50000;
         const time = globals.levelTime.value;
            // Get all heart sprites
-    const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
+    // const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
 
-    // Get the last heart sprite for animation
-    const lastHeart = hearts[hearts.length - 1];
+    // for (let i = 0; i < numHeart; i++) {
+    //     const destX = startX + i * 25;
+            
+    //     // Filter out heart sprites for rendering
+    //     for (const sprite of hearts) {
 
-    for (let i = 0; i < numHeart; i++) {
-        const destX = startX + i * 25;
+    //         // Draw the heart sprite
+    //         globals.ctxHUD.drawImage(
+    //             globals.tileSets[Tile.PROTA_64],
+    //             sprite.imageSet.initCol * sprite.imageSet.xGridWidth + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
+    //             sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
+    //             sprite.imageSet.xSize, sprite.imageSet.ySize,
+    //             destX, startY,
+    //             destWidth, destHeight           // Destination width, height
+    //         );
+    //     }
+    // }
 
-        // Filter out heart sprites for rendering
-        for (const sprite of hearts) {
-            // Only animate the last heart
-            let frameToDraw = sprite.frames.framesCounter;
-            if (sprite !== lastHeart) {
-                // For other hearts, don't update frame counter (static frame)
-                frameToDraw = 0;  // Or set it to the "static" frame
-            }
-
-            // Draw the heart sprite
-            globals.ctxHUD.drawImage(
-                globals.tileSets[Tile.PROTA_64],
-                sprite.imageSet.initCol * sprite.imageSet.xGridWidth + frameToDraw * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
-                sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
-                sprite.imageSet.xSize, sprite.imageSet.ySize,
-                destX, startY,
-                destWidth, destHeight           // Destination width, height
-            );
-        }
-    }
-
-        //Draw life 
+    //     //Draw life 
 
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'darkred';
@@ -593,6 +631,3 @@ function drawHitBox (sprite)
     //     // Show the selected canvas
     //     document.getElementById(over).style.display = "block";
     // }
-
-    
-
