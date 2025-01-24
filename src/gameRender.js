@@ -58,13 +58,14 @@ function drawGame(){
     globals.ctx.clearRect(0, 0, globals.canvas.width, globals.canvas.height);
     globals.ctxHUD.clearRect(0, 0, globals.canvasHUD.width, globals.canvasHUD.height);
 
-
+    moveCamara();
 
     //Dibujamos el mapa (nivel)
     renderMap();
     
-
     drawSprites();
+
+    restoreCamara();
 
     if (globals.gameState === Game.PLAYING){
         renderHUD();
@@ -81,10 +82,10 @@ function drawGame(){
 
 function renderSprite(sprite) {
 
-    // Check if sprite is within the canvas bounds
-    if (sprite.xPos < 0 || sprite.xPos > globals.canvas.width || sprite.yPos < 0 || sprite.yPos > globals.canvas.height) {
-        return; // Skip rendering if sprite is out of bounds
-    }
+    // // Check if sprite is within the canvas bounds
+    // if (sprite.xPos < 0 || sprite.xPos > globals.canvas.width || sprite.yPos < 0 || sprite.yPos > globals.canvas.height) {
+    //     return; // Skip rendering if sprite is out of bounds
+    // }
 
     // Calculate the initial tile position
     const xPosInit = sprite.imageSet.initCol * sprite.imageSet.xGridWidth;
@@ -166,41 +167,66 @@ function drawHitBox (sprite)
         globals.ctx.fillRect(x1, y1, w1, h1);
 
     }
+    function moveCamara()
+    {
+        const xTranslation = -globals.camera.x;
+        const yTranslation = -globals.camera.y;
+    
+        globals.ctx.translate(xTranslation, yTranslation);
+    }
+    function restoreCamara()
+    {
+        globals.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
     function renderMap() {
         const brickSize = globals.level.imageSet.xGridWidth;
-        const levelData = globals.level.data; // 3D array with layers
-        const numRows = levelData[0].length;  // Number of rows
-        const numCols = levelData[0][0].length; // Number of columns
+        const levelData = globals.level.data;  // Assuming levelData is now a 3D array with layers
+        const num_fil = levelData[0].length;   // Height (rows)
+        const num_col = levelData[0][0].length; // Width (columns)
     
-        // Loop through layers, rows, and columns in reverse for horizontal rendering
+        // Loop through the level data and draw each tile
         for (let layer = 0; layer < 3; ++layer) {
-            for (let row = 0; row < numRows; ++row) {
-                for (let col = numCols - 1; col >= 0; --col) { // Reverse column order
-                    const tileIndex = levelData[layer][row][col];
+            for (let i = 0; i < num_fil; ++i) {
+                for (let j = 0; j < num_col; ++j) {
+                    const tileIndex = levelData[layer][i][j];
     
-                    // Skip if the tile is empty (assuming 0 means empty)
+                    // Skip if the tile is empty (0 or some value you use for empty tiles)
                     if (tileIndex === 0) continue;
     
-                    // Calculate the tile position on the tilesheet
-                    const xTile = (tileIndex - 1) * brickSize;
-                    const yTile = 0;
+                    let xTile, yTile;
     
-                    // Calculate the destination position on the canvas
-                    const xPos = (numCols - col - 1) * brickSize; // Reverse the horizontal position
-                    const yPos = row * brickSize;
+                    // Adjust this based on where the modified tiles are on your sheet
+                    if (tileIndex === Tile.FLIPPED_TILE_1) {
+                        xTile = 3 * brickSize;  // For example, the flipped tile is at column 4 on the sheet
+                        yTile = 0;              // If the flipped tile is in the first row
+                    } else if (tileIndex === Tile.FLIPPED_TILE_2) {
+                        xTile = 4 * brickSize;
+                        yTile = 0;
+                    } else if (tileIndex === Tile.FLIPPED_TILE_3) {
+                        xTile = 5 * brickSize;
+                        yTile = 0;
+                    } else {
+                        // For other tiles
+                        xTile = (tileIndex - 1) * brickSize;
+                        yTile = 0;
+                    }
     
-                    // Draw the tile on the canvas
+                    const xPos = j * brickSize;
+                    const yPos = i * brickSize;
+    
                     globals.ctx.drawImage(
-                        globals.tileSets[Tile.SIZE_32], // Tile sheet image
-                        xTile, yTile,                  // Source position on the tile sheet
-                        brickSize, brickSize,          // Source width and height
-                        xPos, yPos,                    // Destination position on the canvas
-                        brickSize, brickSize           // Destination width and height
+                        globals.tileSets[Tile.SIZE_32],  // The image file containing the tiles
+                        xTile, yTile,                    // Source position on the tile sheet
+                        brickSize, brickSize,            // Source width and height of the tile
+                        xPos, yPos,                      // Position on the canvas
+                        brickSize, brickSize             // Destination width and height on the canvas
                     );
                 }
             }
         }
     }
+    
     
 
     let heartSprites = [];

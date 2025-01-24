@@ -9,6 +9,7 @@ import Timer from "./Timer.js";
 import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
+import Camera from "./Camera.js";
 
 //Function que incializa los elementos HTML
 function initHTMLelements(){
@@ -111,7 +112,8 @@ function initTimer()
         initLevel,
         initTimer,
         initEvents,
-        createFire
+        createFire,
+        initCamera,
 
     }
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 
@@ -234,7 +236,10 @@ function initTimer()
             globals.gameState = Game.PLAYING;
         }
     }
-
+    function initCamera()
+    {
+        globals.camera = new Camera(0,0);
+    }
     function createFire()
     {
         const imageSet = ImageSet(15, 0, 50, 50, 64, 64, 6, 6)
@@ -265,7 +270,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 270, 170, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 850, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
@@ -286,7 +291,7 @@ function initTimer()
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 180, 200, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 980, 200, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(skull);
     }
@@ -302,7 +307,7 @@ function initTimer()
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 50, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 800, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         bat.tileSetIndex = Tile.BAT_64; ; // Assign the correct tile set index for the orc
 
@@ -329,13 +334,13 @@ function initTimer()
 
         const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
 
-        const frames = new Frames(10, 3);
+        const frames = new Frames(10, 2);
 
-        const physics = new Physics(30); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(40); // Replace 40 with the appropriate vLimit
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
-        const orc = new Orc(SpriteID.ORC, State.ORC_UPRUN, 90, 205, imageSet, frames, physics, initTimeToChangeDirection);
+        const orc = new Orc(SpriteID.ORC, State.ORC_UPRUN, 700, 205, imageSet, frames, physics, initTimeToChangeDirection);
 
         globals.sprites.push(orc);
 

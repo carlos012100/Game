@@ -96,6 +96,7 @@ function playGame(){
     updateGameTime();
     updateLevelTime();
     detectCollisions();
+    updateCamera();
     // updateLife();    
      // Update and redraw the HUD (e.g., hearts)
      globals.sprites.forEach(sprite => {
@@ -103,6 +104,7 @@ function playGame(){
             updateHearts(sprite);
         }
     });
+    
 }
 
 function swapDirection(sprite)
@@ -158,6 +160,7 @@ export function updateAnimationFrames(sprite) {
         // default:
             // Increment the frame change counter
             sprite.frames.framesChangeCounter++;
+        
 
             // Change frame when the frame change counter reaches the animation speed
             if (sprite.frames.framesChangeCounter === sprite.frames.speed) {
@@ -415,7 +418,7 @@ function updatePlayer(sprite){
 
             case State.ORC_UPRUN:
             //Si se mueve a la izquierda asignamos velocidad en X negativa
-                sprite.physics.vy = -sprite.physics.vLimit;
+                sprite.physics.vy = sprite.physics.vLimit;
                 break;
 
             default:
@@ -514,7 +517,12 @@ function updatePlayer(sprite){
 
     //     }
     // }
-    function updateHudHearts()
-    {
+ function updateCamera()
+ {
+    //Centramos la camara en el player
+    const player = globals.sprites[0];
 
-    }
+    globals.camera.x = Math.floor(player.xPos) + Math.floor((player.imageSet.xSize - globals.canvas.width)/2);
+    globals.camera.y = Math.floor(player.yPos) + Math.floor((player.imageSet.ySize - globals.canvas.height)/2);
+
+ }
