@@ -1,7 +1,6 @@
 import globals from "./globals.js";
 import {Game, SpriteID} from "./constants.js";
-import {Tile,Back,State} from "./constants.js";
-import { updateAnimationFrames } from "./gameLogic.js";
+import {Tile,Back} from "./constants.js";
 
 
 //Funcion que renderiza los graficos
@@ -65,11 +64,11 @@ function drawGame(){
     
     drawSprites();
 
-    restoreCamara();
-
     if (globals.gameState === Game.PLAYING){
         renderHUD();
     }
+
+    restoreCamara();
 
 
     //Pintamos los FPS en pantalla
@@ -81,33 +80,33 @@ function drawGame(){
 
 
 function renderSprite(sprite) {
-
-    // // Check if sprite is within the canvas bounds
-    // if (sprite.xPos < 0 || sprite.xPos > globals.canvas.width || sprite.yPos < 0 || sprite.yPos > globals.canvas.height) {
-    //     return; // Skip rendering if sprite is out of bounds
-    // }
-
+    // Check if the sprite is the player or an enemy
+    const isPlayer = sprite === globals.player; // Assuming globals.player is the player object
+    
+    // For the player, adjust position by the camera
+    const screenX = isPlayer ? Math.round(sprite.xPos - globals.camera.x) : Math.round(sprite.xPos);
+    const screenY = isPlayer ? Math.round(sprite.yPos - globals.camera.y) : Math.round(sprite.yPos);
+    
     // Calculate the initial tile position
     const xPosInit = sprite.imageSet.initCol * sprite.imageSet.xGridWidth;
     const yPosInit = sprite.imageSet.initFil * sprite.imageSet.yGridHeight;
+
     // Calculate the tilemap position to draw
     const xTile = xPosInit + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset;
     const yTile = yPosInit + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset;
 
-    const xPos = Math.floor(sprite.xPos);
-    const yPos = Math.floor(sprite.yPos);
-
     // Draw the sprite's frame at the calculated position
-
-        globals.ctx.drawImage(
-        globals.tileSets[Tile.PROTA_64],
-        xTile, yTile,                                   // the source x and y position
-        sprite.imageSet.xSize, sprite.imageSet.ySize,   // the source width and height
-        xPos, yPos,                                     // the destination x and y position
-        sprite.imageSet.xSize, sprite.imageSet.ySize    // the destination width and height
-    )
-
+    globals.ctx.drawImage(
+        globals.tileSets[Tile.PROTA_64], // Assuming you are using the PROTA_64 tile set
+        xTile, yTile,                   // Source X and Y (from tile sheet)
+        sprite.imageSet.xSize,          // Source width
+        sprite.imageSet.ySize,          // Source height
+        screenX, screenY,               // Destination on canvas (with or without camera adjustment)
+        sprite.imageSet.xSize,          // Destination width
+        sprite.imageSet.ySize           // Destination height
+    );
 }
+
 
 function drawHitBox (sprite)
 {
@@ -155,18 +154,18 @@ function drawHitBox (sprite)
         
 
     }
-    function drawSpriteRectangle(sprite){
+    // function drawSpriteRectangle(sprite){
 
-        //Dato del sprite
-        const x1 = Math.floor(sprite.xPos);
-        const y1 = Math.floor(sprite.yPos);
-        const w1 = sprite.imageSet.xSize;
-        const h1 = sprite.imageSet.ySize;
+    //     //Dato del sprite
+    //     const x1 = Math.floor(sprite.xPos);
+    //     const y1 = Math.floor(sprite.yPos);
+    //     const w1 = sprite.imageSet.xSize;
+    //     const h1 = sprite.imageSet.ySize;
 
-        globals.ctx.fillStyle = "green";
-        globals.ctx.fillRect(x1, y1, w1, h1);
+    //     globals.ctx.fillStyle = "green";
+    //     globals.ctx.fillRect(x1, y1, w1, h1);
 
-    }
+    // }
     function moveCamara()
     {
         const xTranslation = -globals.camera.x;
@@ -225,6 +224,7 @@ function drawHitBox (sprite)
                 }
             }
         }
+  
     }
     
     
@@ -234,9 +234,9 @@ function drawHitBox (sprite)
     {
         const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
         const destWidth = 25; // Adjust as needed for HUD scaling
-        const destHeight = 25;  
+        const destHeight = 28;  
         const startX = 0;
-        const startY = 5;  
+        const startY = 10;  
 
           // Clear the array of heart sprites and HUD area
         heartSprites = [];
@@ -245,7 +245,7 @@ function drawHitBox (sprite)
 
           // Repopulate the array and draw hearts based on the current life value
     for (let i = 0; i < globals.life; i++) {
-        const destX = startX + i * 25;
+        const destX = startX + i * 28;
 
         // Add a heart sprite's position to the heartSprites array
         heartSprites.push({ x: destX, y: startY });
@@ -637,23 +637,14 @@ function drawHitBox (sprite)
         // Overlay text after the background is drawn
         globals.ctx.fillStyle = "white";
         globals.ctx.font = "40px emulogic"; // Change font size
-        globals.ctx.fillText("GAME OVER", 80, 100);
+        globals.ctx.fillText("GAME OVER", 80, 50);
         globals.ctx.font = "9px emulogic";
-        globals.ctx.fillText("\"Of all the things I've lost, I miss my mind", 100, 200);
-        globals.ctx.fillText("the most.\"", 100, 220);
-        globals.ctx.fillText("Gerald Way.", 360, 240);
+        globals.ctx.fillText("\"Of all the things I've lost, I miss my mind", 100, 100);
+        globals.ctx.fillText("the most.\"", 100, 120);
+        globals.ctx.fillText("Gerald Way.", 360, 140);
         globals.ctx.font = "20px emulogic";
-        globals.ctx.fillText("TRY AGAIN", 300, 300)
+        globals.ctx.fillText("TRY AGAIN", 300, 200)
 
         };
     
-
     
-    // export function showScreen(over) {
-    //     // Hide all canvases
-    //     const screens = document.querySelectorAll("canvas");
-    //     screens.forEach(screen => (screen.style.display = "none"));
-    
-    //     // Show the selected canvas
-    //     document.getElementById(over).style.display = "block";
-    // }

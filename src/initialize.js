@@ -73,6 +73,8 @@ function initEvents()
 
 function initVars(){
 
+    globals.ctx.imageSmoothingEnabled = false;
+
     //Inicializamos las variables de gestion de tiempo
     globals.previousCycleMilliseconds = 0;
     globals.deltaTime = 0;
@@ -263,19 +265,18 @@ function initTimer()
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
-        const physics = new Physics(60); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(80); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox(12, 30, 25, 16);
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 850, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 720, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
         globals.sprites.push(player);
-        console.log(player);  // Logs the entire player object to check if hitBox is assigned
 
 
     }
@@ -301,15 +302,13 @@ function initTimer()
 
         const frames = new Frames(4, 3);
 
-        const physics = new Physics(40); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(30); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox (10, 18, 8, 3);
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 800, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
-
-        bat.tileSetIndex = Tile.BAT_64; ; // Assign the correct tile set index for the orc
+        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 200, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(bat);
 
@@ -322,25 +321,26 @@ function initTimer()
 
         const physics = new Physics(20); // Replace 40 with the appropriate vLimit
 
-        const boss = new Sprite(SpriteID.BOSS, State.RIGHT_FINAL, 400, 200, imageSet, frames, physics);
+        const boss = new Sprite(SpriteID.BOSS, State.RIGHT_FINAL, 1000, 500, imageSet, frames, physics);
 
         globals.sprites.push(boss);
  
         
     }
-    console.log(globals.level.imageSet); // Should log the ImageSet instance
 
     function initORC(){
 
         const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
 
-        const frames = new Frames(10, 2);
+        const frames = new Frames(10, 3);
 
-        const physics = new Physics(40); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(20); // Replace 40 with the appropriate vLimit
+
+        const hitBox = new HitBox (30, 25, 12, 6);
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
-        const orc = new Orc(SpriteID.ORC, State.ORC_UPRUN, 700, 205, imageSet, frames, physics, initTimeToChangeDirection);
+        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 800, 160, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(orc);
 
@@ -349,7 +349,7 @@ function initTimer()
     }
     function initHeart() {
 
-        const imageSet = new ImageSet(14, 0, 50, 50, 64, 64, 0, 0);
+        const imageSet = new ImageSet(14, 0, 62, 62, 64, 64, 0, 0);
 
         const frames = new Frames(6, 18);
 

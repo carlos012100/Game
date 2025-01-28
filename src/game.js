@@ -18,6 +18,9 @@ function init(){
     //Cargamos todos los activos: TILEMAPS, IMAGES, SOUNDS
     loadAssets();
 
+    initCamera();
+
+
     //Inicializamos los sprites
     initSprites();
 
@@ -26,11 +29,10 @@ function init(){
 
     //Inicializamos el mapa del juego
     initLevel();
+
     initTimer();
 
     initEvents();
-
-    initCamera();
 
 
     //Start the first frame request

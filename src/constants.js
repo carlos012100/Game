@@ -126,6 +126,7 @@ export const Block = {
     // GATE21: 50,
     // //until up here//
     // REDFLOOR: 16
+    Darkness: 0,
 pillar_North1: 68,
 pillar_North2: 69,
 Wall_Up: 70,
@@ -177,6 +178,7 @@ holyStone7: 34,
 holyStone8: 35,
 holyStone9: 36,
 coloredBlock: 60,
+unkown:58,
 coloredBlock2: 68,
 chestLayered: 21,
 bloodBlock: 62,

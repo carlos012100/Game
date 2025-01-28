@@ -96,7 +96,6 @@ function playGame(){
     updateGameTime();
     updateLevelTime();
     detectCollisions();
-    updateCamera();
     // updateLife();    
      // Update and redraw the HUD (e.g., hearts)
      globals.sprites.forEach(sprite => {
@@ -104,7 +103,8 @@ function playGame(){
             updateHearts(sprite);
         }
     });
-    
+    updateCamera();
+
 }
 
 function swapDirection(sprite)
@@ -181,19 +181,22 @@ export function updateAnimationFrames(sprite) {
 // }
 
 // }
-function calculateCollisionWithBorders(sprite)
-{
+function calculateCollisionWithBorders(sprite) {
     let isCollision = false;
 
-    if (sprite.xPos + sprite.imageSet.xSize > globals.canvas.width || sprite.xPos < 0) {
-        isCollision = true; // Horizontal collision
+    // Check for horizontal collision (consider camera position)
+    if (sprite.xPos + sprite.imageSet.xSize > globals.camera.x + globals.canvas.width || sprite.xPos < globals.camera.x) {
+        isCollision = true;
     }
-    if (sprite.yPos + sprite.imageSet.ySize > globals.canvas.height || sprite.yPos < 0) {
-        isCollision = true; // Vertical collision
+
+    // Check for vertical collision (consider camera position)
+    if (sprite.yPos + sprite.imageSet.ySize > globals.camera.y + globals.canvas.height/2 || sprite.yPos < globals.camera.y) {
+        isCollision = true;
     }
-        return isCollision;
-        
+
+    return isCollision;
 }
+
 
 function updatePlayer(sprite){
 
@@ -396,12 +399,12 @@ function updatePlayer(sprite){
        swapDirection(sprite);
    }
 
-   if (sprite.isCollidingWithPlayer)
-    {
-        //Si hay colision reducimos la vida
-        globals.life--;
+//    if (sprite.isCollidingWithPlayer)
+//     {
+//         //Si hay colision reducimos la vida
+//         globals.life--;
 
-    }
+//     }
    
        }
 
@@ -425,7 +428,8 @@ function updatePlayer(sprite){
                 console.error("Error: State invalid");
         }
 
-    // Calculamos distancia que se mueve (X = X - Vt)
+
+    // // Calculamos distancia que se mueve (X = X - Vt)
     sprite.yPos += sprite.physics.vy * globals.deltaTime;
     // sprite.xPos = 20;
     // sprite.yPos = 200;
@@ -434,38 +438,44 @@ function updatePlayer(sprite){
 
     // sprite.frames.framesCounter = 0;
 
+    //sprite.frames.framesCounter = this needs to change as the frames goes. remember to include it as the for loop advances. 
+
 
 
     updateAnimationFrames(sprite);
         
 
     // //Cambio de direccion aleatoria
+
     updateDirectionRandom(sprite);
     // console.log(sprite.maxTimeToChangeDirection)
     // //Calculamos colision con los borders de la pantalla
-    const isCollision = calculateCollisionWithBorders(sprite);
-    if (isCollision)
-    {
-        swapDirection(sprite);
-    }
-    if (sprite.isCollidingWithPlayer)
-        {
-            //Si hay colision reducimos la vida
-            globals.life--;
 
-        }
+    // const isCollision = calculateCollisionWithBorders(sprite);
+    // if (isCollision)
+    // {
+    //     swapDirection(sprite);
+    // }
+    // if (sprite.isCollidingWithPlayer)
+    //     {
+    //         //Si hay colision reducimos la vida
+    //         globals.life--;
+
+    //     }
     
     }
 
     
     function updateBAT(sprite){
 
-        //   Maquina de estdos del pirata
+    //     //   Maquina de estdos del pirata
         switch (sprite.state)
         {       
             case State.RIGHT_BAT:
+
     //si se mueve a la derecha asignamos velocidad en x posiiva
                 sprite.physics.vx = sprite.physics.vLimit;
+                console.log("velocity: " + sprite.physics.vx)
                 break;
 
             case State.LEFT_BAT:
@@ -481,8 +491,6 @@ function updatePlayer(sprite){
     // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
 
-
-
     updateAnimationFrames(sprite);
 
     //Cambio de direccion aleatoria
@@ -494,12 +502,12 @@ function updatePlayer(sprite){
     {
         swapDirection(sprite);
     }
-    if (sprite.isCollidingWithPlayer)
-        {
-            //Si hay colision reducimos la vida
-            globals.life--;
+    // if (sprite.isCollidingWithPlayer)
+    //     {
+    //         //Si hay colision reducimos la vida
+    //         globals.life--;
 
-        }
+    //     }
     }
     
     // function updateLife()
