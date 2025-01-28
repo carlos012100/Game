@@ -313,6 +313,7 @@ function  detectCollisionBetweenPlayerAndObstacles()
     player.isCollidingWithLeftBlock = false;
     player.isCollidingWithBottomBlock = false;
     player.isCollidingWithRightBlock = false;
+    
 
     const brickSize = globals.level.imageSet.xGridWidth;
 
