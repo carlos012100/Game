@@ -1,5 +1,64 @@
 import globals from "./globals.js";
-import { Block, State, Game } from "./constants.js";
+import { Block, State, Game, SpriteID } from "./constants.js";
+
+function swapDirection(sprite)
+{
+    switch(sprite.id)
+    {
+        case SpriteID.PLAYER:
+            sprite.state = sprite.state === State.RIGHT ? State.LEFT : State.RIGHT;
+            break;
+
+        case SpriteID.BAT:
+            sprite.state = sprite.state === State.RIGHT_BAT ? State.LEFT_BAT : State.RIGHT_BAT;
+            break;
+
+        case SpriteID.ORC:
+            sprite.state = sprite.state === State.ORC_DOWNRUN ? State.ORC_UPRUN : State.ORC_DOWNRUN;
+            break;
+        case SpriteID.SKULL1:
+            sprite.state = sprite.state === State.DOWN_SKULLWALK ? State.UP_SKULLWALK: State.DOWN_SKULLWALK;
+            break;
+    }
+}
+function updateDirectionRandom(sprite)
+{
+    //Incrementamos el tiempo para cambio de direccion
+    sprite.directionChangeCounter += globals.deltaTime;
+
+    if (sprite.directionChangeCounter > sprite.maxTimeToChangeDirection)
+        {
+            //Reseteamos el contador
+            sprite.directionChangeCounter = 0;
+
+            //Actualizamos el tiempo de cambio de direccion aleatoriamente, entre 1 y 8 segundos
+            sprite.maxTimeToChangeDirection = Math.floor(Math.random() * 8) + 1;
+
+            //Cambiamos la direccion
+            swapDirection(sprite);
+        }
+}
+function calculateCollisionWithBorders(sprite) {
+    let isCollision = false;
+
+    if (sprite.xPos + sprite.imageSet.xOffset < globals.camera.x)
+    {
+        sprite.xPos = globals.camera.x;
+        isCollision = true;
+    }
+    // Check for horizontal collision (consider camera position)
+    // if (sprite.xPos + sprite.imageSet.xSize > globals.camera.x + (globals.canvas.width) || sprite.xPos < globals.camera.x) {
+    //     isCollision = true;
+    // }
+
+    // // Check for vertical collision (consider camera position)
+    // if (sprite.yPos + sprite.imageSet.ySize > globals.camera.y + 2*(globals.canvas.height)  || sprite.yPos < globals.camera.y) {
+    //     isCollision = true;
+    // }
+
+    return isCollision;
+}
+
 
  //esta funcion calcula si las hitbox hacen colisiones
 function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
@@ -33,7 +92,7 @@ export default function detectCollisions()
     // }
     //Calculamos colision del player con los obstucalos del mapa
     detectCollisionBetweenPlayerAndObstacles();
-    detectCollisionBetweenSpriteandWorld();
+    detectCollisionBetweenOrcandWorld();
 
 
     
@@ -143,7 +202,7 @@ function isCollidingWithObstacleAt(xPos, yPos, obstacleId) {
     return isColliding;  // Return whether any collision was detected
 }
 //calculo de colision con los bloques del mapa
-function detectCollisionBetweenSpriteandWorld()
+function detectCollisionBetweenOrcandWorld(sprite)
 {
     const orc = globals.sprites[4];
 
@@ -169,73 +228,11 @@ function detectCollisionBetweenSpriteandWorld()
 
     const direction = orc.state;
 
-    let objectTile = [ 
-        Block.Darkness,
-        Block.pillar_North1,
-        Block.pillar_North2,
-        Block.Wall_Up,
-        Block.Wall_Up2,
-        Block.pillar_South,
-        Block.pillar_South2,
-        Block.wall_Straight2,
-        Block.wall_Straight,
-        Block.wall_Pilar,
-        Block.pilar1,
-        Block.pilar12,
-        Block.pilar15,
-        Block.pilar_16,
-        Block.pilar_18,
-        Block.pilarS1,
-        Block.pilarS2,
-        Block.pilarS3,
-        Block.pilarS4,
-        Block.pilarS5,
-        Block.pilarS6,
-        Block.openGate,
-        Block.openGateRight,
-        Block.openGateLeft,
-        Block.openGateSouth,
-        Block.closeGate,
-        Block.gateUpperSteel,
-        // Block.coloredFloor,
-        // Block.coloredFloorSouth,
-        // Block.coloredFloorSouth2,
-        Block.gateUpperDSteel,
-        Block.gateUpperDWood,
-        Block.hole,
-        Block.hole1,
-        Block.hole2,
-        Block.hole3,
-        Block.chest,
-        // Block.floor1
-        // Block.holyStone1,
-        // Block.holyStone2,
-        // Block.holyStone3,
-        Block.holyStone4,
-        // Block.holyStone5,
-        // Block.holyStone6,
-        // Block.holyStone7,
-        // Block.holyStone8,
-        // Block.holyStone9,
-        Block.coloredBlock,
-        Block.coloredBlock2,
-        Block.chestLayered,
-        Block.bloodBlock,
-        Block.unkown,
-    
-        // Layer 2
-        Block.ladyNight,
-        Block.ladyNight2,
-        Block.ladyNight3,
-        // Block.bloodBlock2,
-        // Block.emptySpace
-    ];
-     //   Maquina de estdos del pirata
      switch(direction)
      {       
          case State.ORC_DOWNRUN:
-            for (let i = 0; i < objectTile.length; i++){
-                const obstacleId = objectTile[i];
+            for (let i = 0; i < globals.objectTile.length; i++){
+                const obstacleId = globals.objectTile[i];
     
             //lets define colision points 
     
@@ -280,14 +277,17 @@ function detectCollisionBetweenSpriteandWorld()
     
         
                     orc.yPos -= overlapY;
+
+                    swapDirection(orc);
+
     
                 }
             }
                 break;
 
          case State.ORC_UPRUN:
-            for (let i = 0; i < objectTile.length; i++){
-                const obstacleId = objectTile[i];
+            for (let i = 0; i < globals.objectTile.length; i++){
+                const obstacleId = globals.objectTile[i];
     
             //lets define colision points 
     
@@ -331,7 +331,9 @@ function detectCollisionBetweenSpriteandWorld()
                     overlapY = Math.floor(yPos) % brickSize + 1;
     
         
-                    orc.yPos += overlapY;
+                    orc.yPos += overlapY/4;
+                    swapDirection(orc);
+
     
                 }
             }
@@ -340,6 +342,7 @@ function detectCollisionBetweenSpriteandWorld()
          default:
              console.error("Error: State invalid");
      }
+     updateDirectionRandom(orc);
 }
 function  detectCollisionBetweenPlayerAndObstacles()
 {
@@ -369,131 +372,7 @@ function  detectCollisionBetweenPlayerAndObstacles()
     const brickSize = globals.level.imageSet.xGridWidth;
 
     const direction = player.state;
-    // const obstacleId1 = Block.pillar_North1
-    // const obstacleId2 = Block.pillar_North2
-    // const obstacleId3 = Block.Wall_Up
-    // const obstacleId4 = Block.Wall_Up2
-    // const obstacleId5 = Block.pillar_South
-    // const obstacleId6 = Block.pillar_South2
-    // const obstacleId7 = Block.wall_Straight2
-    // const obstacleId8 = Block.wall_Straight
-    // const obstacleId9 = Block.wall_Pilar
-    // const obstacleId10 = Block.pilar1
-    // const obstacleId11 = Block.pilar12
-    // const obstacleId12 = Block.pilar15
-    // const obstacleId13 = Block.pilar_16
-    // const obstacleId14 = Block.pilar_18
-    // const obstacleId15 = Block.pilarS1
-    // const obstacleId16 = Block.pilarS2
-    // const obstacleId17 = Block.pilarS3
-    // const obstacleId18 = Block.pilarS4
-    // const obstacleId19 = Block.pilarS5
-    // const obstacleId20 = Block.pilarS6
-    // const obstacleId21 = Block.openGate
-    // const obstacleId22 = Block.openGateRight
-    // const obstacleId23 = Block.openGateLeft
-    // const obstacleId24 = Block.openGateSouth
-    // const obstacleId25 = Block.closeGate
-    // const obstacleId26 = Block.gateUpperSteel
-    // const obstacleId27 = Block.coloredFloor
-    // const obstacleId28 = Block.coloredFloorSouth
-    // const obstacleId29 = Block.coloredFloorSouth2
-    // const obstacleId31 = Block.gateUpperDSteel
-    // const obstacleId32 = Block.gateUpperDWood
-    // const obstacleId33 = Block.hole
-    // const obstacleId34 = Block.hole1
-    // const obstacleId35 = Block.hole2
-    // const obstacleId36 = Block.hole3
-    // const obstacleId37 = Block.floor1
-    // const obstacleId38 = Block.chest
-    // holyStone1: 29,
-    // holyStone2: 30,
-    // holyStone3: 31,
-    // holyStone4: 48,
-    // holyStone5: 32,
-    // holyStone6: 33,
-    // holyStone7: 34,
-    // holyStone8: 35,
-    // holyStone9: 36,
-    // coloredBlock: 60,
-    // coloredBlock2: 68,
-    // chestLayered: 21,
-    // bloodBlock: 62,
 
-    // //Layer 2
-
-    // ladyNight: 39,
-    // ladyNight2: 38,
-    // ladyNight3: 37,
-    // bloodBlock: 47,
-    // bloodBlock2: 62,
-    // emptySpace: 203,
-
-        
-    
-    // const obstacleId11 = Block.REDFLOOR;
-
-    let objectTile = [ 
-        Block.Darkness,
-        Block.pillar_North1,
-        Block.pillar_North2,
-        Block.Wall_Up,
-        Block.Wall_Up2,
-        Block.pillar_South,
-        Block.pillar_South2,
-        Block.wall_Straight2,
-        Block.wall_Straight,
-        Block.wall_Pilar,
-        Block.pilar1,
-        Block.pilar12,
-        Block.pilar15,
-        Block.pilar_16,
-        Block.pilar_18,
-        Block.pilarS1,
-        Block.pilarS2,
-        Block.pilarS3,
-        Block.pilarS4,
-        Block.pilarS5,
-        Block.pilarS6,
-        Block.openGate,
-        Block.openGateRight,
-        Block.openGateLeft,
-        Block.openGateSouth,
-        Block.closeGate,
-        Block.gateUpperSteel,
-        // Block.coloredFloor,
-        // Block.coloredFloorSouth,
-        // Block.coloredFloorSouth2,
-        Block.gateUpperDSteel,
-        Block.gateUpperDWood,
-        Block.hole,
-        Block.hole1,
-        Block.hole2,
-        Block.hole3,
-        Block.chest,
-        // Block.floor1
-        // Block.holyStone1,
-        // Block.holyStone2,
-        // Block.holyStone3,
-        Block.holyStone4,
-        // Block.holyStone5,
-        // Block.holyStone6,
-        // Block.holyStone7,
-        // Block.holyStone8,
-        // Block.holyStone9,
-        Block.coloredBlock,
-        Block.coloredBlock2,
-        Block.chestLayered,
-        Block.bloodBlock,
-        Block.unkown,
-    
-        // Layer 2
-        Block.ladyNight,
-        Block.ladyNight2,
-        Block.ladyNight3,
-        // Block.bloodBlock2,
-        // Block.emptySpace
-    ];
 
     // 6 ---------------------1
     //  ----------------------
@@ -627,8 +506,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
 
         case State.UP:
 
-        for (let i = 0; i < objectTile.length; i++){
-            const obstacleId = objectTile[i];
+        for (let i = 0; i < globals.objectTile.length; i++){
+            const obstacleId = globals.objectTile[i];
 
         //lets define colision points 
 
@@ -680,8 +559,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
 
         case State.DOWN:
 
-        for (let i = 0; i < objectTile.length; i++){
-            const obstacleId = objectTile[i];
+        for (let i = 0; i < globals.objectTile.length; i++){
+            const obstacleId = globals.objectTile[i];
 
         //lets define colision points 
 
@@ -731,8 +610,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
         }
             break;
             case State.DOWN_RIGHT:
-                for (let i = 0; i < objectTile.length; i++) {
-                    const obstacleId = objectTile[i];
+                for (let i = 0; i < globals.objectTile.length; i++){
+                    const obstacleId = globals.objectTile[i];
             
                     // Bottom-right corner
                     xPos = player.xPos + player.hitBox.xOffset + player.hitBox.xSize - 1;
@@ -755,8 +634,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
                 }
                 break;
                 case State.DOWN_LEFT:
-                    for (let i = 0; i < objectTile.length; i++) {
-                        const obstacleId = objectTile[i];
+                    for (let i = 0; i < globals.objectTile.length; i++){
+                        const obstacleId = globals.objectTile[i];
                 
                         // Bottom-left corner
                         xPos = player.xPos + player.hitBox.xOffset;
@@ -781,8 +660,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
 
 
             case State.LEFT:
-                for (let i = 0; i < objectTile.length; i++) {
-                    const obstacleId = objectTile[i];
+                for (let i = 0; i < globals.objectTile.length; i++){
+                    const obstacleId = globals.objectTile[i];
             
                     // Collision at the bottom-left corner (feet area)
                     xPos = player.xPos + player.hitBox.xOffset;
@@ -802,8 +681,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
                 break;
             
             case State.RIGHT:
-                for (let i = 0; i < objectTile.length; i++) {
-                    const obstacleId = objectTile[i];
+                for (let i = 0; i < globals.objectTile.length; i++){
+                    const obstacleId = globals.objectTile[i];
             
                     // Collision at the bottom-right corner (feet area)
                     xPos = player.xPos + player.hitBox.xOffset + player.hitBox.xSize - 1;
@@ -822,8 +701,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
                 }
                 break;
                 case State.UP_RIGHT:
-                    for (let i = 0; i < objectTile.length; i++) {
-                        const obstacleId = objectTile[i];
+                    for (let i = 0; i < globals.objectTile.length; i++){
+                        const obstacleId = globals.objectTile[i];
                 
                         // Collision at the top-right corner
                         xPos = player.xPos + player.hitBox.xOffset + player.hitBox.xSize - 1;
@@ -847,8 +726,8 @@ function  detectCollisionBetweenPlayerAndObstacles()
                     break;
                 
                 case State.UP_LEFT:
-                    for (let i = 0; i < objectTile.length; i++) {
-                        const obstacleId = objectTile[i];
+                    for (let i = 0; i < globals.objectTile.length; i++){
+                        const obstacleId = globals.objectTile[i];
                 
                         // Collision at the top-left corner
                         xPos = player.xPos + player.hitBox.xOffset;

@@ -49,6 +49,8 @@ export default {
     tileSets: [],
     bImages: [],
 
+    objectTile: [],
+
     //Variables para gestionar la carga de activos
     assetsToLoad: [],
     assetsLoaded: 0,

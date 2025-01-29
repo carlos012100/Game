@@ -140,7 +140,7 @@ function updateDirectionRandom(sprite)
             sprite.maxTimeToChangeDirection = Math.floor(Math.random() * 8) + 1;
 
             //Cambiamos la direccion
-            swapDirection(sprite);
+            // swapDirection(sprite);
         }
 }
 
@@ -394,7 +394,7 @@ function updatePlayer(sprite){
        
 
    // //Cambio de direccion aleatoria
-   updateDirectionRandom(sprite);
+//    updateDirectionRandom(sprite);
    // console.log(sprite.maxTimeToChangeDirection)
    // //Calculamos colision con los borders de la pantalla
    const isCollision = calculateCollisionWithBorders(sprite);
@@ -404,15 +404,15 @@ function updatePlayer(sprite){
     //changeLevel
    }
 
-   if (sprite.isColligingwithBottomBlock)
-   {
-    swapDirection(sprite);
-}
+//    if (sprite.isColligingwithBottomBlock)
+//    {
+//     swapDirection(sprite);
+// }
 
-   if (sprite.isCollidingWithTopBlock)
-    {
-        swapDirection(sprite);
-    }
+//    if (sprite.isCollidingWithTopBlock)
+//     {
+//         swapDirection(sprite);
+//     }
 //    if (sprite.)
 //    if (isCollision)
 //    {
@@ -467,18 +467,22 @@ function updatePlayer(sprite){
 
     // //Cambio de direccion aleatoria
 
-    updateDirectionRandom(sprite);
+    // updateDirectionRandom(sprite);
     // console.log(sprite.maxTimeToChangeDirection)
     // //Calculamos colision con los borders de la pantalla
 
     // const isCollision = calculateCollisionWithBorders(sprite);
-    if (sprite.isCollidingWithTopBLock)
-    {
-        swapDirection(sprite);
+    // if (sprite.isCollidingWithTopBLock)
+    // {
+    //     swapDirection(sprite);
+    //     console.log("orc change: " + sprite.isCollidingWithTopBLock)
         
-        console.log("see this: " + sprite.isCollidingWithTopBLock);
-
-    }
+    // }
+    // if (sprite.isCollidingWithBottomBLock)
+    //     {
+    //         swapDirection(sprite);
+            
+    //     }
     // if (sprite.isCollidingWithPlayer)
     //     {
     //         //Si hay colision reducimos la vida
@@ -517,13 +521,13 @@ function updatePlayer(sprite){
     updateAnimationFrames(sprite);
 
     //Cambio de direccion aleatoria
-    updateDirectionRandom(sprite);
+    // updateDirectionRandom(sprite);
     console.log(sprite.maxTimeToChangeDirection)
     //Calculamos colision con los borders de la pantalla
     const isCollision = calculateCollisionWithBorders(sprite);
     if (isCollision)
     {
-        swapDirection(sprite);
+        // swapDirection(sprite);
     }
     // if (sprite.isCollidingWithPlayer)
     //     {

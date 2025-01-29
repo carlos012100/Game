@@ -1,5 +1,5 @@
 import globals from "./globals.js";
-import {Game, SpriteID, State, FPS, Tile} from "./constants.js";
+import {Game, SpriteID, State, FPS, Block} from "./constants.js";
 import Sprite, { Heart } from "./Sprite.js";
 import { Player, Bat, Orc, Skull } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
@@ -97,6 +97,68 @@ function initVars(){
 
     //Variables logica juego
     globals.life = 4;
+
+    globals.objectTile = [ 
+            Block.Darkness,
+            Block.pillar_North1,
+            Block.pillar_North2,
+            Block.Wall_Up,
+            Block.Wall_Up2,
+            Block.pillar_South,
+            Block.pillar_South2,
+            Block.wall_Straight2,
+            Block.wall_Straight,
+            Block.wall_Pilar,
+            Block.pilar1,
+            Block.pilar12,
+            Block.pilar15,
+            Block.pilar_16,
+            Block.pilar_18,
+            Block.pilarS1,
+            Block.pilarS2,
+            Block.pilarS3,
+            Block.pilarS4,
+            Block.pilarS5,
+            Block.pilarS6,
+            Block.openGate,
+            Block.openGateRight,
+            Block.openGateLeft,
+            Block.openGateSouth,
+            Block.closeGate,
+            Block.gateUpperSteel,
+            // Block.coloredFloor,
+            // Block.coloredFloorSouth,
+            // Block.coloredFloorSouth2,
+            Block.gateUpperDSteel,
+            Block.gateUpperDWood,
+            Block.hole,
+            Block.hole1,
+            Block.hole2,
+            Block.hole3,
+            Block.chest,
+            // Block.floor1
+            // Block.holyStone1,
+            // Block.holyStone2,
+            // Block.holyStone3,
+            Block.holyStone4,
+            // Block.holyStone5,
+            // Block.holyStone6,
+            // Block.holyStone7,
+            // Block.holyStone8,
+            // Block.holyStone9,
+            Block.coloredBlock,
+            Block.coloredBlock2,
+            Block.chestLayered,
+            Block.bloodBlock,
+            Block.unkown,
+        
+            // Layer 2
+            Block.ladyNight,
+            Block.ladyNight2,
+            Block.ladyNight3,
+            // Block.bloodBlock2,
+            // Block.emptySpace
+        ];
 
 }
 function initTimer()
@@ -272,7 +334,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 720, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 850, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
@@ -334,7 +396,7 @@ function initTimer()
 
         const frames = new Frames(10, 3);
 
-        const physics = new Physics(20); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(40); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox (30, 25, 12, 6);
 
@@ -342,7 +404,12 @@ function initTimer()
 
         const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 650, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
+        const orc2 = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 800, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+
+
         globals.sprites.push(orc);
+        globals.sprites.push(orc2);
+
 
 
 
