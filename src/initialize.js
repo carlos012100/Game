@@ -340,7 +340,7 @@ function initTimer()
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
-        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 400, 120, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 650, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(orc);
 

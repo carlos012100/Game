@@ -404,11 +404,15 @@ function updatePlayer(sprite){
     //changeLevel
    }
 
-   if (sprite.isColligingwithTopBlock)
+   if (sprite.isColligingwithBottomBlock)
    {
-    //swap direction
-   }
+    swapDirection(sprite);
+}
 
+   if (sprite.isCollidingWithTopBlock)
+    {
+        swapDirection(sprite);
+    }
 //    if (sprite.)
 //    if (isCollision)
 //    {
@@ -467,10 +471,13 @@ function updatePlayer(sprite){
     // console.log(sprite.maxTimeToChangeDirection)
     // //Calculamos colision con los borders de la pantalla
 
-    const isCollision = calculateCollisionWithBorders(sprite);
-    if (isCollision)
+    // const isCollision = calculateCollisionWithBorders(sprite);
+    if (sprite.isCollidingWithTopBLock)
     {
         swapDirection(sprite);
+        
+        console.log("see this: " + sprite.isCollidingWithTopBLock);
+
     }
     // if (sprite.isCollidingWithPlayer)
     //     {

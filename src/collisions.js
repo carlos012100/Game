@@ -34,7 +34,6 @@ export default function detectCollisions()
     //Calculamos colision del player con los obstucalos del mapa
     detectCollisionBetweenPlayerAndObstacles();
     detectCollisionBetweenSpriteandWorld();
-    // detectCollisionBetweenSpriteandWorld();
 
 
     
@@ -242,7 +241,7 @@ function detectCollisionBetweenSpriteandWorld()
     
             //Primera colision a la derecha a los pies
     
-            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;  // Bottom part of the hitbox
             xPos = orc.xPos + orc.hitBox.xOffset + orc.hitBox.xSize - 1;
     
             isCollidingOnPos1 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
@@ -250,7 +249,7 @@ function detectCollisionBetweenSpriteandWorld()
     
             //segundo colision a la izquierda a los pies
     
-            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            yPos = orc.yPos + orc.hitBox.yOffset; + orc.hitBox.ySize - 1;
             xPos = orc.xPos + orc.hitBox.xOffset;
     
             isCollidingOnPos2 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
@@ -280,7 +279,7 @@ function detectCollisionBetweenSpriteandWorld()
                     overlapY = Math.floor(yPos) % brickSize + 1;
     
         
-                    orc.yPos = overlapY/4;
+                    orc.yPos -= overlapY;
     
                 }
             }
@@ -294,7 +293,7 @@ function detectCollisionBetweenSpriteandWorld()
     
             //Primera colision a la derecha a los pies
     
-            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            yPos = orc.yPos + orc.hitBox.yOffset;  // Top part of the hitbox
             xPos = orc.xPos + orc.hitBox.xOffset + orc.hitBox.xSize - 1;
     
             isCollidingOnPos1 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
@@ -302,7 +301,7 @@ function detectCollisionBetweenSpriteandWorld()
     
             //segundo colision a la izquierda a los pies
     
-            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            yPos = orc.yPos + orc.hitBox.yOffset;  // Top part of the hitbox
             xPos = orc.xPos + orc.hitBox.xOffset;
     
             isCollidingOnPos2 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
@@ -332,7 +331,7 @@ function detectCollisionBetweenSpriteandWorld()
                     overlapY = Math.floor(yPos) % brickSize + 1;
     
         
-                    orc.yPos += overlapY/4;
+                    orc.yPos += overlapY;
     
                 }
             }
