@@ -308,7 +308,7 @@ function initTimer()
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 200, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const bat = new Bat (SpriteID.BAT, State.RIGHT_BAT, 200, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(bat);
 
@@ -340,7 +340,7 @@ function initTimer()
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
-        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 800, 160, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 400, 120, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(orc);
 

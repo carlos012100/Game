@@ -64,11 +64,12 @@ function drawGame(){
     
     drawSprites();
 
+    restoreCamara();
+
     if (globals.gameState === Game.PLAYING){
         renderHUD();
     }
 
-    restoreCamara();
 
 
     //Pintamos los FPS en pantalla
@@ -115,8 +116,6 @@ function drawHitBox (sprite)
     const y1 = Math.floor(sprite.yPos) + Math.floor(sprite.hitBox.yOffset);
 
     const w1 = sprite.hitBox.xSize;
-
-    console.log(sprite.hitBox.xOffset);  // Debugging line
     
     const h1 = sprite.hitBox.ySize;
 

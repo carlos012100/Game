@@ -26,10 +26,15 @@ export default function detectCollisions()
         const sprite = globals.sprites[i];
         detectCollisionBetweenPlayerAndSprite(sprite);
     }
+    // if (globals.sprites[4])
+    // {
+    //         detectCollisionBetweenSpriteandWorld();
+
+    // }
     //Calculamos colision del player con los obstucalos del mapa
     detectCollisionBetweenPlayerAndObstacles();
-    // detectCollisionBetweenSpriteandWorld();
     detectCollisionBetweenSpriteandWorld();
+    // detectCollisionBetweenSpriteandWorld();
 
 
     
@@ -230,9 +235,56 @@ function detectCollisionBetweenSpriteandWorld()
      switch(direction)
      {       
          case State.ORC_DOWNRUN:
- //si se mueve a la derecha asignamos velocidad en x posiiva
-             sprite.physics.vy = sprite.physics.vLimit;
-             break;
+            for (let i = 0; i < objectTile.length; i++){
+                const obstacleId = objectTile[i];
+    
+            //lets define colision points 
+    
+            //Primera colision a la derecha a los pies
+    
+            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            xPos = orc.xPos + orc.hitBox.xOffset + orc.hitBox.xSize - 1;
+    
+            isCollidingOnPos1 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
+    
+    
+            //segundo colision a la izquierda a los pies
+    
+            yPos = orc.yPos + orc.hitBox.yOffset + orc.hitBox.ySize - 1;
+            xPos = orc.xPos + orc.hitBox.xOffset;
+    
+            isCollidingOnPos2 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
+    
+            //tercer punto de colision a cabeza 
+    
+            // yPos = player.yPos + player.hitBox.yOffset;
+            // xPos = player.xPos + player.hitBox.xOffset + player.hitBox.xSize - 1;
+    
+            // isCollidingOnPos3 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
+    
+            // yPos = player.yPos + player.hitBox.yOffset;
+            // xPos = player.xPos + player.hitBox.xOffset;
+    
+            // isCollidingOnPos4 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
+    
+        
+            isColliding = isCollidingOnPos1 || isCollidingOnPos2;
+    
+            if (isColliding)
+                {
+                    
+                    orc.isCollidingWithBottomBlock = true;
+        
+        
+                    //Ajuste: calculate overlap and eliminate it, this will move the character some pixels back
+                    overlapY = Math.floor(yPos) % brickSize + 1;
+    
+        
+                    orc.yPos = overlapY/4;
+    
+                }
+            }
+                break;
 
          case State.ORC_UPRUN:
             for (let i = 0; i < objectTile.length; i++){
@@ -280,7 +332,7 @@ function detectCollisionBetweenSpriteandWorld()
                     overlapY = Math.floor(yPos) % brickSize + 1;
     
         
-                    orc.yPos -= overlapY/4;
+                    orc.yPos += overlapY/4;
     
                 }
             }

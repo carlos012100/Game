@@ -3,7 +3,6 @@ import {Game, State, SpriteID} from "./constants.js";
 import detectCollisions from "./collisions.js";
 import {createFire} from "./initialize.js";
 
-
 export default function update(){
 
 
@@ -184,15 +183,20 @@ export function updateAnimationFrames(sprite) {
 function calculateCollisionWithBorders(sprite) {
     let isCollision = false;
 
+    if (sprite.xPos + sprite.imageSet.xOffset < globals.camera.x)
+    {
+        sprite.xPos = globals.camera.x;
+        isCollision = true;
+    }
     // Check for horizontal collision (consider camera position)
-    if (sprite.xPos + sprite.imageSet.xSize > globals.camera.x + globals.canvas.width || sprite.xPos < globals.camera.x) {
-        isCollision = true;
-    }
+    // if (sprite.xPos + sprite.imageSet.xSize > globals.camera.x + (globals.canvas.width) || sprite.xPos < globals.camera.x) {
+    //     isCollision = true;
+    // }
 
-    // Check for vertical collision (consider camera position)
-    if (sprite.yPos + sprite.imageSet.ySize > globals.camera.y + globals.canvas.height/2 || sprite.yPos < globals.camera.y) {
-        isCollision = true;
-    }
+    // // Check for vertical collision (consider camera position)
+    // if (sprite.yPos + sprite.imageSet.ySize > globals.camera.y + 2*(globals.canvas.height)  || sprite.yPos < globals.camera.y) {
+    //     isCollision = true;
+    // }
 
     return isCollision;
 }
@@ -394,10 +398,22 @@ function updatePlayer(sprite){
    // console.log(sprite.maxTimeToChangeDirection)
    // //Calculamos colision con los borders de la pantalla
    const isCollision = calculateCollisionWithBorders(sprite);
-   if (isCollision)
+
+   if (sprite.isCollidingWithTopBorder)
    {
-       swapDirection(sprite);
+    //changeLevel
    }
+
+   if (sprite.isColligingwithTopBlock)
+   {
+    //swap direction
+   }
+
+//    if (sprite.)
+//    if (isCollision)
+//    {
+//        swapDirection(sprite);
+//    }
 
 //    if (sprite.isCollidingWithPlayer)
 //     {
@@ -421,7 +437,7 @@ function updatePlayer(sprite){
 
             case State.ORC_UPRUN:
             //Si se mueve a la izquierda asignamos velocidad en X negativa
-                sprite.physics.vy = sprite.physics.vLimit;
+                sprite.physics.vy = -sprite.physics.vLimit;
                 break;
 
             default:
@@ -451,11 +467,11 @@ function updatePlayer(sprite){
     // console.log(sprite.maxTimeToChangeDirection)
     // //Calculamos colision con los borders de la pantalla
 
-    // const isCollision = calculateCollisionWithBorders(sprite);
-    // if (isCollision)
-    // {
-    //     swapDirection(sprite);
-    // }
+    const isCollision = calculateCollisionWithBorders(sprite);
+    if (isCollision)
+    {
+        swapDirection(sprite);
+    }
     // if (sprite.isCollidingWithPlayer)
     //     {
     //         //Si hay colision reducimos la vida
