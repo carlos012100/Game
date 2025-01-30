@@ -373,7 +373,7 @@ function updatePlayer(sprite){
            case State.UP_SKULLWALK:
            //Si se mueve a la izquierda asignamos velocidad en X negativa
                sprite.physics.vy = -sprite.physics.vLimit;
-               break;
+               break; 
 
            default:
                console.error("Error: State invalid");
@@ -397,12 +397,12 @@ function updatePlayer(sprite){
 //    updateDirectionRandom(sprite);
    // console.log(sprite.maxTimeToChangeDirection)
    // //Calculamos colision con los borders de la pantalla
-   const isCollision = calculateCollisionWithBorders(sprite);
+//    const isCollision = calculateCollisionWithBorders(sprite);
 
-   if (sprite.isCollidingWithTopBorder)
-   {
-    //changeLevel
-   }
+//    if (sprite.isCollidingWithTopBorder)
+//    {
+//     //changeLevel
+//    }
 
 //    if (sprite.isColligingwithBottomBlock)
 //    {
@@ -431,39 +431,25 @@ function updatePlayer(sprite){
     
     function updateORC(sprite){
 
-        //   Maquina de estdos del pirata
-        switch (sprite.state)
-        {       
+        switch (sprite.state) {       
             case State.ORC_DOWNRUN:
-    //si se mueve a la derecha asignamos velocidad en x posiiva
                 sprite.physics.vy = sprite.physics.vLimit;
                 break;
-
             case State.ORC_UPRUN:
-            //Si se mueve a la izquierda asignamos velocidad en X negativa
                 sprite.physics.vy = -sprite.physics.vLimit;
                 break;
-
+            case State.ORC_IDLE:
+                sprite.physics.vy = 0;  // Orc does not move
+                break;
+            case State.ORC_IDLEUP:
+                sprite.physics.vy = 0;
+                break;
             default:
                 console.error("Error: State invalid");
         }
-
-
-    // // Calculamos distancia que se mueve (X = X - Vt)
-    sprite.yPos += sprite.physics.vy * globals.deltaTime;
-    // sprite.xPos = 20;
-    // sprite.yPos = 200;
-
-    // sprite.state = State.ORC_DOWNRUN;
-
-    // sprite.frames.framesCounter = 0;
-
-    //sprite.frames.framesCounter = this needs to change as the frames goes. remember to include it as the for loop advances. 
-
-
-
-    updateAnimationFrames(sprite);
-        
+    
+        sprite.yPos += sprite.physics.vy * globals.deltaTime;
+        updateAnimationFrames(sprite);
 
     // //Cambio de direccion aleatoria
 
@@ -493,42 +479,69 @@ function updatePlayer(sprite){
     }
 
     
-    function updateBAT(sprite){
-
-    //     //   Maquina de estdos del pirata
-        switch (sprite.state)
-        {       
+    function updateBAT(sprite) {
+        const amplitude = 10; // Amplitude of the oscillation
+    
+        // State machine for the Bat
+        switch (sprite.state) {
             case State.RIGHT_BAT:
-
-    //si se mueve a la derecha asignamos velocidad en x posiiva
+                // Move right
                 sprite.physics.vx = sprite.physics.vLimit;
-                console.log("velocity: " + sprite.physics.vx)
                 break;
-
+    
             case State.LEFT_BAT:
-            //Si se mueve a la izquierda asignamos velocidad en X negativa
+                // Move left
                 sprite.physics.vx = -sprite.physics.vLimit;
-
                 break;
-
+    
             default:
-                console.error("Error: State invalid");
+                console.error("Error: Invalid state");
         }
-
-    // Calculamos distancia que se mueve (X = X - Vt)
-    sprite.xPos += sprite.physics.vx * globals.deltaTime;
-
-    updateAnimationFrames(sprite);
-
-    //Cambio de direccion aleatoria
-    // updateDirectionRandom(sprite);
-    console.log(sprite.maxTimeToChangeDirection)
+    
+        // Ensure deltaTime is a valid number
+        if (isNaN(globals.deltaTime) || globals.deltaTime <= 0) {
+            console.error("Error: Invalid deltaTime");
+            globals.deltaTime = 1 / 60; // Default to 60 FPS
+        }
+    
+        // Update position based on velocity
+        sprite.xPos += sprite.physics.vx * globals.deltaTime;
+    
+        // Oscillatory movement in the Y-axis
+        sprite.physics.angle += sprite.physics.omega * globals.deltaTime; // Increment angle
+        sprite.yPos = sprite.physics.yRef + amplitude * Math.sin(sprite.angle); // Apply sine wave
+    
+        // Ensure xPos and yPos are valid numbers
+        if (isNaN(sprite.xPos) || isNaN(sprite.yPos)) {
+            console.error("Error: xPos or yPos is NaN");
+            sprite.xPos = sprite.physics.yRef; // Reset to reference position
+            sprite.yPos = sprite.physics.yRef;
+        }
+    
+        // Clamp the Bat's X position to stay within the level bounds
+        const minX = 100; // Minimum X position (left edge of the level)
+        const maxX = globals.level.imageSet.xGridWidth * globals.level.data[0][0].length; // Maximum X position (right edge of the level)
+        sprite.xPos = Math.max(minX, Math.min(sprite.xPos, maxX));
+    
+        // Clamp the Bat's Y position to stay within the level bounds
+        const minY = 300; // Minimum Y position (top of the level)
+        const maxY = globals.level.imageSet.yGridHeight * globals.level.data[0].length; // Maximum Y position (bottom of the level)
+        sprite.yPos = Math.max(minY, Math.min(sprite.yPos, maxY));
+    
+        // Debugging logs
+        console.log("Angle:", sprite.physics.angle);
+        console.log("Y Position:", sprite.yPos);
+        console.log("X Position:", sprite.xPos);
+    
+        // Update animation frames
+        updateAnimationFrames(sprite);
+    
     //Calculamos colision con los borders de la pantalla
-    const isCollision = calculateCollisionWithBorders(sprite);
-    if (isCollision)
-    {
-        // swapDirection(sprite);
-    }
+    // const isCollision = calculateCollisionWithBorders(sprite);
+    // if (isCollision)
+    // {
+    //     swapDirection(sprite);
+    // }
     // if (sprite.isCollidingWithPlayer)
     //     {
     //         //Si hay colision reducimos la vida

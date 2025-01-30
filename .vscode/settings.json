@@ -1,3 +1,6 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "editor.stickyTabStops": false,
+    "editor.tabCompletion": "off",
+    "editor.tabFocusMode": false
 }

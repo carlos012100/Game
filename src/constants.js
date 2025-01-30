@@ -26,7 +26,7 @@ export const SpriteID = {
     BULLET: 6
 };
 
-// Identificador de estado de sprite (dirección)
+// Identificador de Estado de sprite (dirección)
 export const State = {
     DOWN_STILL: 0,
     DOWN: 1,
@@ -53,7 +53,9 @@ export const State = {
     UP_SKULLWALK: 6,
 
     // // //Estados ORC
+    ORC_IDLE: -1,
     ORC_DOWNRUN : 0,
+    ORC_IDLEUP: 5,
     ORC_UPRUN: 6,
     // LEFT_3: 0
 

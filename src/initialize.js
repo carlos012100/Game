@@ -327,14 +327,14 @@ function initTimer()
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
-        const physics = new Physics(80); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(200); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox(12, 30, 25, 16);
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 850, 140, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 200, 300, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
@@ -348,32 +348,31 @@ function initTimer()
 
         const frames = new Frames(5, 5);
 
-        const physics = new Physics(30); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(80); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox (30, 25, 12, 6);
 
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 980, 200, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 500, 400, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(skull);
     }
-    function initBAT(){
-
+    function initBAT() {
         const imageSet = new ImageSet(48, 0, 25, 25, 64, 64, 5, 6);
-
         const frames = new Frames(4, 3);
-
-        const physics = new Physics(30); // Replace 40 with the appropriate vLimit
-
-        const hitBox = new HitBox (10, 18, 8, 3);
-
+    
+        // Initialize physics
+        const initAngle = 0; // Start at 0 radians
+        const omega = 10; // Angular velocity
+        const yRef = 20; // Reference Y position
+        const physics = new Physics(10, omega, initAngle, yRef);
+    
+        const hitBox = new HitBox(8, 18, 8, 3);
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
-
-        const bat = new Bat (SpriteID.BAT, State.RIGHT_BAT, 200, 260, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
-
+    
+        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 100, 700, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
         globals.sprites.push(bat);
-
     }
     function initBOSS(){
 
@@ -390,30 +389,35 @@ function initTimer()
         
     }
 
-    function initORC(){
+    function initORC(orcsData) {
+        // for (let i = 0; i < count; i++) {
+        //     const x = 650 + i * 100; // Adjust positions dynamically
+        //     const y = 180;
+        //     const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
+        //     const frames = new Frames(10, 3);
+        //     const physics = new Physics(40);
+        //     const hitBox = new HitBox(30, 25, 12, 6);
+        //     const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
+    
+            for (let i = 0; i < orcsData.length; i++) {
+                const { x, y, state } = orcsData[i]; // Extract the position and state
+        
+                const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
+                const frames = new Frames(4, 6);
+                const physics = new Physics(40);
+                const hitBox = new HitBox(22, 25, 12, 15);
+                const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
+        
+                // Create the orc with the predefined state and position
+                const orc = new Orc(SpriteID.ORC, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+                
+                globals.sprites.push(orc);
+            }
+        }
+        
+    
+    
 
-        const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
-
-        const frames = new Frames(10, 3);
-
-        const physics = new Physics(40); // Replace 40 with the appropriate vLimit
-
-        const hitBox = new HitBox (30, 25, 12, 6);
-
-        const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
-
-        const orc = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 650, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
-
-        const orc2 = new Orc(SpriteID.ORC, State.ORC_DOWNRUN, 800, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
-
-
-        globals.sprites.push(orc);
-        globals.sprites.push(orc2);
-
-
-
-
-    }
     function initHeart() {
 
         const imageSet = new ImageSet(14, 0, 62, 62, 64, 64, 0, 0);
@@ -450,7 +454,12 @@ function initTimer()
         initSKULL1();
         initBOSS();
         initBAT();
-        initORC();
+        initORC([
+            { x: 650, y: 180, state: State.ORC_DOWNRUN },
+            { x: 800, y: 200, state: State.ORC_UPRUN },
+            { x: 185, y: 400, state: State.ORC_IDLE },
+            { x: 185, y: 360, state: State.ORC_IDLEUP }
+        ]);
         initHeart();
 
 
