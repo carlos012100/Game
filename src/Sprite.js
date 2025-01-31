@@ -17,6 +17,11 @@ export default class Sprite
         this.isCollidingWithBottomBlock = false;
         this.isCollidingWithRightBlock = false;
         this.isDrawn = true;
+        this.damageCounter = 0;
+        // In the player initialization
+        this.hasIncrementedThisFrame = false;
+
+
 
     }
 }
@@ -31,6 +36,10 @@ export class Player extends Sprite
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
         this.modeDAMAGE = false;
+        this.invincivilityCounter = 0; // Counter for damage mode duration
+        this.invincivility = 1.5;
+        this.damageInterval = 0.2;
+
 
     }
 }

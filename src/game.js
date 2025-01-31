@@ -44,9 +44,12 @@ function init(){
 
 //Bucle principal de ejecucion
 function gameLoop(timeStamp){
+ 
 
     //Keep requesting new frames
     window.requestAnimationFrame(gameLoop, globals.canvas);
+
+    globals.sprites[0].hasIncrementedThisFrame = false;
 
 
     //Tiempo real de ciclo de ejecicion
@@ -71,5 +74,7 @@ function gameLoop(timeStamp){
         //Corregimos los excesos de tiempo
         globals.cycleRealTime -= globals.frameTimeObj;
         globals.deltaTime = 0;
+        
+        
     }
 }

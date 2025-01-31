@@ -116,8 +116,8 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
     }
 
     // Camera offset
-    const cameraOffsetX = globals.camera.xOffset;
-    const cameraOffsetY = globals.camera.yOffset;
+    // const cameraOffsetX = globals.camera.xOffset;
+    // const cameraOffsetY = globals.camera.yOffset;
 
     // Player hitbox coordinates
     const x1 = player.xPos + player.hitBox.xOffset;
@@ -201,7 +201,7 @@ function isCollidingWithObstacleAt(xPos, yPos, obstacleId) {
 
         if (id === obstacleId && id !== 0) {
             isColliding = true;
-            console.log("Collision detected on layer:", layerIndex, "with obstacle ID:", obstacleId);
+
         } else if (layerIndex === 0 && id === obstacleId && id === 0 && globals.sprites[0]) {
             globals.gameState = Game.GAME_OVER; // Set the game state to GAME_OVER
             console.log("Game Over triggered!");
@@ -235,15 +235,6 @@ function detectCollisionBetweenBatandWorld ()
         let xPos, yPos, isCollidingOnPos1, isCollidingOnPos2, isColliding, overlapY, overlapX;
 
         switch (direction) {
-            // case State.ORC_IDLE:
-            //     // Handle idle state (no movement, no collision detection)
-            //     // You can add specific logic here if needed
-            //     break;
-
-            //     case State.ORC_IDLEUP:
-            //         // Handle idle state (no movement, no collision detection)
-            //         // You can add specific logic here if needed
-            //         break;
 
             case State.RIGHT_BAT:
                 // updateDirectionRandom(bat);

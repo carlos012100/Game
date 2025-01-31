@@ -99,11 +99,6 @@ function initVars(){
 
     globals.life = 4;
 
-    globals.damageCounter = 0;
-
-    globals.damageInterval = 0.2;
-
-    globals.invincivility = 2;
 
     globals.objectTile = [ 
             Block.Darkness,

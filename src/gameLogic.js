@@ -428,6 +428,8 @@ function updatePlayer(sprite){
 
 
         updateAnimationFrames(sprite);
+        updateDamage(sprite);
+
 
     }
     function updateSKULL1(sprite) {
@@ -503,45 +505,94 @@ updateDamage(sprite);
 }
 
    
+
 function updateDamage(sprite) {
-    const player = globals.sprites[0];
+        const player = globals.sprites[0]; // Assuming the player is the first sprite
+    
+        // Handle damage mode and blinking for the player
+        if (player.modeDAMAGE) {
+            // Increment the damage counter for flickering
+            player.damageCounter += globals.deltaTime;
+          // Increment the damage mode duration counter only once per frame
+        if (!player.hasIncrementedThisFrame) {
+            player.damageCounter += globals.deltaTime;
 
-    // Handle damage mode and blinking
-    if (player.modeDAMAGE) {
-        // Increment the damage counter for flickering
-        globals.invincivilityCounter += globals.deltaTime;
-
-        // Increment the damage mode duration counter
-        globals.damageCounter += globals.deltaTime;
-
-        // Check if it's time to toggle visibility (flickering)
-        if (globals.damageCounter >= globals.damageInterval) {
-            globals.damageCounter = 0; // Reset the flickering counter
-            player.isDrawn = !player.isDrawn; // Toggle visibility
-            console.log("drawn: " + player.isDrawn);
+            player.invincivilityCounter += globals.deltaTime;
+            player.hasIncrementedThisFrame = true; // Mark as incremented
         }
-
-        // Check if damage mode should end (after 4 seconds)
-        if (globals.invincivilityCounter >= 4) {
-            globals.damageCounter = 0; // Reset the duration counter
-            globals.invincivilityCounter = 0; // Reset the flickering counter
-            player.isDrawn = true; // Ensure the player is visible
-            player.modeDAMAGE = false; // End damage mode
-            console.log("damagemode: " + player.modeDAMAGE);
+    
+            // Check if it's time to toggle visibility (flickering)
+            if (player.damageCounter >= player.damageInterval) {
+                player.damageCounter = 0; // Reset the flickering counter
+                player.isDrawn = !player.isDrawn; // Toggle visibility
+                console.log("Player drawn: " + player.isDrawn);
+            }
+    
+            // Check if damage mode should end (after 4 seconds)
+            if (player.invincivilityCounter >= player.invincivility) {
+                player.invincivilityCounter = 0; // Reset the duration counter
+                player.isDrawn = true; // Ensure the player is visible
+                player.modeDAMAGE = false; // End damage mode
+                console.log("Damage mode ended.");
+            }
         }
-    }
+    
+        // Check for collision between the sprite and the player
+        if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
+            // Reduce player's life
+            globals.life--;
+    
+            // Enter damage mode for the player
+            player.modeDAMAGE = true;
+            player.damageCounter = 0; // Reset the flickering counter
+            player.InvincivilityCounter = 0; // Reset the duration counter
+            console.log("Player damage: " + player.modeDAMAGE);
+        }
+    
 
-    // Check for collision with the player
-    if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
-        // Reduce life
-        globals.life--;
+    // // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
+    // if (sprite.modeDAMAGE) {
+    //     // Increment the damage counter for flickering
+    //     sprite.damageCounter += globals.deltaTime;
 
-        // Enter damage mode
-        player.modeDAMAGE = true;
-        globals.damageCounter = 0; // Reset the duration counter
-        globals.invincivilityCounter = 0; // Reset the flickering counter
-        console.log("damage: " + player.modeDAMAGE);
-    }
+    //     // Increment the damage mode duration counter
+    //     sprite.invincivilityCounter += globals.deltaTime;
+
+    //     // Debug logs
+    //     console.log("Sprite Damage Counter: " + sprite.damageCounter);
+    //     console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
+
+    //     // Check if it's time to toggle visibility (flickering)
+    //     if (sprite.damageCounter >= globals.damageInterval) {
+    //         sprite.damageCounter = 0; // Reset the flickering counter
+    //         sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
+    //         console.log("Sprite drawn: " + sprite.isDrawn);
+    //     }
+
+    //     // Check if damage mode should end (after 4 seconds)
+    //     if (sprite.invincivilityCounter >= globals.invincivility) {
+    //         sprite.invincivilityCounter = 0; // Reset the duration counter
+    //         sprite.isDrawn = true; // Ensure the sprite is visible
+    //         sprite.modeDAMAGE = false; // End damage mode
+    //         console.log("Sprite damagemode: " + sprite.modeDAMAGE);
+    //     }
+    // }
+
+
+
+    // // Check for collision between the player and the sprite (e.g., player attacks sprite)
+    // if (player.isAttacking && sprite.isCollidingWithPlayer && !sprite.modeDAMAGE) {
+    //     // Reduce sprite's health (if applicable)
+    //     if (sprite.health) {
+    //         sprite.health--;
+    //     }
+
+    //     // Enter damage mode for the sprite
+    //     sprite.modeDAMAGE = true;
+    //     sprite.damageCounter = 0; // Reset the flickering counter
+    //     sprite.invincivilityCounter = 0; // Reset the duration counter
+    //     console.log("Sprite damage: " + sprite.modeDAMAGE);
+    // }
 }
     
     function updateORC(sprite){
@@ -564,35 +615,13 @@ function updateDamage(sprite) {
         }
     
         sprite.yPos += sprite.physics.vy * globals.deltaTime;
+        
         updateAnimationFrames(sprite);
 
-    // //Cambio de direccion aleatoria
-
-    // updateDirectionRandom(sprite);
-    // console.log(sprite.maxTimeToChangeDirection)
-    // //Calculamos colision con los borders de la pantalla
-
-    // const isCollision = calculateCollisionWithBorders(sprite);
-    // if (sprite.isCollidingWithTopBLock)
-    // {
-    //     swapDirection(sprite);
-    //     console.log("orc change: " + sprite.isCollidingWithTopBLock)
-        
-    // }
-    // if (sprite.isCollidingWithBottomBLock)
-    //     {
-    //         swapDirection(sprite);
-            
-    //     }
-    if (sprite.isCollidingWithPlayer)
-        {
-            //Si hay colision reducimos la vida
-            globals.life--;
-            sprite.modeDAMAGE = true;
-    
+        updateDamage(sprite);
+        console.log("check: " + sprite.isDrawn)
 
 
-        }
     
     }
     function updateBATosc(sprite)
@@ -694,31 +723,25 @@ function updateDamage(sprite) {
     // {
     //     swapDirection(sprite);
     // }
-    if (sprite.isCollidingWithPlayer)
-        {
-            //Si hay colision reducimos la vida
-            globals.life--;
-            console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
+    updateDamage(sprite);
 
-
-        }
 }
     
-    function updateLife()
-    {
-        for (let i = 1; i < globals.sprites.length; ++i)
-        {
-            const sprite = globals.sprites[i];
+    // function updateLife()
+    // {
+    //     for (let i = 1; i < globals.sprites.length; ++i)
+    //     {
+    //         const sprite = globals.sprites[i];
             
-            if (sprite.isCollidingWithPlayer)
-            {
-                //Si hay colision reducimos la vida
-                globals.life--;
+    //         if (sprite.isCollidingWithPlayer)
+    //         {
+    //             //Si hay colision reducimos la vida
+    //             globals.life--;
 
-            }
+    //         }
 
-        }
-    }
+    //     }
+    // }
  function updateCamera()
  {
     //Centramos la camara en el player
