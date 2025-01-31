@@ -1,6 +1,5 @@
 import globals from "./globals.js";
 import { Block, State, Game, SpriteID } from "./constants.js";
-import { Skull } from "./Sprite.js";
 
 function swapDirection(sprite)
 {
@@ -70,6 +69,8 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
     if (x2 > w1 + x1 || x1 > w2 + x2 || y2 > h1 + y1 || y1 > h2 + y2)
     {
         isOverlap = false;
+        console.log("overla: " + isOverlap)
+
     }
     else 
     {
@@ -84,7 +85,11 @@ export default function detectCollisions()
     for (let i = 1; i < globals.sprites.length; ++i)
     {
         const sprite = globals.sprites[i];
+
+        sprite.isCollidingWithPlayer = false;
         detectCollisionBetweenPlayerAndSprite(sprite);
+        
+        
     }
     // if (globals.sprites[4])
     // {
@@ -100,41 +105,44 @@ export default function detectCollisions()
 
     
 }
-function detectCollisionBetweenPlayerAndSprite(sprite)
-{
-    //Reset collsion date 
-    sprite.isCollidingWithPlayer = false; 
+function detectCollisionBetweenPlayerAndSprite(sprite) {
+    // Reset collision data
+    sprite.isCollidingWithPlayer = false;
 
     const player = globals.sprites[0];
-        // Check if player or sprite doesn't have a hitBox and skip collision if not
-        if (!player.hitBox || !sprite.hitBox) {
-            return;  // Skip the collision check for this pair if no hitBox is defined
-        }
 
-    //Datos del player
+    // Check if player or sprite doesn't have a hitBox and skip collision if not
+    if (!player.hitBox || !sprite.hitBox) {
+        return; // Skip the collision check for this pair if no hitBox is defined
+    }
 
+    // Camera offset
     const cameraOffsetX = globals.camera.xOffset;
     const cameraOffsetY = globals.camera.yOffset;
-    
-    // Apply camera offset when calculating positions
-    const x1 = player.xPos + player.hitBox.xOffset - cameraOffsetX;
-    const y1 = player.yPos + player.hitBox.yOffset - cameraOffsetY;
+
+    // Player hitbox coordinates
+    const x1 = player.xPos + player.hitBox.xOffset;
+    const y1 = player.yPos + player.hitBox.yOffset;
     const w1 = player.hitBox.xSize;
     const h1 = player.hitBox.ySize;
-    
-    const x2 = sprite.xPos + sprite.hitBox.xOffset - cameraOffsetX;
-    const y2 = sprite.yPos + sprite.hitBox.yOffset - cameraOffsetY;
+
+    // Sprite hitbox coordinates
+    const x2 = sprite.xPos + sprite.hitBox.xOffset;
+    const y2 = sprite.yPos + sprite.hitBox.yOffset;
     const w2 = sprite.hitBox.xSize;
     const h2 = sprite.hitBox.ySize;
-    
 
-    const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2)
+    // Log hitbox coordinates and sizes
+    console.log("Player Hitbox:", { x1, y1, w1, h1 });
+    console.log("Sprite Hitbox:", { x2, y2, w2, h2 });
 
-    if (isOverlap)
-    {
-        //hay colision
+    // Check for overlap
+    const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
+
+    if (isOverlap) {
+        // There is a collision
         sprite.isCollidingWithPlayer = true;
-
+        console.log("check hitbox over: " + sprite.isCollidingWithPlayer);
     }
 }
 //Devuelve el Ed del tile del mapa para las coordenadas xPos, yPos
@@ -220,8 +228,9 @@ function detectCollisionBetweenBatandWorld ()
     }
     
     // Reset collision flags for the current orc
+        // bat.isCollidingWithPlayer = false;
         bat.isCollidingWithTopBlock = false;
-        bat.isCollidingWithPlayer = false;
+        // bat.isCollidingWithPlayer = false;
         bat.isCollidingWithLeftBlock = false;
         bat.isCollidingWithBottomBlock = false;
         bat.isCollidingWithRightBlock = false;
@@ -309,7 +318,7 @@ function detectCollisionBetweenSkullandWorld ()
         }
 
         // Reset collision flags for the current orc
-        skull.isCollidingWithPlayer = false;
+        // skull.isCollidingWithPlayer = false;
         skull.isCollidingWithTopBlock = false;
         skull.isCollidingWithLeftBlock = false;
         skull.isCollidingWithBottomBlock = false;
@@ -399,7 +408,7 @@ function detectCollisionBetweenOrcandWorld() {
         }
 
         // Reset collision flags for the current orc
-        orc.isCollidingWithPlayer = false;
+        // orc.isCollidingWithPlayer = false;
         orc.isCollidingWithTopBlock = false;
         orc.isCollidingWithLeftBlock = false;
         orc.isCollidingWithBottomBlock = false;

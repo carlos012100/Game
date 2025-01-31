@@ -28,6 +28,8 @@ export class Player extends Sprite
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
+        this.modeDAMAGE = false;
+        this.isDrawn = true;
 
     }
 }
@@ -66,6 +68,20 @@ export class Skull extends Sprite
     }
 }
 export class Heart extends Sprite
+{
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox)
+    {
+        //Llamamos al constructor de la clase Sprite
+        super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
+
+        this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
+        this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
+
+    }
+    
+}
+
+export class Boss extends Sprite
 {
     constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox)
     {

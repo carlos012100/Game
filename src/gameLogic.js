@@ -1,7 +1,7 @@
 import globals from "./globals.js";
 import {Game, State, SpriteID} from "./constants.js";
 import detectCollisions from "./collisions.js";
-import {createFire} from "./initialize.js";
+import {initVars} from "./initialize.js";
 
 export default function update(){
 
@@ -92,9 +92,9 @@ function updateGameTime()
 function playGame(){
 
     updateSprites();
+    detectCollisions();
     updateGameTime();
     updateLevelTime();
-    detectCollisions();
     // updateLife();    
      // Update and redraw the HUD (e.g., hearts)
      globals.sprites.forEach(sprite => {
@@ -259,13 +259,17 @@ function updatePlayer(sprite){
     }
 
 
-
     
 // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
     sprite.yPos += sprite.physics.vy * globals.deltaTime;
 
+    // if (sprite.isCollidingWithPlayer)
+    //     {
+    //         //Si hay colision reducimos la vida
+    //         globals.life--;
 
+    //     }
 
     updateAnimationFrames(sprite);
 
@@ -323,19 +327,24 @@ function updatePlayer(sprite){
             //Caso del SKULL1
             case SpriteID.SKULL1:
                 updateSKULL1(sprite);
+                // updateSkullFree(sprite)
                 break;
             //Caso del SKULL1
             case SpriteID.ORC:       
-
                 updateORC(sprite);
                 break;
             
             case SpriteID.BAT:
                 updateBAT(sprite);
+                // updateBATosc(sprite);
                 break;
 
             case SpriteID.HEART:
                 updateHearts(sprite);
+                break;
+            
+            case SpriteID.BOSS:
+                updateBoss(sprite);
                 break;
       
             // Caso del enemigo
@@ -344,6 +353,7 @@ function updatePlayer(sprite){
     
         }
     }
+  
     function updateHearts(sprite) {
     // Get all heart sprites
     const hearts = globals.sprites.filter(s => s.id === SpriteID.HEART);
@@ -360,38 +370,109 @@ function updatePlayer(sprite){
     }
         
     }
-    function updateSKULL1(sprite){
+    // function updateSkullFree(sprite)
+    // {
+    //     sprite.physics.velChangeCounter += globals.deltaTime;
+
+    //     sprite.physics.vx = sprite.physics.velsX[sprite.physics.velPos];
+    //     sprite.physics.vy = sprite.physics.velsY[sprite.physics.velPos];
+
+    //     if (sprite.physics.velChangeCounter > sprite.physics.velChangeCounter)
+    //         {
+    //             sprite.physics.velChangeCounter = 0;
+    //             sprite.physics.velPos++;
+    //         }
+    //     if (sprite.physics.velPos === sprite.physics.velsX.length)
+    //     {
+    //         sprite.physics.velPos = 0;
+    //     }
+
+    //     sprite.xPos += sprite.physics.vx * globals.deltaTime;
+    //     sprite.yPos += sprite.physics.vy * globals.deltaTime;
+
+    //     updateAnimationFrames(sprite);
+
+    // }
+    function updateBoss(sprite)
+    {
+        switch (sprite.state)
+        {
+        case State.BOSS_LEFTIDLE:
+            sprite.physics.vy = 0;
+            sprite.physics.vx = 0;
+
+            break;
+        
+        case State.BOSS_RIGHTIDLE:
+            sprite.physics.vy = 0;
+            sprite.physics.vx = 0;
+
+            break;
+
+        case State.BOSS_RIGHT:
+            sprite.physics.vx = sprite.physics.vLimit;
+            break;
+
+        case State.BOSS_LEFT:
+            sprite.physics.vx = -sprite.physics.vLimit;
+
+            break;
+
+        case State.BOSS_SPECIAL:
+            break;  
+
+            default:
+                console.error("Error: State invalid");
+        }
+        sprite.xPos += sprite.physics.vx * globals.deltaTime;
+
+
+        updateAnimationFrames(sprite);
+
+    }
+    function updateSKULL1(sprite) {
+   
+        // State machine for the Skull
+        switch (sprite.state) {
+            case State.DOWN_SKULLWALK:
+                // Move down
+                sprite.physics.vy = sprite.physics.velsY[sprite.physics.velPos];
+                break;
     
-        //  Maquina de estdos del pirata
-       switch (sprite.state)
-       {       
-           case State.DOWN_SKULLWALK:
-   //si se mueve a la derecha asignamos velocidad en x posiiva
-               sprite.physics.vy = sprite.physics.vLimit;
-               break;
-
-           case State.UP_SKULLWALK:
-           //Si se mueve a la izquierda asignamos velocidad en X negativa
-               sprite.physics.vy = -sprite.physics.vLimit;
-               break; 
-
-           default:
-               console.error("Error: State invalid");
-       }
-
-   // Calculamos distancia que se mueve (X = X - Vt)
-   sprite.yPos += sprite.physics.vy * globals.deltaTime;
-   // sprite.xPos = 20;
-   // sprite.yPos = 200;
-
-   // sprite.state = State.ORC_DOWNRUN;
-
-//    sprite.frames.framesCounter = 0;
-
-
-
-   updateAnimationFrames(sprite);
-       
+            case State.UP_SKULLWALK:
+                // Move up
+                sprite.physics.vy = -sprite.physics.velsY[sprite.physics.velPos];
+                break;
+    
+            default:
+                console.error("Error: State invalid");
+        }
+    
+        // Update velocity change counter
+        sprite.physics.velChangeCounter += globals.deltaTime;
+    
+        // Check if it's time to change velocity
+        if (sprite.physics.velChangeCounter > sprite.physics.velChangeValue) {
+            sprite.physics.velChangeCounter = 0; // Reset the counter
+            sprite.physics.velPos++; // Move to the next velocity in the array
+    
+            // If we've reached the end of the array, loop back to the start
+            if (sprite.physics.velPos === sprite.physics.velsY.length) {
+                sprite.physics.velPos = 0;
+            }
+    
+            // Debugging log
+            console.log("Velocity changed! New velPos:", sprite.physics.velPos);
+        }
+    
+        // Update position based on velocity
+        sprite.yPos += sprite.physics.vy * globals.deltaTime;
+    
+        // Debugging log
+        console.log("Updated yPos:", sprite.yPos);
+    
+        // Update animation frames
+        updateAnimationFrames(sprite);
 
    // //Cambio de direccion aleatoria
 //    updateDirectionRandom(sprite);
@@ -419,12 +500,14 @@ function updatePlayer(sprite){
 //        swapDirection(sprite);
 //    }
 
-//    if (sprite.isCollidingWithPlayer)
-//     {
-//         //Si hay colision reducimos la vida
-//         globals.life--;
+   if (sprite.isCollidingWithPlayer)
+    {
+        //Si hay colision reducimos la vida
+        globals.life--;
+        sprite.modeDAMAGE = true;
+        console.log("damage: " + sprite.modeDAMAGE)
 
-//     }
+    }
    
        }
 
@@ -469,18 +552,58 @@ function updatePlayer(sprite){
     //         swapDirection(sprite);
             
     //     }
-    // if (sprite.isCollidingWithPlayer)
-    //     {
-    //         //Si hay colision reducimos la vida
-    //         globals.life--;
+    if (sprite.isCollidingWithPlayer)
+        {
+            //Si hay colision reducimos la vida
+            globals.life--;
+            sprite.modeDAMAGE = true;
+            console.log("damage: " + sprite.modeDAMAGE)
+            console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
 
-    //     }
+
+        }
+        console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
     
     }
+    function updateBATosc(sprite)
+    {
+        const amplitude = 10; // Amplitude of the oscillation
 
+        sprite.physics.vx = +sprite.physics.vLimit;
+
+        sprite.physics.angle += sprite.physics.omega * globals.deltaTime; // Increment angle
+
+        sprite.xPos += sprite.physics.vx * globals.deltaTime;
+
+        sprite.yPos = sprite.physics.yRef + amplitude * Math.sin(sprite.angle); // Apply sine wave
+
+        console.log("amp: " + amplitude)
+
+        console.log("yref: " + sprite.physics.yRef)
+
+        console.log("deltatime: " + globals.deltaTime)
+
+        console.log("deltatime: " + sprite)
+
+
+        updateAnimationFrames(sprite);
+
+        //  Debugging logs
+        console.log("Angle:", sprite.physics.angle);
+        console.log("Y Position:", sprite.yPos);
+        console.log("X Position:", sprite.xPos);
+
+                console.log("Velocity: " + sprite.physics.vx);
+        console.log("X Position: " + sprite.xPos);
+        console.log("Y Position: " + sprite.yPos);
+    console.log(sprite.maxTimeToChangeDirection)
+
+
+
+
+    }
     
     function updateBAT(sprite) {
-        const amplitude = 10; // Amplitude of the oscillation
     
         // State machine for the Bat
         switch (sprite.state) {
@@ -497,74 +620,75 @@ function updatePlayer(sprite){
             default:
                 console.error("Error: Invalid state");
         }
-    
-        // Ensure deltaTime is a valid number
-        if (isNaN(globals.deltaTime) || globals.deltaTime <= 0) {
-            console.error("Error: Invalid deltaTime");
-            globals.deltaTime = 1 / 60; // Default to 60 FPS
-        }
-    
+        const amplitude = 10; // Amplitude of the oscillation
+
         // Update position based on velocity
+        sprite.physics.angle += sprite.physics.omega * globals.deltaTime; // Increment angle
+
         sprite.xPos += sprite.physics.vx * globals.deltaTime;
+
+        sprite.yPos = sprite.physics.yRef + amplitude *Math.sin(sprite.physics.angle); // Apply sine wave 
+
+        console.log("Angle:" + sprite.physics.angle);
+        console.log("Angle:" + sprite.physics.angle);
+
+        console.log("Angle:" + Math.sin(sprite.physics.angle));
+
+        console.log("Y Position:" + sprite.yPos);
+        console.log("X Position:" + sprite.xPos);
+        console.log("Velocity: " + sprite.physics.vx);
+
+
+
     
         // Oscillatory movement in the Y-axis
-        sprite.physics.angle += sprite.physics.omega * globals.deltaTime; // Increment angle
-        sprite.yPos = sprite.physics.yRef + amplitude * Math.sin(sprite.angle); // Apply sine wave
-    
-        // Ensure xPos and yPos are valid numbers
-        if (isNaN(sprite.xPos) || isNaN(sprite.yPos)) {
-            console.error("Error: xPos or yPos is NaN");
-            sprite.xPos = sprite.physics.yRef; // Reset to reference position
-            sprite.yPos = sprite.physics.yRef;
-        }
-    
-        // Clamp the Bat's X position to stay within the level bounds
-        const minX = 100; // Minimum X position (left edge of the level)
-        const maxX = globals.level.imageSet.xGridWidth * globals.level.data[0][0].length; // Maximum X position (right edge of the level)
-        sprite.xPos = Math.max(minX, Math.min(sprite.xPos, maxX));
-    
-        // Clamp the Bat's Y position to stay within the level bounds
-        const minY = 300; // Minimum Y position (top of the level)
-        const maxY = globals.level.imageSet.yGridHeight * globals.level.data[0].length; // Maximum Y position (bottom of the level)
-        sprite.yPos = Math.max(minY, Math.min(sprite.yPos, maxY));
+        // sprite.physics.angle += sprite.physics.omega * globals.deltaTime; // Increment angle
+        // sprite.yPos = sprite.physics.yRef + amplitude * Math.sin(sprite.angle); // Apply sine wave
     
         // Debugging logs
-        console.log("Angle:", sprite.physics.angle);
-        console.log("Y Position:", sprite.yPos);
-        console.log("X Position:", sprite.xPos);
+        // console.log("Angle:", sprite.physics.angle);
+        // console.log("Y Position:", sprite.yPos);
+        // console.log("X Position:", sprite.xPos);
     
         // Update animation frames
         updateAnimationFrames(sprite);
     
+        // Debugging logs
+    //     console.log("Velocity: " + sprite.physics.vx);
+    //     console.log("X Position: " + sprite.xPos);
+    //     console.log("Y Position: " + sprite.yPos);
+    // console.log(sprite.maxTimeToChangeDirection)
     //Calculamos colision con los borders de la pantalla
     // const isCollision = calculateCollisionWithBorders(sprite);
     // if (isCollision)
     // {
     //     swapDirection(sprite);
     // }
-    // if (sprite.isCollidingWithPlayer)
-    //     {
-    //         //Si hay colision reducimos la vida
-    //         globals.life--;
+    if (sprite.isCollidingWithPlayer)
+        {
+            //Si hay colision reducimos la vida
+            globals.life--;
+            console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
 
-    //     }
-    }
+
+        }
+}
     
-    // function updateLife()
-    // {
-    //     for (let i = 1; i < globals.sprites.length; ++i)
-    //     {
-    //         const sprite = globals.sprites[i];
+    function updateLife()
+    {
+        for (let i = 1; i < globals.sprites.length; ++i)
+        {
+            const sprite = globals.sprites[i];
             
-    //         if (sprite.isCollidingWithPlayer)
-    //         {
-    //             //Si hay colision reducimos la vida
-    //             globals.life--;
+            if (sprite.isCollidingWithPlayer)
+            {
+                //Si hay colision reducimos la vida
+                globals.life--;
 
-    //         }
+            }
 
-    //     }
-    // }
+        }
+    }
  function updateCamera()
  {
     //Centramos la camara en el player

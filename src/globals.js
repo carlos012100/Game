@@ -27,8 +27,6 @@ export default {
     life: 0,
 
 
-    hearts: 4,
-
     //Temporizacion nivel
     levelTime: {},
 

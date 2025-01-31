@@ -1,7 +1,6 @@
 import globals from "./globals.js";
 import {Game, SpriteID, State, FPS, Block} from "./constants.js";
-import Sprite, { Heart } from "./Sprite.js";
-import { Player, Bat, Orc, Skull } from "./Sprite.js";
+import { Player, Bat, Orc, Skull, Boss, Heart } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import {Level, levelx} from "./Level.js";
@@ -334,7 +333,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 200, 300, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
@@ -342,47 +341,59 @@ function initTimer()
 
 
     }
-    function initSKULL1(){
-
-        const imageSet =new ImageSet(52, 0, 50, 50, 64, 64, 5, 6);
-
-        const frames = new Frames(5, 5);
-
-        const physics = new Physics(80); // Replace 40 with the appropriate vLimit
-
-        const hitBox = new HitBox (30, 25, 12, 6);
-
-        const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
-
-        const skull = new Skull (SpriteID.SKULL1, State.DOWN_SKULLWALK, 500, 400, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
-
-        globals.sprites.push(skull);
+    function initSKULL1(skullData) {
+        for (let i = 0; i < skullData.length; i++) {
+            const { x, y, state } = skullData[i]; // Extract the position and state
+    
+            const imageSet = new ImageSet(52, 0, 50, 50, 64, 64, 5, 6);
+            const frames = new Frames(5, 5);
+    
+            const velsX = [20, 40, 0, 60, 0, 100]; // Array of X velocities
+            const velsY = [10, 40, 0, 60, 0, 150]; // Array of Y velocities
+            const velChangeValue = 1; // Time between velocity changes
+    
+            // Ensure velsX and velsY are passed to the Physics constructor
+            const physics = new Physics(80, 0, 0, 0, velsX, velsY, velChangeValue);
+    
+            const hitBox = new HitBox(30, 25, 12, 6);
+            const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
+    
+            const skull = new Skull(SpriteID.SKULL1, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+            globals.sprites.push(skull);
+        }
     }
     function initBAT() {
         const imageSet = new ImageSet(48, 0, 25, 25, 64, 64, 5, 6);
-        const frames = new Frames(4, 3);
+
+        const frames = new Frames(4, 4);
     
         // Initialize physics
-        const initAngle = 0; // Start at 0 radians
-        const omega = 10; // Angular velocity
-        const yRef = 20; // Reference Y position
-        const physics = new Physics(10, omega, initAngle, yRef);
+        const initAngle = 60 * Math.PI/180; // Start at 0 radians
+        const omega = 20; // Angular velocity
+        const yRef = 600; // Reference Y position
+        const physics = new Physics(40, omega, initAngle, yRef);
     
         const hitBox = new HitBox(8, 18, 8, 3);
+
         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
     
-        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 100, 700, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const bat = new Bat(SpriteID.BAT, State.RIGHT_BAT, 100, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+
         globals.sprites.push(bat);
     }
     function initBOSS(){
 
-        const imageSet = new ImageSet(30, 1, 128, 128, 128, 64, 5, 0);
+        const imageSet = new ImageSet(30, 0, 128, 128, 128, 62, 0, 0);
 
-        const frames = new Frames(7);
+        const frames = new Frames(8,16);
 
-        const physics = new Physics(20); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(0); // Replace 40 with the appropriate vLimit
 
-        const boss = new Sprite(SpriteID.BOSS, State.RIGHT_FINAL, 1000, 500, imageSet, frames, physics);
+        const hitBox = new HitBox(30, 25, 12, 6);
+
+        const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
+
+        const boss = new Boss(SpriteID.BOSS, State.BOSS_RIGHTIDLE, 1000, 500, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         globals.sprites.push(boss);
  
@@ -404,7 +415,7 @@ function initTimer()
         
                 const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
                 const frames = new Frames(4, 6);
-                const physics = new Physics(40);
+                const physics = new Physics(40,0,0,0);
                 const hitBox = new HitBox(22, 25, 12, 15);
                 const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
         
@@ -451,7 +462,9 @@ function initTimer()
     function initSprites(){
         
         initPlayer();
-        initSKULL1();
+        initSKULL1([
+            { x: 500, y: 400, state: State.DOWN_SKULLWALK },
+            { x: 400, y: 700, state: State.ORC_UPRUN }]);
         initBOSS();
         initBAT();
         initORC([

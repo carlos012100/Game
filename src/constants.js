@@ -26,7 +26,7 @@ export const SpriteID = {
     BULLET: 6
 };
 
-// Identificador de Estado de sprite (dirección)
+// Identificador de Estado de sprite
 export const State = {
     DOWN_STILL: 0,
     DOWN: 1,
@@ -42,7 +42,7 @@ export const State = {
     UP_RIGHT: 11,
     RIGHT_ATTACK: 12,
     LEFT_ATTACK: 13,
-    // PUMP: 14,
+    // BEATING: 14,
     // BULLET_LEFT: 15,
     // BULLET_RIGHT: 16,
     // EXPLOTION: 17,
@@ -59,9 +59,6 @@ export const State = {
     ORC_UPRUN: 6,
     // LEFT_3: 0
 
-    //ESTADOS DE BOSS
-    RIGHT_FINAL:0,
-
     //ESTADOS DE BAT
     RIGHT_BAT: 1,
     LEFT_BAT: 2,
@@ -69,6 +66,14 @@ export const State = {
 
     //BEATING HEARTS
     BEATING: 0,
+
+    //BOSS
+    BOSS_LEFTIDLE:-0,
+    BOSS_RIGHTIDLE: 1,
+    BOSS_RIGHT: 2,
+    BOSS_LEFT: 3,
+    BOSS_SPECIAL: 4,
+
     
 };
 
