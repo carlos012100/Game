@@ -16,6 +16,8 @@ export default class Sprite
         this.isCollidingWithLeftBlock = false;
         this.isCollidingWithBottomBlock = false;
         this.isCollidingWithRightBlock = false;
+        this.isDrawn = true;
+
     }
 }
 //Clase Player
@@ -29,7 +31,6 @@ export class Player extends Sprite
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
         this.modeDAMAGE = false;
-        this.isDrawn = true;
 
     }
 }

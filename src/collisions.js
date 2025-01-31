@@ -69,7 +69,6 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
     if (x2 > w1 + x1 || x1 > w2 + x2 || y2 > h1 + y1 || y1 > h2 + y2)
     {
         isOverlap = false;
-        console.log("overla: " + isOverlap)
 
     }
     else 
@@ -132,9 +131,7 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
     const w2 = sprite.hitBox.xSize;
     const h2 = sprite.hitBox.ySize;
 
-    // Log hitbox coordinates and sizes
-    console.log("Player Hitbox:", { x1, y1, w1, h1 });
-    console.log("Sprite Hitbox:", { x2, y2, w2, h2 });
+
 
     // Check for overlap
     const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
@@ -142,7 +139,6 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
     if (isOverlap) {
         // There is a collision
         sprite.isCollidingWithPlayer = true;
-        console.log("check hitbox over: " + sprite.isCollidingWithPlayer);
     }
 }
 //Devuelve el Ed del tile del mapa para las coordenadas xPos, yPos
@@ -230,7 +226,6 @@ function detectCollisionBetweenBatandWorld ()
     // Reset collision flags for the current orc
         // bat.isCollidingWithPlayer = false;
         bat.isCollidingWithTopBlock = false;
-        // bat.isCollidingWithPlayer = false;
         bat.isCollidingWithLeftBlock = false;
         bat.isCollidingWithBottomBlock = false;
         bat.isCollidingWithRightBlock = false;

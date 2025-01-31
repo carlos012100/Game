@@ -26,6 +26,11 @@ export default {
     //Life
     life: 0,
 
+    damageInterval : 0.2,
+    damageCounter : 0,
+    invincivility : 4,
+    invincivilityCounter : 0,
+
 
     //Temporizacion nivel
     levelTime: {},

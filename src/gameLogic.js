@@ -499,18 +499,50 @@ function updatePlayer(sprite){
 //    {
 //        swapDirection(sprite);
 //    }
+updateDamage(sprite);
+}
 
-   if (sprite.isCollidingWithPlayer)
-    {
-        //Si hay colision reducimos la vida
-        globals.life--;
-        sprite.modeDAMAGE = true;
-        console.log("damage: " + sprite.modeDAMAGE)
-
-    }
    
-       }
+function updateDamage(sprite) {
+    const player = globals.sprites[0];
 
+    // Handle damage mode and blinking
+    if (player.modeDAMAGE) {
+        // Increment the damage counter for flickering
+        globals.invincivilityCounter += globals.deltaTime;
+
+        // Increment the damage mode duration counter
+        globals.damageCounter += globals.deltaTime;
+
+        // Check if it's time to toggle visibility (flickering)
+        if (globals.damageCounter >= globals.damageInterval) {
+            globals.damageCounter = 0; // Reset the flickering counter
+            player.isDrawn = !player.isDrawn; // Toggle visibility
+            console.log("drawn: " + player.isDrawn);
+        }
+
+        // Check if damage mode should end (after 4 seconds)
+        if (globals.invincivilityCounter >= 4) {
+            globals.damageCounter = 0; // Reset the duration counter
+            globals.invincivilityCounter = 0; // Reset the flickering counter
+            player.isDrawn = true; // Ensure the player is visible
+            player.modeDAMAGE = false; // End damage mode
+            console.log("damagemode: " + player.modeDAMAGE);
+        }
+    }
+
+    // Check for collision with the player
+    if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
+        // Reduce life
+        globals.life--;
+
+        // Enter damage mode
+        player.modeDAMAGE = true;
+        globals.damageCounter = 0; // Reset the duration counter
+        globals.invincivilityCounter = 0; // Reset the flickering counter
+        console.log("damage: " + player.modeDAMAGE);
+    }
+}
     
     function updateORC(sprite){
 
@@ -557,12 +589,10 @@ function updatePlayer(sprite){
             //Si hay colision reducimos la vida
             globals.life--;
             sprite.modeDAMAGE = true;
-            console.log("damage: " + sprite.modeDAMAGE)
-            console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
+    
 
 
         }
-        console.log("collision with enemy: " + sprite.isCollidingWithPlayer);
     
     }
     function updateBATosc(sprite)

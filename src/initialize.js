@@ -72,7 +72,6 @@ function initEvents()
 
 function initVars(){
 
-    globals.ctx.imageSmoothingEnabled = false;
 
     //Inicializamos las variables de gestion de tiempo
     globals.previousCycleMilliseconds = 0;
@@ -95,7 +94,16 @@ function initVars(){
     }
 
     //Variables logica juego
+
+    //varables de damage
+
     globals.life = 4;
+
+    globals.damageCounter = 0;
+
+    globals.damageInterval = 0.2;
+
+    globals.invincivility = 2;
 
     globals.objectTile = [ 
             Block.Darkness,

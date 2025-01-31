@@ -126,33 +126,36 @@ function drawHitBox (sprite)
 }
 // console.log(tileSet);
     function drawSprites(){
-
-        for (let i = 0; i < globals.sprites.length; ++i){
-
-        const sprite = globals.sprites[i];
-
-
-        //TEST: DIbuja un rectangulo alrededor del sprite
-        // drawSpriteRectangle(sprite);
+            for (let i = 0; i < globals.sprites.length; ++i) {
+                const sprite = globals.sprites[i];
         
-        if (sprite.id !== SpriteID.HEART){
-            renderSprite(sprite, globals.ctx);
-            if (sprite.hitBox){
-                drawHitBox (sprite)
+                // Only apply `isDrawn` check to the player
+                if (sprite.id === SpriteID.PLAYER) {  
+                    if (sprite.isDrawn) {
+                        renderSprite(sprite, globals.ctx);
+                    }
+                } else {
+                    // Always render other sprites normally
+                    renderSprite(sprite, globals.ctx);
+                }
+        
+                // Draw hitboxes if they exist
+                if (sprite.hitBox) {
+                    drawHitBox(sprite);
+                }
             }
         }
+        
 
         // if (sprite.hitBox) {
         //     drawHitBox(sprite);  // Only draw hitbox for sprites with hitBox
         //     // Other drawing logic for the sprite here
         // }
 
-
-        }
         
         
 
-    }
+    
     // function drawSpriteRectangle(sprite){
 
     //     //Dato del sprite
