@@ -39,6 +39,9 @@ export class Player extends Sprite
         this.invincivilityCounter = 0; // Counter for damage mode duration
         this.invincivility = 1.5;
         this.damageInterval = 0.2;
+        this.isPlayerAttacking = false;
+        this.attackTimer = 0;
+        this.attackDuration = 0.2;
 
 
     }

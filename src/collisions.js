@@ -109,6 +109,8 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
     sprite.isCollidingWithPlayer = false;
 
     const player = globals.sprites[0];
+    let overlapX;
+    let overlapY;
 
     // Check if player or sprite doesn't have a hitBox and skip collision if not
     if (!player.hitBox || !sprite.hitBox) {
@@ -139,6 +141,63 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
     if (isOverlap) {
         // There is a collision
         sprite.isCollidingWithPlayer = true;
+        const direction = player.state;
+
+        switch(direction) {
+            case State.UP:
+                overlapY = Math.floor(sprite.yPos) % h2 + 40;
+                player.yPos += overlapY;
+                break;
+        
+            case State.DOWN:
+                overlapY = Math.floor(sprite.yPos) % h2 + 40;
+                player.yPos -= overlapY;
+                break;
+        
+            case State.LEFT:
+                overlapX = Math.floor(sprite.xPos) % w2 + 40;
+                player.xPos += overlapX;
+                break;
+        
+            case State.RIGHT:
+                overlapX = Math.floor(sprite.xPos) % w2 + 40;
+                player.xPos -= overlapX;
+  
+                
+                break;
+        
+            case State.UP_RIGHT:
+                for (let i = 0; i < globals.objectTile.length; i++) {
+                    const obstacleId = globals.objectTile[i];
+                    // Your logic here
+                }
+                break;
+        
+            case State.UP_LEFT:
+                for (let i = 0; i < globals.objectTile.length; i++) {
+                    const obstacleId = globals.objectTile[i];
+                    // Your logic here
+                }
+                break;
+        
+            case State.DOWN_RIGHT:
+                for (let i = 0; i < globals.objectTile.length; i++) {
+                    const obstacleId = globals.objectTile[i];
+                    // Your logic here
+                }
+                break;
+        
+            case State.DOWN_LEFT:
+                for (let i = 0; i < globals.objectTile.length; i++) {
+                    const obstacleId = globals.objectTile[i];
+                    // Your logic here
+                }
+                break;
+        
+            default:
+                break;
+        }
+
     }
 }
 //Devuelve el Ed del tile del mapa para las coordenadas xPos, yPos
@@ -194,15 +253,12 @@ function isCollidingWithObstacleAt(xPos, yPos, obstacleId) {
     for (let layerIndex = 0; layerIndex < layerNum; layerIndex++) {
         const id = getMapTileId(xPos, yPos, layerIndex);  // Get the tile ID for the specified layer
 
-        if (id === null) {
-            // Out-of-bounds position, no collision
-            continue;
-        }
 
         if (id === obstacleId && id !== 0) {
             isColliding = true;
 
-        } else if (layerIndex === 0 && id === obstacleId && id === 0 && globals.sprites[0]) {
+        } 
+        if (layerIndex === 0 && id === obstacleId && id === 0) {
             globals.gameState = Game.GAME_OVER; // Set the game state to GAME_OVER
             console.log("Game Over triggered!");
             break;  // Exit the loop early if GAME_OVER condition is met
@@ -261,7 +317,7 @@ function detectCollisionBetweenBatandWorld ()
                 break;
 
             case State.LEFT_BAT:
-                // updateDirectionRandom(bat);
+                updateDirectionRandom(bat);
  
                 for (let j = 0; j < globals.objectTile.length; j++) {
                     const obstacleId = globals.objectTile[j];
@@ -709,7 +765,7 @@ function  detectCollisionBetweenPlayerAndObstacles()
                         player.isCollidingWithLeftBlock = true;
             
                         // Adjust overlap and eliminate it
-                        overlapX = Math.floor(xPos) % brickSize - 18.; // Adjusting overlap
+                        overlapX = Math.floor(xPos) % brickSize -10; // Adjusting overlap
                         player.xPos += overlapX; // Move player back slightly
                         player.physics.vx = 0;
 

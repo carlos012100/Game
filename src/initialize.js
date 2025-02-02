@@ -322,21 +322,21 @@ function initTimer()
     function initPlayer(){
 
         //Creamos las propiedades de las imagenes: xSize, ySize, gridSize, xOffset, yOffset
-        const imageSet = new ImageSet(0, 0, 64, 56, 64, 64, 0, 0); 
+        const imageSet = new ImageSet(0, 0, 64, 64, 64, 64, 0, 0); 
 
         //Creamos los datos de la animacion. 8 frames / state y tambien velocidad de animacion
-        const frames = new Frames(4, 6);
+        const frames = new Frames(3, 4);
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
-        const physics = new Physics(200); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(250,0,0,0,0,0,0); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox(12, 30, 25, 16);
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.RIGHT_ATTACK, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
 
         //Añadimos el player al array de sprites
 
@@ -348,7 +348,7 @@ function initTimer()
         for (let i = 0; i < skullData.length; i++) {
             const { x, y, state } = skullData[i]; // Extract the position and state
     
-            const imageSet = new ImageSet(52, 0, 50, 50, 64, 64, 5, 6);
+            const imageSet = new ImageSet(56, 0, 50, 50, 64, 64, 5, 6);
             const frames = new Frames(5, 5);
     
             const velsX = [20, 40, 0, 60, 0, 100]; // Array of X velocities
@@ -366,7 +366,7 @@ function initTimer()
         }
     }
     function initBAT() {
-        const imageSet = new ImageSet(48, 0, 25, 25, 64, 64, 5, 6);
+        const imageSet = new ImageSet(52, 0, 25, 25, 64, 64, 5, 6);
 
         const frames = new Frames(4, 4);
     
@@ -386,7 +386,7 @@ function initTimer()
     }
     function initBOSS(){
 
-        const imageSet = new ImageSet(30, 0, 128, 128, 128, 62, 0, 0);
+        const imageSet = new ImageSet(34, 0, 128, 128, 128, 62, 0, 0);
 
         const frames = new Frames(8,16);
 
@@ -416,7 +416,7 @@ function initTimer()
             for (let i = 0; i < orcsData.length; i++) {
                 const { x, y, state } = orcsData[i]; // Extract the position and state
         
-                const imageSet = new ImageSet(19, 0, 50, 50, 64, 64, 10, 6);
+                const imageSet = new ImageSet(23, 0, 50, 50, 64, 64, 10, 6);
                 const frames = new Frames(4, 6);
                 const physics = new Physics(40,0,0,0);
                 const hitBox = new HitBox(22, 25, 12, 15);
@@ -434,7 +434,7 @@ function initTimer()
 
     function initHeart() {
 
-        const imageSet = new ImageSet(14, 0, 62, 62, 64, 64, 0, 0);
+        const imageSet = new ImageSet(18, 0, 62, 62, 64, 64, 0, 0);
 
         const frames = new Frames(6, 18);
 

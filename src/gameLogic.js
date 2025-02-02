@@ -38,35 +38,59 @@ export default function update(){
             console.error("Error: Game State invalid");
     }
 }
-function readKeyboardAndAssignState(sprite)
-{
+function readKeyboardAndAssignState(sprite) {
 
-    sprite.state =  globals.action.attack && globals.action.moveRight ? State.RIGHT_ATTACK :
-                    globals.action.attack && globals.action.moveLeft ? State.LEFT_ATTACK :
-                    globals.action.moveLeft && globals.action.moveUp ? State.UP_LEFT :
-                    globals.action.moveLeft && globals.action.moveDown ? State.DOWN_LEFT :
-                    globals.action.moveRight && globals.action.moveUp ? State.UP_RIGHT :
-                    globals.action.moveRight && globals.action.moveDown ? State.DOWN_RIGHT :
-                    globals.action.moveLeft ? State.LEFT : //Left key
-                    globals.action.moveRight ? State.RIGHT : //Right key
-                    globals.action.moveUp ? State.UP : //Up key
-                    globals.action.moveDown ? State.DOWN : //Down key
-                    sprite.state === State.RIGHT_ATTACK ? State.RIGHT_STILL :
-                    sprite.state === State.LEFT_ATTACK ? State.LEFT_STILL :
-                    sprite.state === State.UP_LEFT ? State.UP_STILL :
-                    sprite.state === State.DOWN_LEFT ? State.DOWN_STILL :
-                    sprite.state === State.UP_RIGHT ? State.UP_STILL :
-                    sprite.state === State.DOWN_RIGHT ? State.UP_STILL :
-                    sprite.state === State.LEFT ? State.LEFT_STILL: //no key pressed after LEFT Key
-                    sprite.state === State.RIGHT ? State.RIGHT_STILL : //no key pressed after RIGHT key
-                    sprite.state === State.UP ? State.UP_STILL : //no key pressed after UP key
-                    sprite.state === State.DOWN ? State.DOWN_STILL : //no key pressed after DOWN key
-                    sprite.state;
-                    console.log(`moveLeft: ${globals.action.moveLeft}, right attack: ${globals.action.attackRight}`);
-                    console.log(`moveUp: ${globals.action.moveUp}, moveDown: ${globals.action.moveDown}`);
+    if (!sprite.isPlayerAttacking) {
 
+        sprite.state = globals.action.moveLeft && globals.action.moveUp ? State.UP_LEFT :
+                       globals.action.moveLeft && globals.action.moveDown ? State.DOWN_LEFT :
+                       globals.action.moveRight && globals.action.moveUp ? State.UP_RIGHT :
+                       globals.action.moveRight && globals.action.moveDown ? State.DOWN_RIGHT :
+                       globals.action.moveLeft ? State.LEFT :
+                       globals.action.moveRight ? State.RIGHT :
+                       globals.action.moveUp ? State.UP :
+                       globals.action.moveDown ? State.DOWN :
+                       sprite.state === State.UP_LEFT ? State.UP_STILL :
+                       sprite.state === State.DOWN_LEFT ? State.DOWN_STILL :
+                       sprite.state === State.UP_RIGHT ? State.UP_STILL :
+                       sprite.state === State.DOWN_RIGHT ? State.DOWN_STILL :
+                       sprite.state === State.LEFT ? State.LEFT_STILL :
+                       sprite.state === State.RIGHT ? State.RIGHT_STILL :
+                       sprite.state === State.UP ? State.UP_STILL :
+                       sprite.state === State.DOWN ? State.DOWN_STILL :
+                       sprite.state;
+    }
 
+    //**Trigger Attack** (Only if not already attacking)
+    if (globals.action.attack && !sprite.isPlayerAttacking) {
+        sprite.isPlayerAttacking = true;  // Start attack
+        sprite.attackTimer = 0;  // Reset attack timer
+
+        // Set ATTACK STATE based on last movement
+        sprite.state = sprite.state === State.RIGHT || sprite.state === State.RIGHT_STILL ? State.RIGHT_ATTACK :
+                       sprite.state === State.LEFT || sprite.state === State.LEFT_STILL ? State.LEFT_ATTACK :
+                       sprite.state === State.UP || sprite.state === State.UP_LEFT || sprite.state === State.UP_RIGHT || sprite.state === State.UP_STILL ? State.UP_ATTACK :
+                       sprite.state === State.DOWN || sprite.state === State.DOWN_LEFT || sprite.state === State.DOWN_RIGHT || sprite.state === State.DOWN_STILL ? State.DOWN_ATTACK :
+                       sprite.state;
+    }
+
+    // ⏳ **Handle Attack Animation**
+    if (sprite.isPlayerAttacking) {
+        sprite.attackTimer += globals.deltaTime;  // Correct timer update
+
+        if (sprite.attackTimer >= sprite.attackDuration) {  
+            sprite.isPlayerAttacking = false;  //  Attack ends after full duration
+
+            // Return to last movement's idle state
+            sprite.state = sprite.state === State.RIGHT_ATTACK ? State.RIGHT_STILL :
+                           sprite.state === State.LEFT_ATTACK ? State.LEFT_STILL :
+                           sprite.state === State.UP_ATTACK ? State.UP_STILL :
+                           sprite.state === State.DOWN_ATTACK ? State.DOWN_STILL :
+                           sprite.state;
+        }
+    }
 }
+
 
 function updateLevelTime()
 {
@@ -206,59 +230,54 @@ function updatePlayer(sprite){
 
     readKeyboardAndAssignState(sprite);
     
-    const diagonalSpeed = sprite.physics.vLimit / Math.SQRT2; // Adjust speed for diagonal movement
-
-    // sprite.state = State.RIGHT;
-        
-//   Maquina de estdos del pirata
-    switch (sprite.state)
-    {   
+    const speed = sprite.physics.vLimit; // Constant speed
+    const diagonalSpeed = speed / Math.SQRT2; // Normalized diagonal speed
+    
+    switch (sprite.state) {   
         case State.UP:
             sprite.physics.vx = 0;
-            sprite.physics.vy = -sprite.physics.vLimit;
+            sprite.physics.vy = -speed;
             break;
+    
         case State.DOWN:
             sprite.physics.vx = 0;
-            sprite.physics.vy = sprite.physics.vLimit;
-            break;
-        case State.RIGHT:
-        //si se mueve a la derecha asignamos velocidad en x posiiva
-            sprite.physics.vx = sprite.physics.vLimit;
-            sprite.physics.vy = 0;
+            sprite.physics.vy = speed;
             break;
     
         case State.LEFT:
-        //Si se mueve a la izquierda asignamos velocidad en X negativa
-            sprite.physics.vx = -sprite.physics.vLimit;
+            sprite.physics.vx = -speed;
             sprite.physics.vy = 0;
             break;
-        // case State.RIGHT_STILL:
-        //     break;
+    
+        case State.RIGHT:
+            sprite.physics.vx = speed;
+            sprite.physics.vy = 0;
+            break;
+    
         case State.UP_LEFT:
             sprite.physics.vx = -diagonalSpeed;
             sprite.physics.vy = -diagonalSpeed;
             break;
+    
         case State.DOWN_LEFT:
             sprite.physics.vx = -diagonalSpeed;
             sprite.physics.vy = diagonalSpeed;
             break;
-
+    
         case State.UP_RIGHT:
             sprite.physics.vx = diagonalSpeed;
             sprite.physics.vy = -diagonalSpeed;
             break;
-
+    
         case State.DOWN_RIGHT:
             sprite.physics.vx = diagonalSpeed;
             sprite.physics.vy = diagonalSpeed;
             break;
-
+    
         default:
-           sprite.physics.vx = 0;
-           sprite.physics.vy = 0;
+            sprite.physics.vx = 0;
+            sprite.physics.vy = 0;
     }
-
-
     
 // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
@@ -285,6 +304,7 @@ function updatePlayer(sprite){
     // {
     //     swapDirection(sprite);
     // }
+
 }
     
     
@@ -361,7 +381,6 @@ function updatePlayer(sprite){
     // If there are hearts, get the last one
     if (hearts.length > 0) {
         const lastHeart = hearts[hearts.length - 1];
-        console.log(`Animating heart: ${sprite === lastHeart ? 'Last heart' : 'Not last heart'}`);
 
         // Check if the current sprite is the last heart
         if (sprite === lastHeart && sprite.state === State.BEATING) {
@@ -463,15 +482,13 @@ function updatePlayer(sprite){
                 sprite.physics.velPos = 0;
             }
     
-            // Debugging log
-            console.log("Velocity changed! New velPos:", sprite.physics.velPos);
+    
         }
     
         // Update position based on velocity
         sprite.yPos += sprite.physics.vy * globals.deltaTime;
     
-        // Debugging log
-        console.log("Updated yPos:", sprite.yPos);
+
     
         // Update animation frames
         updateAnimationFrames(sprite);
@@ -525,7 +542,6 @@ function updateDamage(sprite) {
             if (player.damageCounter >= player.damageInterval) {
                 player.damageCounter = 0; // Reset the flickering counter
                 player.isDrawn = !player.isDrawn; // Toggle visibility
-                console.log("Player drawn: " + player.isDrawn);
             }
     
             // Check if damage mode should end (after 4 seconds)
@@ -533,7 +549,6 @@ function updateDamage(sprite) {
                 player.invincivilityCounter = 0; // Reset the duration counter
                 player.isDrawn = true; // Ensure the player is visible
                 player.modeDAMAGE = false; // End damage mode
-                console.log("Damage mode ended.");
             }
         }
     
@@ -541,12 +556,15 @@ function updateDamage(sprite) {
         if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
             // Reduce player's life
             globals.life--;
+            if(globals.life == 0)
+                {
+                    globals.gameState = Game.GAME_OVER          
+                }
     
             // Enter damage mode for the player
             player.modeDAMAGE = true;
             player.damageCounter = 0; // Reset the flickering counter
             player.InvincivilityCounter = 0; // Reset the duration counter
-            console.log("Player damage: " + player.modeDAMAGE);
         }
     
 
@@ -687,15 +705,6 @@ function updateDamage(sprite) {
         sprite.xPos += sprite.physics.vx * globals.deltaTime;
 
         sprite.yPos = sprite.physics.yRef + amplitude *Math.sin(sprite.physics.angle); // Apply sine wave 
-
-        console.log("Angle:" + sprite.physics.angle);
-        console.log("Angle:" + sprite.physics.angle);
-
-        console.log("Angle:" + Math.sin(sprite.physics.angle));
-
-        console.log("Y Position:" + sprite.yPos);
-        console.log("X Position:" + sprite.xPos);
-        console.log("Velocity: " + sprite.physics.vx);
 
 
 
