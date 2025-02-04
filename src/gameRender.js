@@ -124,7 +124,24 @@ function drawHitBox (sprite)
     globals.ctx.strokeRect(x1, y1, w1, h1);
 
 }
-// console.log(tileSet);
+
+function drawAttackBox (sprite){
+
+
+    const x1 = Math.floor(sprite.xPos) + Math.floor(sprite.attackHitbox.xOffset);
+    
+    const y1 = Math.floor(sprite.yPos) + Math.floor(sprite.attackHitbox.yOffset);
+
+    const w1 = sprite.attackHitbox.xSize;
+    
+    const h1 = sprite.attackHitbox.ySize;
+
+    globals.ctx.strokeStyle = "red";
+
+    globals.ctx.strokeRect(x1, y1, w1, h1);
+
+}
+
     function drawSprites(){
             for (let i = 0; i < globals.sprites.length; ++i) {
                 const sprite = globals.sprites[i];
@@ -134,15 +151,20 @@ function drawHitBox (sprite)
                     if (sprite.isDrawn) {
                         renderSprite(sprite, globals.ctx);
                     }
-                } else {
+                } else if (sprite.id !== SpriteID.HEART) {
                     // Always render other sprites normally
                     renderSprite(sprite, globals.ctx);
                 }
         
                 // Draw hitboxes if they exist
-                if (sprite.hitBox) {
+                if (sprite.hitBox)  {
                     drawHitBox(sprite);
                 }
+                if (sprite.attackHitbox && sprite.isPlayerAttacking){
+
+                    drawAttackBox(sprite);
+                } 
+                
             }
         }
         
@@ -168,6 +190,7 @@ function drawHitBox (sprite)
     //     globals.ctx.fillRect(x1, y1, w1, h1);
 
     // }
+    
     function moveCamara()
     {
         const xTranslation = -globals.camera.x;

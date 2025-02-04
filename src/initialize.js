@@ -325,18 +325,20 @@ function initTimer()
         const imageSet = new ImageSet(0, 0, 64, 64, 64, 64, 0, 0); 
 
         //Creamos los datos de la animacion. 8 frames / state y tambien velocidad de animacion
-        const frames = new Frames(3, 4);
+        const frames = new Frames(3, 3);
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
-        const physics = new Physics(250,0,0,0,0,0,0); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(200,0,0,0,0,0,0); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox(12, 30, 25, 16);
+
+        const attackHitbox = new HitBox(15, 32 ,8, 18);
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
 
         //Añadimos el player al array de sprites
 
@@ -359,6 +361,7 @@ function initTimer()
             const physics = new Physics(80, 0, 0, 0, velsX, velsY, velChangeValue);
     
             const hitBox = new HitBox(30, 25, 12, 6);
+
             const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
     
             const skull = new Skull(SpriteID.SKULL1, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox);

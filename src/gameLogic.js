@@ -5,7 +5,7 @@ import {initVars} from "./initialize.js";
 
 export default function update(){
 
-
+    
     //Change what the game is doing based on the game state
     switch(globals.gameState){
         case Game.LOADING:
@@ -382,6 +382,7 @@ function updatePlayer(sprite){
     if (hearts.length > 0) {
         const lastHeart = hearts[hearts.length - 1];
 
+
         // Check if the current sprite is the last heart
         if (sprite === lastHeart && sprite.state === State.BEATING) {
             updateAnimationFrames(sprite);  // Update only the last heart's animation
@@ -492,6 +493,7 @@ function updatePlayer(sprite){
     
         // Update animation frames
         updateAnimationFrames(sprite);
+        updateDirectionRandom(sprite);
 
    // //Cambio de direccion aleatoria
 //    updateDirectionRandom(sprite);
@@ -568,49 +570,49 @@ function updateDamage(sprite) {
         }
     
 
-    // // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
-    // if (sprite.modeDAMAGE) {
-    //     // Increment the damage counter for flickering
-    //     sprite.damageCounter += globals.deltaTime;
+    // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
+    if (sprite.modeDAMAGE) {
+        // Increment the damage counter for flickering
+        sprite.damageCounter += globals.deltaTime;
 
-    //     // Increment the damage mode duration counter
-    //     sprite.invincivilityCounter += globals.deltaTime;
+        // Increment the damage mode duration counter
+        sprite.invincivilityCounter += globals.deltaTime;
 
-    //     // Debug logs
-    //     console.log("Sprite Damage Counter: " + sprite.damageCounter);
-    //     console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
+        // Debug logs
+        console.log("Sprite Damage Counter: " + sprite.damageCounter);
+        console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
 
-    //     // Check if it's time to toggle visibility (flickering)
-    //     if (sprite.damageCounter >= globals.damageInterval) {
-    //         sprite.damageCounter = 0; // Reset the flickering counter
-    //         sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
-    //         console.log("Sprite drawn: " + sprite.isDrawn);
-    //     }
+        // Check if it's time to toggle visibility (flickering)
+        if (sprite.damageCounter >= globals.damageInterval) {
+            sprite.damageCounter = 0; // Reset the flickering counter
+            sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
+            console.log("Sprite drawn: " + sprite.isDrawn);
+        }
 
-    //     // Check if damage mode should end (after 4 seconds)
-    //     if (sprite.invincivilityCounter >= globals.invincivility) {
-    //         sprite.invincivilityCounter = 0; // Reset the duration counter
-    //         sprite.isDrawn = true; // Ensure the sprite is visible
-    //         sprite.modeDAMAGE = false; // End damage mode
-    //         console.log("Sprite damagemode: " + sprite.modeDAMAGE);
-    //     }
-    // }
+        // Check if damage mode should end (after 4 seconds)
+        if (sprite.invincivilityCounter >= globals.invincivility) {
+            sprite.invincivilityCounter = 0; // Reset the duration counter
+            sprite.isDrawn = true; // Ensure the sprite is visible
+            sprite.modeDAMAGE = false; // End damage mode
+            console.log("Sprite damagemode: " + sprite.modeDAMAGE);
+        }
+    }
 
 
 
-    // // Check for collision between the player and the sprite (e.g., player attacks sprite)
-    // if (player.isAttacking && sprite.isCollidingWithPlayer && !sprite.modeDAMAGE) {
-    //     // Reduce sprite's health (if applicable)
-    //     if (sprite.health) {
-    //         sprite.health--;
-    //     }
+    // Check for collision between the player and the sprite (e.g., player attacks sprite)
+    if (player.isPlayerAttacking && sprite.isCollidingWithPlayer && !sprite.modeDAMAGE) {
+        // Reduce sprite's health (if applicable)
+        if (sprite.life) {
+            sprite.life--;
+        }
 
-    //     // Enter damage mode for the sprite
-    //     sprite.modeDAMAGE = true;
-    //     sprite.damageCounter = 0; // Reset the flickering counter
-    //     sprite.invincivilityCounter = 0; // Reset the duration counter
-    //     console.log("Sprite damage: " + sprite.modeDAMAGE);
-    // }
+        // Enter damage mode for the sprite
+        sprite.modeDAMAGE = true;
+        sprite.damageCounter = 0; // Reset the flickering counter
+        sprite.invincivilityCounter = 0; // Reset the duration counter
+        console.log("Sprite damage: " + sprite.modeDAMAGE);
+    }
 }
     
     function updateORC(sprite){
@@ -637,7 +639,6 @@ function updateDamage(sprite) {
         updateAnimationFrames(sprite);
 
         updateDamage(sprite);
-        console.log("check: " + sprite.isDrawn)
 
 
     
@@ -679,6 +680,10 @@ function updateDamage(sprite) {
 
 
     }
+    // function updateLife()
+    // {
+
+    // }
     
     function updateBAT(sprite) {
     
