@@ -228,7 +228,9 @@ function calculateCollisionWithBorders(sprite) {
 
 function updatePlayer(sprite){
 
-    readKeyboardAndAssignState(sprite);
+    if( sprite.state !== State.FAINT){
+
+        readKeyboardAndAssignState(sprite);
     
     const speed = sprite.physics.vLimit; // Constant speed
     const diagonalSpeed = speed / Math.SQRT2; // Normalized diagonal speed
@@ -278,10 +280,29 @@ function updatePlayer(sprite){
             sprite.physics.vx = 0;
             sprite.physics.vy = 0;
     }
-    
-// Calculamos distancia que se mueve (X = X - Vt)
+    // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
     sprite.yPos += sprite.physics.vy * globals.deltaTime;
+}
+else if(sprite.spriteIsDead)
+    {
+        const lastBreaths = 10;
+
+        let breathCount = 0;
+
+        breathCount += globals.deltaTime;
+        
+        if (breathCount >= lastBreaths)
+        {
+        globals.gameState = Game.GAME_OVER;
+
+        }
+
+    }
+
+
+    
+
 
     // if (sprite.isCollidingWithPlayer)
     //     {
@@ -448,7 +469,7 @@ function updatePlayer(sprite){
 
 
         updateAnimationFrames(sprite);
-        updateDamage(sprite);
+        updateDamage(globals.sprites[3]);
 
 
     }
@@ -520,6 +541,11 @@ function updatePlayer(sprite){
 //    {
 //        swapDirection(sprite);
 //    }
+// if (sprite.isCollidingWithAttack)
+// {
+//     sprite.life--;
+//     console.log("attack sprite: " + sprite.isCollidingWithAttack)
+// }
 updateDamage(sprite);
 }
 
@@ -560,8 +586,12 @@ function updateDamage(sprite) {
             globals.life--;
             if(globals.life == 0)
                 {
-                    globals.gameState = Game.GAME_OVER          
+                    player.spriteIsDead = true;
+                    
                 }
+            if (player.spriteIsDead){
+                player.state = State.FAINT;
+            }
     
             // Enter damage mode for the player
             player.modeDAMAGE = true;
@@ -601,7 +631,7 @@ function updateDamage(sprite) {
 
 
     // Check for collision between the player and the sprite (e.g., player attacks sprite)
-    if (player.isPlayerAttacking && sprite.isCollidingWithPlayer && !sprite.modeDAMAGE) {
+    if (player.isPlayerAttacking && !sprite.modeDAMAGE) {
         // Reduce sprite's health (if applicable)
         if (sprite.life) {
             sprite.life--;

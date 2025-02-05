@@ -60,24 +60,19 @@ function calculateCollisionWithBorders(sprite) {
 }
 
 
- //esta funcion calcula si las hitbox hacen colisiones
 function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
 {
-    let isOverlap; 
+    console.log("Checking overlap with:", { x1, y1, w1, h1, x2, y2, w2, h2 });
 
-    //Check x and y for overlap
-    if (x2 > w1 + x1 || x1 > w2 + x2 || y2 > h1 + y1 || y1 > h2 + y2)
-    {
-        isOverlap = false;
-
+    if (x2 > x1 + w1 || x1 > x2 + w2 || y2 > y1 + h1 || y1 > y2 + h2) {
+        console.log("❌ No overlap");
+        return false;
+    } else {
+        console.log("✅ Overlap detected!");
+        return true;
     }
-    else 
-    {
-        isOverlap = true;
-    }
-    
-    return isOverlap;
 }
+
 export default function detectCollisions()
 {
     //calcula y detecta si hay una colision entre sprites
@@ -87,6 +82,14 @@ export default function detectCollisions()
 
         sprite.isCollidingWithPlayer = false;
         detectCollisionBetweenPlayerAndSprite(sprite);
+        console.log("Player attacking:", globals.sprites[0].isPlayerAttacking);
+        if (globals.sprites[0].isPlayerAttacking){
+            console.log("Calling CollisionAttackSprite for:", sprite);
+            CollisionAttackSprite (sprite);
+
+
+        }
+
         
         
     }
@@ -101,9 +104,46 @@ export default function detectCollisions()
     detectCollisionBetweenSkullandWorld ();
     detectCollisionBetweenBatandWorld ();
 
-
+    function CollisionAttackSprite(sprite) 
+    {
+        // Reset collision data
+        sprite.isCollidingWithAttack = false;
     
-}
+        const player = globals.sprites[0];
+    
+        // 🔹 Check if the player attack hitbox or enemy hitbox is missing
+        if (!player.attackHitbox || !sprite.hitBox) { 
+            console.warn("Missing hitbox! Player attack hitbox:", player.attackHitbox, "Enemy hitbox:", sprite.hitBox);
+            return; 
+        }
+    
+        // 🔹 Get player attack hitbox position & size
+        const x1 = player.xPos + player.attackHitbox.xOffset;
+        const y1 = player.yPos + player.attackHitbox.yOffset;
+        const w1 = player.attackHitbox.xSize;
+        const h1 = player.attackHitbox.ySize;
+    
+        // 🔹 Get enemy hitbox position & size
+        const x2 = sprite.xPos + sprite.hitBox.xOffset;
+        const y2 = sprite.yPos + sprite.hitBox.yOffset;
+        const w2 = sprite.hitBox.xSize;
+        const h2 = sprite.hitBox.ySize;
+    
+        // 🔹 Print hitbox values for debugging
+        console.log("Player attack hitbox:", { x1, y1, w1, h1 });
+        console.log("Enemy hitbox:", { x2, y2, w2, h2 });
+    
+        // 🔹 Check for overlap using rectIntersect
+        const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
+    
+        if (isOverlap) {
+            sprite.isCollidingWithAttack = true;
+            console.log("⚔️ Attack hitbox collided with enemy!");
+        } else {
+            console.log("❌ No collision detected.");
+        }
+    }
+    
 function detectCollisionBetweenPlayerAndSprite(sprite) {
     // Reset collision data
     sprite.isCollidingWithPlayer = false;
@@ -147,6 +187,7 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
             case State.UP:
                 overlapY = Math.floor(sprite.yPos) % h2 + 40;
                 player.yPos += overlapY;
+             
                 break;
         
             case State.DOWN:
@@ -162,8 +203,6 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
             case State.RIGHT:
                 overlapX = Math.floor(sprite.xPos) % w2 + 40;
                 player.xPos -= overlapX;
-  
-                
                 break;
         
             case State.UP_RIGHT:
@@ -197,6 +236,7 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
             default:
                 break;
         }
+
 
     }
 }
@@ -259,7 +299,7 @@ function isCollidingWithObstacleAt(xPos, yPos, obstacleId) {
 
         } 
         if (layerIndex === 0 && id === obstacleId && id === 0) {
-            globals.gameState = Game.GAME_OVER; // Set the game state to GAME_OVER
+            // globals.gameState = Game.GAME_OVER; // Set the game state to GAME_OVER
             console.log("Game Over triggered!");
             break;  // Exit the loop early if GAME_OVER condition is met
         }
@@ -980,4 +1020,5 @@ function  detectCollisionBetweenPlayerAndObstacles()
     //     }
 
     // }
+}
 }

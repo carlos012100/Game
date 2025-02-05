@@ -44,6 +44,7 @@ export const State = {
     RIGHT_ATTACK: 10,
     LEFT_ATTACK: 9,
     DOWN_ATTACK: 8,
+    FAINT : 12,
     // BEATING: 14,
     // BULLET_LEFT: 15,
     // BULLET_RIGHT: 16,

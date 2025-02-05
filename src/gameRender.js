@@ -145,24 +145,27 @@ function drawAttackBox (sprite){
     function drawSprites(){
             for (let i = 0; i < globals.sprites.length; ++i) {
                 const sprite = globals.sprites[i];
-        
+              
                 // Only apply `isDrawn` check to the player
                 if (sprite.id === SpriteID.PLAYER) {  
                     if (sprite.isDrawn) {
                         renderSprite(sprite, globals.ctx);
                     }
                 } else if (sprite.id !== SpriteID.HEART) {
-                    // Always render other sprites normally
+
                     renderSprite(sprite, globals.ctx);
+
                 }
         
                 // Draw hitboxes if they exist
                 if (sprite.hitBox)  {
                     drawHitBox(sprite);
                 }
-                if (sprite.attackHitbox && sprite.isPlayerAttacking){
+                if (sprite.attackHitbox && globals.sprites[0].isPlayerAttacking){
 
                     drawAttackBox(sprite);
+
+                    console.log("is player attack: " + globals.sprites[0].isPlayerAttacking)
                 } 
                 
             }

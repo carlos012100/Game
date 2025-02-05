@@ -12,10 +12,12 @@ export default class Sprite
         this.physics = physics;
         this.hitBox = hitBox;
         this.isCollidingWithPlayer = false;
+        this.isCollidingWithAttack = false;
         this.isCollidingWithTopBLock = false;
         this.isCollidingWithLeftBlock = false;
         this.isCollidingWithBottomBlock = false;
         this.isCollidingWithRightBlock = false;
+        this.spriteIsDead = false;
         this.isDrawn = true;
         this.damageCounter = 0;
         // In the player initialization
@@ -49,16 +51,16 @@ export class Player extends Sprite
 }
 export class Bat extends Sprite
 {
-    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox)
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, life)
     {
         //Llamamos al constructor de la clase Sprite
         super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
-        this.attackHitbox = attackHitbox;
+        // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
-        this.life = 4;
+        this.life = life;
 
 
 
@@ -66,32 +68,32 @@ export class Bat extends Sprite
 }
 export class Orc extends Sprite
 {
-    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox)
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, life)
     {
         //Llamamos al constructor de la clase Sprite
         super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
-        this.attackHitbox = attackHitbox;
+        // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
-        this.life = 6;
+        this.life = life;
 
 
     }
 }
 export class Skull extends Sprite
 {
-    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox)
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, life)
     {
         //Llamamos al constructor de la clase Sprite
         super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
-        this.attackHitbox = attackHitbox;
+        // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
-        this.life = 6;
+        this.life = life;
 
 
     }
@@ -112,16 +114,16 @@ export class Heart extends Sprite
 
 export class Boss extends Sprite
 {
-    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox)
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, life)
     {
         //Llamamos al constructor de la clase Sprite
         super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
 
         this.directionChangeCounter = 0; //Contador para cambia de direccion (second)
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
-        this.attackHitbox = attackHitbox;
+        // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
-        this.life = 20;
+        this.life = life;
 
 
 
