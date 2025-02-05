@@ -82,16 +82,18 @@ export default function detectCollisions()
 
         sprite.isCollidingWithPlayer = false;
         detectCollisionBetweenPlayerAndSprite(sprite);
+
         console.log("Player attacking:", globals.sprites[0].isPlayerAttacking);
+
         if (globals.sprites[0].isPlayerAttacking){
+
             console.log("Calling CollisionAttackSprite for:", sprite);
+
             CollisionAttackSprite (sprite);
 
 
         }
-
-        
-        
+            
     }
     // if (globals.sprites[4])
     // {

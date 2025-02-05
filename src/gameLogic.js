@@ -609,8 +609,8 @@ function updateDamage(sprite) {
         sprite.invincivilityCounter += globals.deltaTime;
 
         // Debug logs
-        console.log("Sprite Damage Counter: " + sprite.damageCounter);
-        console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
+        // console.log("Sprite Damage Counter: " + sprite.damageCounter);
+        // console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
 
         // Check if it's time to toggle visibility (flickering)
         if (sprite.damageCounter >= globals.damageInterval) {
