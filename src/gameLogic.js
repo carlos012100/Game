@@ -288,11 +288,9 @@ else if(sprite.spriteIsDead)
     {
         const lastBreaths = 10;
 
-        let breathCount = 0;
-
-        breathCount += globals.deltaTime;
+        sprite.breathCount += globals.deltaTime;
         
-        if (breathCount >= lastBreaths)
+        if (sprite.breathCount >= lastBreaths)
         {
         globals.gameState = Game.GAME_OVER;
 
@@ -366,6 +364,15 @@ else if(sprite.spriteIsDead)
                 break;
     
             //Caso del SKULL1
+            // case "Reaper":
+            //     updateSKULL1(sprite);
+            //     break;
+            // case "Bonecrusher":
+            //     updateSKULL1(sprite);
+            //     break;
+            // case "Ghoul":
+            //     updateSKULL1(sprite);
+            //     break;
             case SpriteID.SKULL1:
                 updateSKULL1(sprite);
                 // updateSkullFree(sprite)
@@ -490,6 +497,20 @@ else if(sprite.spriteIsDead)
             default:
                 console.error("Error: State invalid");
         }
+         // Apply unique behavior based on the SKULL's name
+    switch (sprite.name) {
+        case "Reaper":
+            sprite.physics.vy *= 2; // Reaper moves faster
+            break;
+        case "Bonecrusher":
+            sprite.physics.vx *= 0.8; // Bonecrusher moves slower
+            break;
+        case "Ghoul":
+            sprite.physics.velChangeValue = 0.5; // Ghoul changes direction more often
+            break;
+        default:
+            break; // Default behavior for normal SKULL1
+    }
     
         // Update velocity change counter
         sprite.physics.velChangeCounter += globals.deltaTime;
@@ -552,6 +573,7 @@ updateDamage(sprite);
    
 
 function updateDamage(sprite) {
+    
         const player = globals.sprites[0]; // Assuming the player is the first sprite
     
         // Handle damage mode and blinking for the player
@@ -599,9 +621,10 @@ function updateDamage(sprite) {
             player.InvincivilityCounter = 0; // Reset the duration counter
         }
     
+    
 
-    // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
-    if (sprite.modeDAMAGE) {
+       // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
+       if (sprite.modeDAMAGE) {
         // Increment the damage counter for flickering
         sprite.damageCounter += globals.deltaTime;
 
@@ -629,19 +652,24 @@ function updateDamage(sprite) {
     }
 
 
-
     // Check for collision between the player and the sprite (e.g., player attacks sprite)
-    if (player.isPlayerAttacking && !sprite.modeDAMAGE) {
-        // Reduce sprite's health (if applicable)
-        if (sprite.life) {
-            sprite.life--;
-        }
+    if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
+        if (sprite.isCollidingWithAttack) {
+            sprite.life--; // Reduce life for ONLY this skull
+    
+            if (sprite.life <= 0) {
+                // Remove only this SKULL from globals.sprites
+                const index = globals.sprites.indexOf(sprite);
+                if (index > -1) {
+                    globals.sprites.splice(index, 1); // Remove dead enemy
+                }
 
-        // Enter damage mode for the sprite
-        sprite.modeDAMAGE = true;
-        sprite.damageCounter = 0; // Reset the flickering counter
-        sprite.invincivilityCounter = 0; // Reset the duration counter
-        console.log("Sprite damage: " + sprite.modeDAMAGE);
+    }
+    }
+            // Enter damage mode for the sprite
+            sprite.modeDAMAGE = true;
+            sprite.damageCounter = 0; // Reset the flickering counter
+            sprite.invincivilityCounter = 0; // Reset the duration counter
     }
 }
     

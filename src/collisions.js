@@ -65,10 +65,14 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
     console.log("Checking overlap with:", { x1, y1, w1, h1, x2, y2, w2, h2 });
 
     if (x2 > x1 + w1 || x1 > x2 + w2 || y2 > y1 + h1 || y1 > y2 + h2) {
+
         console.log("❌ No overlap");
+
         return false;
+
     } else {
         console.log("✅ Overlap detected!");
+
         return true;
     }
 }
@@ -81,6 +85,8 @@ export default function detectCollisions()
         const sprite = globals.sprites[i];
 
         sprite.isCollidingWithPlayer = false;
+        
+
         detectCollisionBetweenPlayerAndSprite(sprite);
 
         console.log("Player attacking:", globals.sprites[0].isPlayerAttacking);
@@ -93,7 +99,10 @@ export default function detectCollisions()
 
 
         }
-            
+        // console.log("Calling CollisionAttackSprite for:", sprite);
+
+        // CollisionAttackSprite(sprite);
+
     }
     // if (globals.sprites[4])
     // {

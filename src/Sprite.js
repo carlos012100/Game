@@ -45,6 +45,7 @@ export class Player extends Sprite
         this.attackTimer = 0;
         this.attackDuration = 0.2;
         this.attackHitbox = attackHitbox;
+        this.breathCount = 0;
 
 
     }
@@ -123,6 +124,7 @@ export class Boss extends Sprite
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
         // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
+
         this.life = life;
 
 

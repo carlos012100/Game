@@ -161,11 +161,11 @@ function drawAttackBox (sprite){
                 if (sprite.hitBox)  {
                     drawHitBox(sprite);
                 }
-                if (sprite.attackHitbox && globals.sprites[0].isPlayerAttacking){
+                if (sprite.attackHitbox && sprite.isPlayerAttacking){
 
                     drawAttackBox(sprite);
 
-                    console.log("is player attack: " + globals.sprites[0].isPlayerAttacking)
+                    console.log("is player attack: " + sprite.isCollidingWithAttack)
                 } 
                 
             }

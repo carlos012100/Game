@@ -346,29 +346,57 @@ function initTimer()
 
 
     }
-    function initSKULL1(skullData) {
-        for (let i = 0; i < skullData.length; i++) {
-            const { x, y, state } = skullData[i]; // Extract the position and state
+    // function initSKULL1(skullData) {
+    //     for (let i = 0; i < skullData.length; i++) {
+    //         const { x, y, state } = skullData[i]; // Extract the position and state
+    
+    //         const imageSet = new ImageSet(56, 0, 50, 50, 64, 64, 5, 6);
+    //         const frames = new Frames(4, 5);
+    
+    //         const velsX = [20, 40, 0, 60, 0, 100];
+    //         const velsY = [10, 40, 0, 60, 0, 400];
+    //         const velChangeValue = 1;
+    
+    //         const physics = new Physics(100, 0, 0, 0, velsX, velsY, velChangeValue);
+    
+    //         const hitBox = new HitBox(30, 25, 12, 6);
+    
+    //         const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
+    
+    //         // Give each skull a unique ID
+    //         const uniqueID = `SKULL1_${i + 1}`;
+    
+    //         const skull = new Skull(uniqueID, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox, 2);
+    
+    //         globals.sprites.push(skull);
+    //     }
+    // }
+    const skullNames = ["Reaper", "Bonecrusher", "Ghoul", "Shadowfang", "Phantom", "Wraith"];
 
-            const imageSet = new ImageSet(56, 0, 50, 50, 64, 64, 5, 6);
-            const frames = new Frames(4, 5);
-    
-            const velsX = [20, 40, 0, 60, 0, 100]; // Array of X velocities
-            const velsY = [10, 40, 0, 60, 0, 400]; // Array of Y velocities
-            const velChangeValue = 1; // Time between velocity changes
-    
-            // Ensure velsX and velsY are passed to the Physics constructor
-            const physics = new Physics(100, 0, 0, 0, velsX, velsY, velChangeValue);
-    
-            const hitBox = new HitBox(30, 25, 12, 6);
+function initSKULL1(skullData) {
+    for (let i = 0; i < skullData.length; i++) {
+        const { x, y, state } = skullData[i];
 
-            const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
-    
-            const skull = new Skull(SpriteID.SKULL1, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox, 2);
+        const imageSet = new ImageSet(56, 0, 50, 50, 64, 64, 5, 6);
+        const frames = new Frames(4, 5);
+        const velsX = [20, 40, 0, 60, 0, 100];
+        const velsY = [10, 40, 0, 60, 0, 400];
+        const velChangeValue = 1;
+        const physics = new Physics(100, 0, 0, 0, velsX, velsY, velChangeValue);
+        const hitBox = new HitBox(30, 25, 12, 6);
+        const initTimeToChangeDirection = Math.floor(Math.random() * 6) + 1;
 
-            globals.sprites.push(skull);
-        }
+        // Assign a name from the array (looping if necessary)
+        const name = skullNames[i % skullNames.length];
+
+        const skull = new Skull(SpriteID.SKULL1, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox, 2);
+        skull.name = name;  // Assign from the list
+
+        globals.sprites.push(skull);
     }
+}
+
+    
     function initBAT() {
         const imageSet = new ImageSet(52, 0, 25, 25, 64, 64, 5, 6);
 
@@ -471,7 +499,9 @@ function initTimer()
         initPlayer();
         initSKULL1([
             { x: 500, y: 400, state: State.DOWN_SKULLWALK },
-            { x: 400, y: 700, state: State.ORC_UPRUN }]);
+            { x: 400, y: 700, state: State.ORC_UPRUN },
+            { x: 350, y: 500, state: State.ORC_UPRUN },
+        ]);
         initBOSS();
         initBAT();
         initORC([
@@ -483,5 +513,4 @@ function initTimer()
         initHeart();
 
 
-        
     }
