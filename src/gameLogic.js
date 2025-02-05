@@ -224,13 +224,40 @@ function calculateCollisionWithBorders(sprite) {
 
     return isCollision;
 }
+function updateAttackHitbox(sprite) {
+    // Reset attack hitboxes first
+    sprite.attackHitboxUp.active = false;
+    sprite.attackHitboxDown.active = false;
+    sprite.attackHitboxLeft.active = false;
+    sprite.attackHitboxRight.active = false;
 
+    // Activate the corresponding attack hitbox based on the player's current state
+    switch (sprite.state) {
+        case State.UP_ATTACK:
+            sprite.attackHitboxUp.active = true;
+            break;
+        case State.DOWN_ATTACK:
+            sprite.attackHitboxDown.active = true;
+            break;
+        case State.LEFT_ATTACK:
+            sprite.attackHitboxLeft.active = true;
+            break;
+        case State.RIGHT_ATTACK:
+            sprite.attackHitboxRight.active = true;
+            break;
+        default:
+            // If not attacking, reset all attack hitboxes
+            break;
+    }
+}
 
-function updatePlayer(sprite){
+function updatePlayer(sprite) {
+
+    // updateAttackHitbox(sprite);
+    readKeyboardAndAssignState(sprite);
 
     if( sprite.state !== State.FAINT){
 
-        readKeyboardAndAssignState(sprite);
     
     const speed = sprite.physics.vLimit; // Constant speed
     const diagonalSpeed = speed / Math.SQRT2; // Normalized diagonal speed
@@ -476,7 +503,7 @@ else if(sprite.spriteIsDead)
 
 
         updateAnimationFrames(sprite);
-        updateDamage(globals.sprites[3]);
+        updateDamage(sprite);
 
 
     }

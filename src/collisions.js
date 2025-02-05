@@ -99,9 +99,6 @@ export default function detectCollisions()
 
 
         }
-        // console.log("Calling CollisionAttackSprite for:", sprite);
-
-        // CollisionAttackSprite(sprite);
 
     }
     // if (globals.sprites[4])
