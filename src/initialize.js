@@ -1,5 +1,5 @@
 import globals from "./globals.js";
-import {Game, SpriteID, State, FPS, Block} from "./constants.js";
+import {Game, SpriteID, State, FPS, Block, attackHitbox, attackHitbox, attackHitbox, attackHitbox} from "./constants.js";
 import { Player, Bat, Orc, Skull, Boss, Heart } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
@@ -329,16 +329,23 @@ function initTimer()
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
-        const physics = new Physics(200,0,0,0,0,0,0); // Replace 40 with the appropriate vLimit
+        const physics = new Physics(200, 0, 0, 0, 0, 0, 0); // Replace 40 with the appropriate vLimit
 
         const hitBox = new HitBox(12, 30, 25, 16);
 
-        const attackHitbox = new HitBox(15, 32 ,8, 18);
+        const attackHitboxRight = new HitBox(15, 32 ,8, 18);
+
+        const attackHitboxLeft =  new HitBox(15, 32 ,8, 18);
+ 
+        const attackHitboxUp =  new HitBox(15, 32 ,8, 18);
+ 
+        const attackHitboxDown =  new HitBox(15, 32 ,8, 18);
+
         
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitboxRight, attackHitboxLeft, attackHitboxUp, attackHitboxDown);
 
         //Añadimos el player al array de sprites
 
