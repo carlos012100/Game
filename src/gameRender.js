@@ -128,17 +128,12 @@ function drawHitBox (sprite)
 function drawAttackBox (sprite){
 
 
-    const x1 = Math.floor(sprite.xPos) + Math.floor(sprite.attackHitbox.xOffset);
-    
-    const y1 = Math.floor(sprite.yPos) + Math.floor(sprite.attackHitbox.yOffset);
-
-    const w1 = sprite.attackHitbox.xSize;
-    
-    const h1 = sprite.attackHitbox.ySize;
-
+    sprite.hitBox.x1 = Math.floor(sprite.xPos) + Math.floor(sprite.attackHitbox.xOffset); 
+    sprite.hitBox.y1 = Math.floor(sprite.yPos) + Math.floor(sprite.attackHitbox.yOffset);
+    sprite.hitBox.w1 = sprite.attackHitbox.xSize;
+    sprite.hitBox.h1 = sprite.attackHitbox.ySize;
     globals.ctx.strokeStyle = "red";
-
-    globals.ctx.strokeRect(x1, y1, w1, h1);
+    globals.ctx.strokeRect(sprite.hitBox.x1, sprite.hitBox.y1, sprite.hitBox.w1, sprite.hitBox.h1);
 
 }
 

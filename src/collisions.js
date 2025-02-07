@@ -71,6 +71,7 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
         return false;
 
     } else {
+
         console.log("✅ Overlap detected!");
 
         return true;
@@ -96,6 +97,7 @@ export default function detectCollisions()
             console.log("Calling CollisionAttackSprite for:", sprite);
 
             CollisionAttackSprite (sprite);
+
 
 
         }
@@ -126,10 +128,10 @@ export default function detectCollisions()
         }
     
         // 🔹 Get player attack hitbox position & size
-        const x1 = player.xPos + player.attackHitbox.xOffset;
-        const y1 = player.yPos + player.attackHitbox.yOffset;
-        const w1 = player.attackHitbox.xSize;
-        const h1 = player.attackHitbox.ySize;
+         player.hitBox.x1 = player.xPos + player.attackHitbox.xOffset;
+         player.hitBox.y1 = player.yPos + player.attackHitbox.yOffset;
+         player.hitBox.w1 = player.attackHitbox.xSize;
+         player.hitBox.h1 = player.attackHitbox.ySize;
     
         // 🔹 Get enemy hitbox position & size
         const x2 = sprite.xPos + sprite.hitBox.xOffset;
@@ -138,11 +140,11 @@ export default function detectCollisions()
         const h2 = sprite.hitBox.ySize;
     
         // 🔹 Print hitbox values for debugging
-        console.log("Player attack hitbox:", { x1, y1, w1, h1 });
+        // console.log("Player attack hitbox:", { x1, y1, w1, h1 });
         console.log("Enemy hitbox:", { x2, y2, w2, h2 });
     
         // 🔹 Check for overlap using rectIntersect
-        const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
+        const isOverlap = rectIntersect(player.hitBox.x1, player.hitBox.y1, player.hitBox.w1, player.hitBox.h1, x2, y2, w2, h2);
     
         if (isOverlap) {
             sprite.isCollidingWithAttack = true;
@@ -813,9 +815,9 @@ function  detectCollisionBetweenPlayerAndObstacles()
                         player.isCollidingWithLeftBlock = true;
             
                         // Adjust overlap and eliminate it
-                        overlapX = Math.floor(xPos) % brickSize -10; // Adjusting overlap
+                        overlapX = Math.floor(xPos) % brickSize -1; // Adjusting overlap
                         player.xPos += overlapX; // Move player back slightly
-                        player.physics.vx = 0;
+                        player.physics.vx = 1;
 
                     }
                 }

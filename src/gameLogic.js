@@ -40,7 +40,7 @@ export default function update(){
 }
 function readKeyboardAndAssignState(sprite) {
 
-    if (!sprite.isPlayerAttacking) {
+    if (!sprite.isPlayerAttacking && !sprite.spriteIsDead) {
 
         sprite.state = globals.action.moveLeft && globals.action.moveUp ? State.UP_LEFT :
                        globals.action.moveLeft && globals.action.moveDown ? State.DOWN_LEFT :
@@ -225,26 +225,37 @@ function calculateCollisionWithBorders(sprite) {
     return isCollision;
 }
 function updateAttackHitbox(sprite) {
-    // Reset attack hitboxes first
-    sprite.attackHitboxUp.active = false;
-    sprite.attackHitboxDown.active = false;
-    sprite.attackHitboxLeft.active = false;
-    sprite.attackHitboxRight.active = false;
 
     // Activate the corresponding attack hitbox based on the player's current state
     switch (sprite.state) {
         case State.UP_ATTACK:
-            sprite.attackHitboxUp.active = true;
-            break;
+
+            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
+            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
+            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
+            sprite.hitBox.h1 = sprite.attackHitbox.ySize;           
+             break;
         case State.DOWN_ATTACK:
-            sprite.attackHitboxDown.active = true;
+
+            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
+            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
+            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
+            sprite.hitBox.h1 = sprite.attackHitbox.ySize;
             break;
         case State.LEFT_ATTACK:
-            sprite.attackHitboxLeft.active = true;
+
+            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
+            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
+            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
+            sprite.hitBox.h1 = sprite.attackHitbox.ySize;            
             break;
         case State.RIGHT_ATTACK:
-            sprite.attackHitboxRight.active = true;
+            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
+            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
+            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
+            sprite.hitBox.h1 = sprite.attackHitbox.ySize;            
             break;
+            
         default:
             // If not attacking, reset all attack hitboxes
             break;
@@ -253,7 +264,8 @@ function updateAttackHitbox(sprite) {
 
 function updatePlayer(sprite) {
 
-    // updateAttackHitbox(sprite);
+    updateAttackHitbox(sprite);
+
     readKeyboardAndAssignState(sprite);
 
     if( sprite.state !== State.FAINT){
@@ -310,8 +322,11 @@ function updatePlayer(sprite) {
     // Calculamos distancia que se mueve (X = X - Vt)
     sprite.xPos += sprite.physics.vx * globals.deltaTime;
     sprite.yPos += sprite.physics.vy * globals.deltaTime;
+    
+
 }
-else if(sprite.spriteIsDead)
+
+else if(sprite.spriteIsDead && State.FAINT)
     {
         const lastBreaths = 10;
 
@@ -339,6 +354,7 @@ else if(sprite.spriteIsDead)
     updateAnimationFrames(sprite);
 
     
+    updateDamage(sprite);
 
 
     // //Cambio de direccion aleatoria
@@ -601,104 +617,109 @@ updateDamage(sprite);
 
 function updateDamage(sprite) {
     
-        const player = globals.sprites[0]; // Assuming the player is the first sprite
-    
-        // Handle damage mode and blinking for the player
-        if (player.modeDAMAGE) {
-            // Increment the damage counter for flickering
-            player.damageCounter += globals.deltaTime;
-          // Increment the damage mode duration counter only once per frame
-        if (!player.hasIncrementedThisFrame) {
-            player.damageCounter += globals.deltaTime;
+    const player = globals.sprites[0]; // Assuming the player is the first sprite
 
-            player.invincivilityCounter += globals.deltaTime;
-            player.hasIncrementedThisFrame = true; // Mark as incremented
-        }
-    
-            // Check if it's time to toggle visibility (flickering)
-            if (player.damageCounter >= player.damageInterval) {
-                player.damageCounter = 0; // Reset the flickering counter
-                player.isDrawn = !player.isDrawn; // Toggle visibility
-            }
-    
-            // Check if damage mode should end (after 4 seconds)
-            if (player.invincivilityCounter >= player.invincivility) {
-                player.invincivilityCounter = 0; // Reset the duration counter
-                player.isDrawn = true; // Ensure the player is visible
-                player.modeDAMAGE = false; // End damage mode
-            }
-        }
-    
-        // Check for collision between the sprite and the player
-        if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
-            // Reduce player's life
-            globals.life--;
-            if(globals.life == 0)
-                {
-                    player.spriteIsDead = true;
-                    
-                }
-            if (player.spriteIsDead){
-                player.state = State.FAINT;
-            }
-    
-            // Enter damage mode for the player
-            player.modeDAMAGE = true;
-            player.damageCounter = 0; // Reset the flickering counter
-            player.InvincivilityCounter = 0; // Reset the duration counter
-        }
-    
-    
-
-       // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
-       if (sprite.modeDAMAGE) {
+    // Handle damage mode and blinking for the player
+    if (player.modeDAMAGE) {
         // Increment the damage counter for flickering
-        sprite.damageCounter += globals.deltaTime;
+        player.damageCounter += globals.deltaTime;
+      // Increment the damage mode duration counter only once per frame
+    if (!player.hasIncrementedThisFrame) {
+        player.damageCounter += globals.deltaTime;
 
-        // Increment the damage mode duration counter
-        sprite.invincivilityCounter += globals.deltaTime;
-
-        // Debug logs
-        // console.log("Sprite Damage Counter: " + sprite.damageCounter);
-        // console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
+        player.invincivilityCounter += globals.deltaTime;
+        player.hasIncrementedThisFrame = true; // Mark as incremented
+    }
 
         // Check if it's time to toggle visibility (flickering)
-        if (sprite.damageCounter >= globals.damageInterval) {
-            sprite.damageCounter = 0; // Reset the flickering counter
-            sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
-            console.log("Sprite drawn: " + sprite.isDrawn);
+        if (player.damageCounter >= player.damageInterval) {
+            player.damageCounter = 0; // Reset the flickering counter
+            player.isDrawn = !player.isDrawn; // Toggle visibility
         }
 
         // Check if damage mode should end (after 4 seconds)
-        if (sprite.invincivilityCounter >= globals.invincivility) {
-            sprite.invincivilityCounter = 0; // Reset the duration counter
-            sprite.isDrawn = true; // Ensure the sprite is visible
-            sprite.modeDAMAGE = false; // End damage mode
-            console.log("Sprite damagemode: " + sprite.modeDAMAGE);
+        if (player.invincivilityCounter >= player.invincivility) {
+            player.invincivilityCounter = 0; // Reset the duration counter
+            player.isDrawn = true; // Ensure the player is visible
+            player.modeDAMAGE = false; // End damage mode
         }
     }
 
+    // Check for collision between the sprite and the player
+    if (sprite.isCollidingWithPlayer && !player.modeDAMAGE) {
+        // Reduce player's life
+        globals.life--;
 
-    // Check for collision between the player and the sprite (e.g., player attacks sprite)
-    if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
-        if (sprite.isCollidingWithAttack) {
-            sprite.life--; // Reduce life for ONLY this skull
-    
-            if (sprite.life <= 0) {
-                // Remove only this SKULL from globals.sprites
-                const index = globals.sprites.indexOf(sprite);
-                if (index > -1) {
-                    globals.sprites.splice(index, 1); // Remove dead enemy
-                }
+        if(globals.life == 0)
+            {
+                player.spriteIsDead = true;
+                console.log("dead: " +  player.spriteIsDead)
 
+                
+            }
+
+        if (player.spriteIsDead){
+            player.state = State.FAINT;
+        }
+
+        // Enter damage mode for the player
+        player.modeDAMAGE = true;
+        player.damageCounter = 0; // Reset the flickering counter
+        player.InvincivilityCounter = 0; // Reset the duration counter
     }
+
+
+
+   // Handle damage mode and blinking for the sprite (e.g., Skull, Orc)
+   if (sprite.modeDAMAGE) {
+    // Increment the damage counter for flickering
+    sprite.damageCounter += globals.deltaTime;
+
+    // Increment the damage mode duration counter
+    sprite.invincivilityCounter += globals.deltaTime;
+
+    // Debug logs
+    // console.log("Sprite Damage Counter: " + sprite.damageCounter);
+    // console.log("Sprite Invincibility Counter: " + sprite.invincivilityCounter);
+
+    // Check if it's time to toggle visibility (flickering)
+    if (sprite.damageCounter >= globals.damageInterval) {
+        sprite.damageCounter = 0; // Reset the flickering counter
+        sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
+        console.log("Sprite drawn: " + sprite.isDrawn);
     }
-            // Enter damage mode for the sprite
-            sprite.modeDAMAGE = true;
-            sprite.damageCounter = 0; // Reset the flickering counter
-            sprite.invincivilityCounter = 0; // Reset the duration counter
+
+    // Check if damage mode should end (after 4 seconds)
+    if (sprite.invincivilityCounter >= globals.invincivility) {
+        sprite.invincivilityCounter = 0; // Reset the duration counter
+        sprite.isDrawn = true; // Ensure the sprite is visible
+        sprite.modeDAMAGE = false; // End damage mode
+        console.log("Sprite damagemode: " + sprite.modeDAMAGE);
     }
 }
+
+
+// Check for collision between the player and the sprite (e.g., player attacks sprite)
+if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
+    if (sprite.isCollidingWithAttack) {
+        sprite.life--; // Reduce life for ONLY this skull
+
+        if (sprite.life <= 0) {
+            // Remove only this SKULL from globals.sprites
+            const index = globals.sprites.indexOf(sprite);
+            if (index > -1) {
+                globals.sprites.splice(index, 1); // Remove dead enemy
+            }
+
+}
+}
+        // Enter damage mode for the sprite
+        sprite.modeDAMAGE = true;
+        sprite.damageCounter = 0; // Reset the flickering counter
+        sprite.invincivilityCounter = 0; // Reset the duration counter
+}
+}
+
     
     function updateORC(sprite){
 

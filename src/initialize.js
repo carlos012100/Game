@@ -178,7 +178,7 @@ function initTimer()
         initLevel,
         initTimer,
         initEvents,
-        createFire,
+        // createFire,
         initCamera,
 
     }
@@ -306,18 +306,18 @@ function initTimer()
     {
         globals.camera = new Camera(0,0);
     }
-    function createFire()
-    {
-        const imageSet = ImageSet(15, 0, 50, 50, 64, 64, 6, 6)
+    // function createFire()
+    // {
+    //     const imageSet = ImageSet(15, 0, 50, 50, 64, 64, 6, 6)
         
-        const frames = new Frames(10, 8);
+    //     const frames = new Frames(10, 8);
 
-        const physics = new Physics (60);
+    //     const physics = new Physics (60);
 
-        const bullet = new Sprite(SpriteID.BULLET, State.BULLET_LEFT,260, 170, frames, physics)
+    //     const bullet = new Sprite(SpriteID.BULLET, State.BULLET_LEFT,260, 170, frames, physics)
 
-        globals.sprites.push(bullet);
-    }
+    //     globals.sprites.push(bullet);
+    // }
     
     function initPlayer(){
 
