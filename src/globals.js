@@ -62,5 +62,7 @@ export default {
 
     //Objecto que guarda el estado de la tecla pulsada
     action: {}
+
+    
     
 };

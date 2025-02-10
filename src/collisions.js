@@ -114,24 +114,23 @@ export default function detectCollisions()
     detectCollisionBetweenSkullandWorld ();
     detectCollisionBetweenBatandWorld ();
 
-    function CollisionAttackSprite(sprite) 
-    {
+    function CollisionAttackSprite(sprite) {
         // Reset collision data
         sprite.isCollidingWithAttack = false;
     
         const player = globals.sprites[0];
     
-        // 🔹 Check if the player attack hitbox or enemy hitbox is missing
-        if (!player.attackHitbox || !sprite.hitBox) { 
-            console.warn("Missing hitbox! Player attack hitbox:", player.attackHitbox, "Enemy hitbox:", sprite.hitBox);
+        // 🔹 Ensure player has an active attack hitbox
+        if (!player.activeHitbox || !sprite.hitBox) { 
+            console.warn("Missing hitbox! Active attack hitbox:", player.activeHitbox, "Enemy hitbox:", sprite.hitBox);
             return; 
         }
     
-        // 🔹 Get player attack hitbox position & size
-         player.hitBox.x1 = player.xPos + player.attackHitbox.xOffset;
-         player.hitBox.y1 = player.yPos + player.attackHitbox.yOffset;
-         player.hitBox.w1 = player.attackHitbox.xSize;
-         player.hitBox.h1 = player.attackHitbox.ySize;
+        // 🔹 Get player active attack hitbox position & size
+        const x1 = player.xPos + player.activeHitbox.xOffset;
+        const y1 = player.yPos + player.activeHitbox.yOffset;
+        const w1 = player.activeHitbox.xSize;
+        const h1 = player.activeHitbox.ySize;
     
         // 🔹 Get enemy hitbox position & size
         const x2 = sprite.xPos + sprite.hitBox.xOffset;
@@ -140,11 +139,11 @@ export default function detectCollisions()
         const h2 = sprite.hitBox.ySize;
     
         // 🔹 Print hitbox values for debugging
-        // console.log("Player attack hitbox:", { x1, y1, w1, h1 });
+        console.log("Player attack hitbox:", { x1, y1, w1, h1 });
         console.log("Enemy hitbox:", { x2, y2, w2, h2 });
     
         // 🔹 Check for overlap using rectIntersect
-        const isOverlap = rectIntersect(player.hitBox.x1, player.hitBox.y1, player.hitBox.w1, player.hitBox.h1, x2, y2, w2, h2);
+        const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
     
         if (isOverlap) {
             sprite.isCollidingWithAttack = true;
@@ -153,6 +152,7 @@ export default function detectCollisions()
             console.log("❌ No collision detected.");
         }
     }
+    
     
 function detectCollisionBetweenPlayerAndSprite(sprite) {
     // Reset collision data
@@ -800,28 +800,27 @@ function  detectCollisionBetweenPlayerAndObstacles()
                     break;
 
 
-            case State.LEFT:
-                for (let i = 0; i < globals.objectTile.length; i++){
-                    const obstacleId = globals.objectTile[i];
-            
-                    // Collision at the bottom-left corner (feet area)
-                    xPos = player.xPos + player.hitBox.xOffset;
-                    yPos = player.yPos + player.hitBox.yOffset + player.hitBox.ySize - 1;
-                    isCollidingOnPos3 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
-            
-                    isColliding = isCollidingOnPos3;
-            
-                    if (isColliding) {
-                        player.isCollidingWithLeftBlock = true;
-            
-                        // Adjust overlap and eliminate it
-                        overlapX = Math.floor(xPos) % brickSize -1; // Adjusting overlap
-                        player.xPos += overlapX; // Move player back slightly
-                        player.physics.vx = 1;
-
-                    }
-                }
-                break;
+                    case State.LEFT:
+                        for (let i = 0; i < globals.objectTile.length; i++){
+                            const obstacleId = globals.objectTile[i];
+                    
+                            // Collision at the bottom-left corner (feet area)
+                            xPos = player.xPos + player.hitBox.xOffset; // Fix: No +1 here
+                            yPos = player.yPos + player.hitBox.yOffset + player.hitBox.ySize - 1;
+                            isCollidingOnPos2 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
+                    
+                            isColliding = isCollidingOnPos2;
+                    
+                            if (isColliding) {
+                                player.isCollidingWithLeftBlock = true;
+                    
+                                // Adjust overlap and eliminate it
+                                overlapX = (Math.floor(xPos) % brickSize) -18.15; // Fix: Removed +1
+                                player.xPos += overlapX; // Move player back slightly
+                                player.physics.vx = 1; // Fix: Adjust velocity like in RIGHT case
+                            }
+                        }
+                        break;
             
             case State.RIGHT:
                 for (let i = 0; i < globals.objectTile.length; i++){

@@ -225,42 +225,25 @@ function calculateCollisionWithBorders(sprite) {
     return isCollision;
 }
 function updateAttackHitbox(sprite) {
-
-    // Activate the corresponding attack hitbox based on the player's current state
     switch (sprite.state) {
         case State.UP_ATTACK:
-
-            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
-            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
-            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
-            sprite.hitBox.h1 = sprite.attackHitbox.ySize;           
-             break;
+            sprite.activeHitbox = sprite.attackHitbox.up;
+            break;
         case State.DOWN_ATTACK:
-
-            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
-            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
-            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
-            sprite.hitBox.h1 = sprite.attackHitbox.ySize;
+            sprite.activeHitbox = sprite.attackHitbox.down;
             break;
         case State.LEFT_ATTACK:
-
-            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
-            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
-            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
-            sprite.hitBox.h1 = sprite.attackHitbox.ySize;            
+            sprite.activeHitbox = sprite.attackHitbox.left;
             break;
         case State.RIGHT_ATTACK:
-            sprite.hitBox.x1 = sprite.xPos + sprite.attackHitbox.xOffset;
-            sprite.hitBox.y1 = sprite.yPos + sprite.attackHitbox.yOffset;
-            sprite.hitBox.w1 = sprite.attackHitbox.xSize;
-            sprite.hitBox.h1 = sprite.attackHitbox.ySize;            
+            sprite.activeHitbox = sprite.attackHitbox.right;
             break;
-            
         default:
-            // If not attacking, reset all attack hitboxes
+            sprite.activeHitbox = null; // No attack hitbox active
             break;
     }
 }
+
 
 function updatePlayer(sprite) {
 

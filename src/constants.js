@@ -203,21 +203,15 @@ bloodBlock2: 62,
 emptySpace: 203,
 
 
-// attackHitboxRight
 
-// attackHitboxLeft 
- 
-// attackHitboxUp = 
- 
-// attackHitboxDown 
 
 }
-export const attackHitbox = {
-    RIGHT: 0,
-    LEFT: 1,
-    UP: 2,
-    DOWN: 3,
-}
+// export const attackHitbox = {
+//     RIGHT: 0,
+//     LEFT: 1,
+//     UP: 2,
+//     DOWN: 3,
+// }
 export const Key = {
     UP: 38,
     DOWN: 40,

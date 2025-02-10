@@ -44,10 +44,11 @@ export class Player extends Sprite
         this.isPlayerAttacking = false;
         this.attackTimer = 0;
         this.attackDuration = 0.2;
-        this.attackHitboxRight = attackHitboxRight;
-        this.attackHitboxLeft = attackHitboxLeft;
-        this.attackHitboxUp = attackHitboxUp;
-        this.attackHitboxDown = attackHitboxDown;
+        this.attackHitbox = attackHitbox;
+        this.attackHitboxRight = false;
+        this.attackHitboxLeft = false;
+        this.attackHitboxUp = false;
+        this.attackHitboxDown = false;
         this.breathCount = 0;
 
 

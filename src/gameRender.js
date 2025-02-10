@@ -128,10 +128,10 @@ function drawHitBox (sprite)
 function drawAttackBox (sprite){
 
 
-    sprite.hitBox.x1 = Math.floor(sprite.xPos) + Math.floor(sprite.attackHitbox.xOffset); 
-    sprite.hitBox.y1 = Math.floor(sprite.yPos) + Math.floor(sprite.attackHitbox.yOffset);
-    sprite.hitBox.w1 = sprite.attackHitbox.xSize;
-    sprite.hitBox.h1 = sprite.attackHitbox.ySize;
+    sprite.hitBox.x1 = Math.floor(sprite.xPos) + Math.floor(sprite.activeHitbox.xOffset); 
+    sprite.hitBox.y1 = Math.floor(sprite.yPos) + Math.floor(sprite.activeHitbox.yOffset);
+    sprite.hitBox.w1 = sprite.activeHitbox.xSize;
+    sprite.hitBox.h1 = sprite.activeHitbox.ySize;
     globals.ctx.strokeStyle = "red";
     globals.ctx.strokeRect(sprite.hitBox.x1, sprite.hitBox.y1, sprite.hitBox.w1, sprite.hitBox.h1);
 
@@ -156,11 +156,11 @@ function drawAttackBox (sprite){
                 if (sprite.hitBox)  {
                     drawHitBox(sprite);
                 }
-                if (sprite.attackHitbox && sprite.isPlayerAttacking){
+                if (sprite.activeHitbox && sprite.isPlayerAttacking){
 
                     drawAttackBox(sprite);
 
-                    console.log("is player attack: " + sprite.isCollidingWithAttack)
+                    console.log("is player attack: " + sprite.activeHitbox)
                 } 
                 
             }
