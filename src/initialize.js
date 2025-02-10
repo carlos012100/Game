@@ -148,11 +148,11 @@ function initVars(){
             // Block.holyStone7,
             // Block.holyStone8,
             // Block.holyStone9,
-            Block.coloredBlock,
-            Block.coloredBlock2,
+            // Block.coloredBlock,
+            // Block.coloredBlock2,
             Block.chestLayered,
-            Block.bloodBlock,
-            Block.unkown,
+            // Block.bloodBlock,
+            // Block.unkown,
         
             // Layer 2
             Block.ladyNight,
@@ -331,7 +331,7 @@ function initTimer()
 
         const physics = new Physics(200, 0, 0, 0, 0, 0, 0); // Replace 40 with the appropriate vLimit
 
-        const hitBox = new HitBox(12, 30, 25, 16);
+        const hitBox = new HitBox(10, 30, 26, 16);
 
         // const attackHitboxRight = new HitBox(15, 32 ,8, 18);
 

@@ -49,6 +49,7 @@ export class Player extends Sprite
         this.attackHitboxLeft = false;
         this.attackHitboxUp = false;
         this.attackHitboxDown = false;
+        this.activeHitbox = null;
         this.breathCount = 0;
 
 
