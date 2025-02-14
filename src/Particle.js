@@ -14,7 +14,7 @@ class Particle
 
 export default class ExplosionParticle extends Particle
 {
-    constructor(id, state, xPos, yPos, radius, alpha, physics)
+    constructor(id, state, xPos, yPos, radius, alpha, physics, timeToFade)
     {
         super(id, state, xPos, yPos, radius, alpha, physics);
 

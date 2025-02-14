@@ -1,7 +1,6 @@
 import globals from "./globals.js";
-import {Game, State, SpriteID} from "./constants.js";
+import {Game, State, SpriteID, ParticleState, ParticleID} from "./constants.js";
 import detectCollisions from "./collisions.js";
-import {initVars} from "./initialize.js";
 
 export default function update(){
 
@@ -91,6 +90,65 @@ function readKeyboardAndAssignState(sprite) {
     }
 }
 
+function updateParticles()
+{
+    for (let i = 0; i < globals.particles.length; ++i)
+    {
+        const particle = globals.particles[i];
+        updateParticle(particle);
+    }
+}
+function updateParticle(particle)
+{
+    const type = particle.id;
+    switch(type)
+    {
+        case ParticleID.EXPLOTION:
+            updateExplotionParticle(particle);
+            break;
+
+
+        default:
+
+            break;
+    }
+}
+
+function updateExplotionParticle(particle)
+{
+    particle.fadeCounter += globals.deltaTime;
+
+    //COgemos las velocidades de los arrays
+    switch (particle.state)
+    {
+        case ParticleState.ON:
+
+            if(particle.fadeCounter > particle.timeToFade)
+            {
+                particle.fadeCounter = 0;
+                particle.state = ParticleState.FADE;
+            }
+            break;
+
+        case ParticleState.FADE: 
+            particle.alpha -= 0.01;
+            if (particle.alpha <= 0)
+            {
+                particle.state = ParticleState.OFF;
+            }
+            break;
+
+        case ParticleState.OFF:
+            break;
+
+        default:
+            //Por Completar
+    }
+
+    particle.xPos += particle.physics.vx * globals.deltaTime;
+    particle.yPos += particle.physics.vy * globals.deltaTime;
+    
+}
 
 function updateLevelTime()
 {

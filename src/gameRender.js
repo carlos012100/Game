@@ -1,6 +1,6 @@
 import globals from "./globals.js";
 import {Game, SpriteID} from "./constants.js";
-import {Tile,Back} from "./constants.js";
+import {ParticleState, Tile,ParticleID, Back} from "./constants.js";
 
 
 //Funcion que renderiza los graficos
@@ -50,6 +50,48 @@ export default function render()
     }
 }
 
+function renderParticles(){
+
+    for (let i = 0; i < globals.particles.length; ++i) 
+        {
+            const particle = globals.particles[i];
+            renderParticle(particle);
+        }
+
+}
+function renderParticle(particle)
+{
+    const type = particle.id;
+    switch (type)
+    {
+        //Caso del jugador
+        case ParticleID.EXPLOTION:
+            renderExplosionParticle(particle);
+            break;
+
+        case ParticleID.FIRE: 
+
+            // renderFireParticle(particle);
+            break;
+
+        default:
+            break;
+    }
+}
+
+function renderExplosionParticle(particle)
+{
+    if (particle.state != ParticleState.OFF)
+    {
+        globals.ctx.fillStyle = "blue";
+        globals.ctx.globalAlpha = particle.alpha; //Set alpha
+        globals.ctx.beginPath();
+        globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
+        globals.ctx.fill();
+        globals.ctx.globalAlpha = 1.0 //Reset alpha
+    }
+}
+
 function drawGame(){
 
     //Borramos la pantalla entera
@@ -64,6 +106,8 @@ function drawGame(){
     renderMap();
     
     drawSprites();
+
+    renderParticles();
 
     restoreCamara();
 

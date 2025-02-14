@@ -1,5 +1,5 @@
 import globals from "./globals.js";
-import {Game, SpriteID, State, FPS, Block} from "./constants.js";
+import {Game, SpriteID, State, FPS, Block, ParticleID, ParticleState} from "./constants.js";
 import { Player, Bat, Orc, Skull, Boss, Heart } from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
@@ -9,7 +9,41 @@ import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
 import Camera from "./Camera.js";
+import ExplosionParticle from "./Particle.js";
 
+function initParticles()
+{
+    initExplosion();
+}
+function initExplosion()
+{
+    const numParticles = 300;
+    const xInit = 100;
+    const yInit = 100;
+    const radius = 2.5;
+    const timeToFadeMax = 5;
+    const alpha = 1.0;
+
+    for (let i = 0; i < numParticles; ++i)
+    {
+        const velocity = Math.random() * 25 + 5;
+        const physics = new Physics(velocity);
+
+        const timeToFade = timeToFadeMax * Math.random() + 1;
+        const particle = new ExplosionParticle(ParticleID.EXPLOSION, ParticleState.ON, xInit, yInit, radius, alpha, physics, timeToFade); 
+
+        //Asinamos velocidades segun angulo aleatorio 
+
+        const randomAngle = Math.random() * 2 * Math.PI;
+
+        particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle);
+
+        particle.physics.vy = particle.physics.vLimit * Math.sin(randomAngle);
+
+        globals.particles.push(particle);
+    }
+    
+}
 //Function que incializa los elementos HTML
 function initHTMLelements(){
     //Canvas
@@ -180,6 +214,8 @@ function initTimer()
         initEvents,
         // createFire,
         initCamera,
+        initParticles
+        
 
     }
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 

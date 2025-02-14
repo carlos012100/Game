@@ -1,5 +1,5 @@
 import globals from "./globals.js";
-import {initHTMLelements, loadAssets, initSprites, initVars, initLevel, initTimer, initEvents, initCamera} from "./initialize.js";
+import {initHTMLelements, loadAssets, initSprites, initVars, initLevel, initTimer, initEvents, initCamera, initParticles} from "./initialize.js";
 import update from "./gameLogic.js";
 import render from "./gameRender.js";
 
@@ -33,6 +33,8 @@ function init(){
     initTimer();
 
     initEvents();
+
+    initParticles();
 
 
     //Start the first frame request
