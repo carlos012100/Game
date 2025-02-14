@@ -261,6 +261,7 @@ function updatePlayer(sprite) {
         case State.UP:
             sprite.physics.vx = 0;
             sprite.physics.vy = -speed;
+
             break;
     
         case State.DOWN:

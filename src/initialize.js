@@ -331,7 +331,7 @@ function initTimer()
 
         const physics = new Physics(200, 0, 0, 0, 0, 0, 0); // Replace 40 with the appropriate vLimit
 
-        const hitBox = new HitBox(10, 30, 26, 16);
+        const hitBox = new HitBox(10, 15, 26, 30);
 
         // const attackHitboxRight = new HitBox(15, 32 ,8, 18);
 
@@ -355,6 +355,8 @@ function initTimer()
         //Añadimos el player al array de sprites
 
         globals.sprites.push(player);
+
+
 
 
     }

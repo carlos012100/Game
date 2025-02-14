@@ -57,6 +57,8 @@ export default {
 
     sprites: [],
 
+    particles: [],
+
 
     level: {},
 
