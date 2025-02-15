@@ -59,6 +59,23 @@ function renderParticles(){
         }
 
 }
+function renderFireParticle(particle)
+{
+    if (particle.state != ParticleState.OFF)
+    {
+        globals.ctx.save();
+        globals.ctx.fillStyle = "red";
+        globals.ctx.filter = "blur(2px) saturate(200%)";
+
+        globals.ctx.globalAlpha = particle.alpha; //Set alpha
+
+        globals.ctx.beginPath();
+        globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
+
+        globals.ctx.fill();
+        globals.ctx.restore();
+    }
+}
 function renderParticle(particle)
 {
     const type = particle.id;
@@ -76,7 +93,7 @@ function renderParticle(particle)
 
         case ParticleID.FIRE: 
 
-            // renderFireParticle(particle);
+            renderFireParticle(particle);
             break;
 
         default:
@@ -88,12 +105,12 @@ function renderExplotionParticle(particle)
 {
     if (particle.state != ParticleState.OFF)
     {
-        globals.ctx.fillStyle = "blue";
+        globals.ctx.fillStyle = "black";
         globals.ctx.globalAlpha = particle.alpha; //Set alpha
         globals.ctx.beginPath();
         globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
         globals.ctx.fill();
-        globals.ctx.globalAlpha = 1.0 //Reset alpha
+        globals.ctx.globalAlpha = 0.5 //Reset alpha
     }
 }
 

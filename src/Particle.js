@@ -12,7 +12,7 @@ class Particle
     }
 }
 
-export default class ExplosionParticle extends Particle
+export default class ExplotionParticle extends Particle
 {
     constructor(id, state, xPos, yPos, radius, alpha, physics, timeToFade)
     {
@@ -21,4 +21,16 @@ export default class ExplosionParticle extends Particle
         this.fadeCounter = 0;
         this.timeToFade = timeToFade;
     }
+}
+class FireParticle extends Particle
+{
+    constructor(id, state, xPos, yPos, radius, alpha, physics)
+    {
+        super(id, state, xPos, yPos, radius, alpha, physics);
+
+    }
+}
+export {
+    ExplotionParticle,
+    FireParticle,
 }

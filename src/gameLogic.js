@@ -1,6 +1,8 @@
 import globals from "./globals.js";
 import {Game, State, SpriteID, ParticleState, ParticleID} from "./constants.js";
 import detectCollisions from "./collisions.js";
+import { createFireParticle, initExplotion } from './initialize.js';
+
 
 export default function update(){
 
@@ -95,7 +97,18 @@ function updateParticles()
     for (let i = 0; i < globals.particles.length; ++i)
     {
         const particle = globals.particles[i];
-        updateParticle(particle);
+
+        if(particle.id === ParticleID.FIRE && particle.state === ParticleState.OFF)
+        {
+            globals.particles.splice(i, 1);
+            i--;
+            createFireParticle();
+        }
+        else
+        {
+            updateParticle(particle);
+
+        }
     }
 }
 function updateParticle(particle)
@@ -105,11 +118,13 @@ function updateParticle(particle)
     {
         case ParticleID.EXPLOTION:
             if(globals.sprites[0].state === State.FAINT){
+                
                 updateExplotionParticle(particle);
 
             }
             break;
-
+        case ParticleID.FIRE:
+            updateFireParticle(particle);
 
         default:
 
@@ -150,7 +165,37 @@ function updateExplotionParticle(particle)
 
     particle.xPos += particle.physics.vx * globals.deltaTime;
     particle.yPos += particle.physics.vy * globals.deltaTime;
-    
+
+}
+function updateFireParticle(particle)
+{
+    //Cogemos las velocidades de los arrays
+    switch (particle.state)
+    {
+        case ParticleState.ON:
+            particle.radius -= 0.1;
+            if(particle.radius < 2)
+            {
+                particle.state = ParticleState.FADE;
+            }
+            break;
+
+        case ParticleState.FADE:
+            particle.alpha -= 0.3;
+            if(particle.alpha <= 0)
+            {
+                particle.state = ParticleState.OFF;
+            }
+            break;
+
+        case ParticleState.OFF:
+            break;
+
+        default:
+            //Por Completar
+    }
+    particle.xPos += particle.physics.vx * globals.deltaTime;
+    particle.yPos += particle.physics.vy * globals.deltaTime;
 }
 
 function updateLevelTime()
@@ -383,7 +428,9 @@ else if(sprite.spriteIsDead && State.FAINT)
         globals.gameState = Game.GAME_OVER;
 
         }
-
+    const xDeath = globals.sprites[0].xPos + globals.level.imageSet.xGridWidth
+    const yDeath = globals.sprites[0].yPos + globals.level.imageSet.yGridHeight;
+        initExplotion(xDeath, yDeath);
     }
 
 

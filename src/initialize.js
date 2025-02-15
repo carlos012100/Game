@@ -9,28 +9,61 @@ import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
 import Camera from "./Camera.js";
-import ExplosionParticle from "./Particle.js";
+import {ExplotionParticle, FireParticle} from "./Particle.js";
 
 function initParticles()
 {
-    initExplotion();
+    // initExplotion();
+    initFire();
 }
-function initExplotion()
+function initFire()
+{
+    const numParticles = 100;
+
+    for (let i = 0; i < numParticles; ++i){
+        createFireParticle();
+    }
+}
+export function createFireParticle()
+{
+    const alpha = 0.1;
+    const velocity = Math.random() * 20 + 10;
+    const physics = new Physics(velocity);
+
+    // const xInit = Math.random() * 50 + 100;
+    const xInit = Math.random() * 50 + 150;
+
+    const yInit = 200;
+
+    const radius = 8 * Math.random() + 2;
+
+    const particle = new FireParticle(ParticleID.FIRE, ParticleState.ON, xInit, yInit, radius, alpha, physics);
+
+    //Asignamos angulo de propagacion de particulas (270 - 330)
+
+    const randomAngle = Math.random() * Math.PI / 3 + 3 * Math.PI / 2;
+
+    particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle);
+    particle.physics.vy = particle.physics.vLimit * Math.sin(randomAngle);
+
+    globals.particles.push(particle);
+}
+
+function initExplotion(x , y)
 {
     const numParticles = 300;
-    const xInit = globals.sprites[0].xPos + globals.level.imageSet.xGridWidth
-    const yInit = globals.sprites[0].yPos + globals.level.imageSet.yGridHeight;
-    const radius = 2.5;
+
+    const radius = 5;
     const timeToFadeMax = 10;
-    const alpha = 1.0;
+    const alpha = 0.5;
 
     for (let i = 0; i < numParticles; ++i)
     {
-        const velocity = Math.random() * 25 + 5;
+        const velocity = Math.random() * 25 + 80;
         const physics = new Physics(velocity);
 
         const timeToFade = timeToFadeMax * Math.random() + 1;
-        const particle = new ExplosionParticle(ParticleID.EXPLOTION, ParticleState.ON, xInit, yInit, radius, alpha, physics, timeToFade); 
+        const particle = new ExplotionParticle(ParticleID.EXPLOTION, ParticleState.ON,x,y, radius, alpha, physics, timeToFade); 
 
         //Asinamos velocidades segun angulo aleatorio 
 
@@ -214,7 +247,8 @@ function initTimer()
         initEvents,
         // createFire,
         initCamera,
-        initParticles
+        initParticles,
+        initExplotion
         
 
     }
@@ -361,7 +395,7 @@ function initTimer()
         const imageSet = new ImageSet(0, 0, 64, 64, 64, 64, 0, 0); 
 
         //Creamos los datos de la animacion. 8 frames / state y tambien velocidad de animacion
-        const frames = new Frames(3, 3);
+        const frames = new Frames(2, 3);
 
         //Creamos nuestro objecto physics con vLimit = 40 pixels/seconds
 
