@@ -223,7 +223,7 @@ export const Key = {
 };
 export const ParticleID = {
 
-    EXPLOSION: 0,
+    EXPLOTION: 0,
     FIRE: 1,
     
 }

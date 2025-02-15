@@ -104,7 +104,10 @@ function updateParticle(particle)
     switch(type)
     {
         case ParticleID.EXPLOTION:
-            updateExplotionParticle(particle);
+            if(globals.sprites[0].state === State.FAINT){
+                updateExplotionParticle(particle);
+
+            }
             break;
 
 
@@ -118,7 +121,7 @@ function updateExplotionParticle(particle)
 {
     particle.fadeCounter += globals.deltaTime;
 
-    //COgemos las velocidades de los arrays
+    //Cogemos las velocidades de los arrays
     switch (particle.state)
     {
         case ParticleState.ON:
@@ -174,6 +177,7 @@ function updateGameTime()
 function playGame(){
 
     updateSprites();
+    updateParticles();
     detectCollisions();
     updateGameTime();
     updateLevelTime();

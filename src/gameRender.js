@@ -1,6 +1,6 @@
 import globals from "./globals.js";
 import {Game, SpriteID} from "./constants.js";
-import {ParticleState, Tile,ParticleID, Back} from "./constants.js";
+import {ParticleState, Tile, ParticleID, Back, State} from "./constants.js";
 
 
 //Funcion que renderiza los graficos
@@ -66,7 +66,12 @@ function renderParticle(particle)
     {
         //Caso del jugador
         case ParticleID.EXPLOTION:
-            renderExplosionParticle(particle);
+             if(globals.sprites[0].state === State.FAINT){
+
+                renderExplotionParticle(particle);
+
+            
+            }
             break;
 
         case ParticleID.FIRE: 
@@ -79,7 +84,7 @@ function renderParticle(particle)
     }
 }
 
-function renderExplosionParticle(particle)
+function renderExplotionParticle(particle)
 {
     if (particle.state != ParticleState.OFF)
     {

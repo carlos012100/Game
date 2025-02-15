@@ -13,15 +13,15 @@ import ExplosionParticle from "./Particle.js";
 
 function initParticles()
 {
-    initExplosion();
+    initExplotion();
 }
-function initExplosion()
+function initExplotion()
 {
     const numParticles = 300;
-    const xInit = 100;
-    const yInit = 100;
+    const xInit = globals.sprites[0].xPos + globals.level.imageSet.xGridWidth
+    const yInit = globals.sprites[0].yPos + globals.level.imageSet.yGridHeight;
     const radius = 2.5;
-    const timeToFadeMax = 5;
+    const timeToFadeMax = 10;
     const alpha = 1.0;
 
     for (let i = 0; i < numParticles; ++i)
@@ -30,7 +30,7 @@ function initExplosion()
         const physics = new Physics(velocity);
 
         const timeToFade = timeToFadeMax * Math.random() + 1;
-        const particle = new ExplosionParticle(ParticleID.EXPLOSION, ParticleState.ON, xInit, yInit, radius, alpha, physics, timeToFade); 
+        const particle = new ExplosionParticle(ParticleID.EXPLOTION, ParticleState.ON, xInit, yInit, radius, alpha, physics, timeToFade); 
 
         //Asinamos velocidades segun angulo aleatorio 
 
@@ -386,7 +386,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 1000, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
 
         //Añadimos el player al array de sprites
 
