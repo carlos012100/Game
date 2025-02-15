@@ -629,9 +629,9 @@ function  detectCollisionBetweenPlayerAndObstacles()
                         player.isCollidingWithHealingPlace = true;
                         console.log("Healing place detected!" + player.isCollidingWithHealingPlace);
                     }
-                    else if (!player.isCollidingWithHealingPlace) {
-                        player.isCollidingWithHealingPlace = false;  // Only reset if it was never `true`
-                    }
+                    // else if (!player.isCollidingWithHealingPlace) {
+                    //     player.isCollidingWithHealingPlace = false;  // Only reset if it was never `true`
+                    // }
                 player.isCollidingWithTopBlock = true;
                 // const id = getMapTileId(xPos, yPos, layerIndex);  // Get the tile ID for the specified laye
                 //Ajuste: calculate overlap and eliminate it, this will move the character some pixels back

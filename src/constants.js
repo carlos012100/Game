@@ -23,7 +23,8 @@ export const SpriteID = {
     BOSS:3,
     ORC: 4,
     HEART: 7,
-    BULLET: 6
+    BULLET: 6,
+    CHEST: 8,
 };
 
 // Identificador de Estado de sprite
@@ -77,6 +78,8 @@ export const State = {
     BOSS_LEFT: 3,
     BOSS_SPECIAL: 4,
 
+    //CHest
+    CHEST_CLOSED: 0,
     
 };
 
@@ -225,6 +228,7 @@ export const ParticleID = {
 
     EXPLOTION: 0,
     FIRE: 1,
+    FIREHEAL: 2,
     
 }
 export const ParticleState = {
@@ -232,3 +236,5 @@ export const ParticleState = {
     FADE: 1,
     OFF: -1
 }
+
+export const MAX_HEARTS = 4; // Define the maximum number of hearts

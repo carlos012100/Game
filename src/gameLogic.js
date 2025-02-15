@@ -1,7 +1,7 @@
 import globals from "./globals.js";
-import {Game, State, SpriteID, ParticleState, ParticleID} from "./constants.js";
+import {Game, State, SpriteID, ParticleState, ParticleID, MAX_HEARTS} from "./constants.js";
 import detectCollisions from "./collisions.js";
-import { createFireParticle, initExplotion } from './initialize.js';
+import { createFireParticle, createFireParticleHeal, initExplotion } from './initialize.js';
 
 
 export default function update(){
@@ -92,114 +92,121 @@ function readKeyboardAndAssignState(sprite) {
     }
 }
 
-function updateParticles()
-{
-    for (let i = 0; i < globals.particles.length; ++i)
-    {
+function updateParticles() {
+    for (let i = 0; i < globals.particles.length; ++i) {
         const particle = globals.particles[i];
 
-        if(particle.id === ParticleID.FIRE && particle.state === ParticleState.OFF)
-        {
+        if (particle.id === ParticleID.FIRE && particle.state === ParticleState.OFF) {
             globals.particles.splice(i, 1);
             i--;
             createFireParticle();
-        }
-        else
-        {
+        } else if (particle.id === ParticleID.FIREHEAL && particle.state === ParticleState.OFF) {
+            globals.particles.splice(i, 1);
+            i--;
+        } else {
             updateParticle(particle);
-
         }
     }
 }
-function updateParticle(particle)
-{
-    const type = particle.id;
-    switch(type)
-    {
-        case ParticleID.EXPLOTION:
-            if(globals.sprites[0].state === State.FAINT){
-                
-                updateExplotionParticle(particle);
 
+function updateParticle(particle) {
+    const type = particle.id;
+    switch (type) {
+        case ParticleID.EXPLOTION:
+            if (globals.sprites[0].state === State.FAINT) {
+                updateExplotionParticle(particle);
             }
             break;
         case ParticleID.FIRE:
             updateFireParticle(particle);
-
-        default:
-
+            break;
+        case ParticleID.FIREHEAL:
+            updateFireParticleHeal(particle);
             break;
     }
 }
 
-function updateExplotionParticle(particle)
-{
+function updateExplotionParticle(particle) {
     particle.fadeCounter += globals.deltaTime;
 
-    //Cogemos las velocidades de los arrays
-    switch (particle.state)
-    {
+    switch (particle.state) {
         case ParticleState.ON:
-
-            if(particle.fadeCounter > particle.timeToFade)
-            {
+            if (particle.fadeCounter > particle.timeToFade) {
                 particle.fadeCounter = 0;
                 particle.state = ParticleState.FADE;
             }
             break;
-
-        case ParticleState.FADE: 
+        case ParticleState.FADE:
             particle.alpha -= 0.01;
-            if (particle.alpha <= 0)
-            {
+            if (particle.alpha <= 0) {
                 particle.state = ParticleState.OFF;
             }
             break;
-
         case ParticleState.OFF:
             break;
-
-        default:
-            //Por Completar
     }
 
     particle.xPos += particle.physics.vx * globals.deltaTime;
     particle.yPos += particle.physics.vy * globals.deltaTime;
-
 }
-function updateFireParticle(particle)
-{
-    // if(globals.sprites[0].isCollidingWithHealingPlace === true)
-    // {
-    //     particle.state = ParticleState.OFF;
-    // }
-    // else if (!globals.sprites[0].isCollidingWithHealingPlace) {
-    //     globals.sprites[0].isCollidingWithHealingPlace = false;  // Only reset if it was never `true`
-    // }
-    //Cogemos las velocidades de los arrays
-    switch (particle.state)
-    {
+
+function updateFireParticleHeal(particle) {
+    // Increment the fade counter using deltaTime
+    particle.fadeCounter += globals.deltaTime;
+
+    switch (particle.state) {
         case ParticleState.ON:
+            // Reduce the particle's radius as it "heals"
             particle.radius -= 0.1;
-            if(particle.radius < 2)
-            {
-                particle.state = ParticleState.FADE;
+
+            // Transition from ON to FADE state when fade counter exceeds timeToFade
+            if (particle.fadeCounter > particle.timeToFade) {
+                particle.fadeCounter = 0; // Reset the fade counter
+                particle.state = ParticleState.FADE; // Transition to FADE state
             }
             break;
 
         case ParticleState.FADE:
+            // Gradually reduce alpha for fading effect
             particle.alpha -= 0.3;
-            if(particle.alpha <= 0)
-            {
-                particle.state = ParticleState.OFF;
+
+            // Transition to OFF state when alpha reaches zero
+            if (particle.alpha <= 0) {
+                particle.state = ParticleState.OFF; // Particle is off
             }
             break;
 
         case ParticleState.OFF:
+            // The particle is no longer active, nothing to update
             break;
+    }
 
-        default:
-            //Por Completar
+    // Update particle's position based on its velocity
+    particle.xPos += particle.physics.vx * globals.deltaTime;
+    particle.yPos += particle.physics.vy * globals.deltaTime;
+}
+
+
+
+function updateFireParticle(particle) {
+    if (globals.sprites[0].isCollidingWithHealingPlace === true) {
+        particle.state = ParticleState.OFF;
+    }
+    switch (particle.state) {
+        case ParticleState.ON:
+            particle.radius -= 0.1;
+            if (particle.radius < 2) {
+                particle.state = ParticleState.FADE;
+            }
+            break;
+        case ParticleState.FADE:
+            particle.alpha -= 0.3;
+            if (particle.alpha <= 0) {
+                particle.state = ParticleState.OFF;
+            }
+            break;
+        case ParticleState.OFF:
+            break;
     }
     particle.xPos += particle.physics.vx * globals.deltaTime;
     particle.yPos += particle.physics.vy * globals.deltaTime;
@@ -440,7 +447,7 @@ else if(sprite.spriteIsDead && State.FAINT)
         initExplotion(xDeath, yDeath);
     }
 
-
+    updateLife(sprite);
     
 
 
@@ -468,25 +475,6 @@ else if(sprite.spriteIsDead && State.FAINT)
     // }
 
 }
-    
-    
-    // function updatePlayer(sprite) {
-
-    //     sprite.xPos = 290;
-    //     sprite.yPos = 180;
-
-    //     // Update the sprite's state (e.g., still or moving) - assuming idle animation starts from a still state
-    //     sprite.frames.framesCounter++;
-        
-    //     // Loop the animation frames if needed
-    //     if (sprite.framesCounter >= sprite.frames) {
-    //         sprite.frames.framesCounter = 0; // Reset to the first frame
-    //     }
-    
-    //     // Ensure the sprite does not move off-screen
-    //     // sprite.xPos = Math.max(0, Math.min(sprite.xPos, globals.canvas.width - sprite.imageSet.xSize));
-    //     // sprite.yPos = Math.max(0, Math.min(sprite.yPos, globals.canvas.height - sprite.imageSet.ySize));
-    // }
     
 
     function updateSprites(){
@@ -561,29 +549,7 @@ else if(sprite.spriteIsDead && State.FAINT)
     }
         
     }
-    // function updateSkullFree(sprite)
-    // {
-    //     sprite.physics.velChangeCounter += globals.deltaTime;
 
-    //     sprite.physics.vx = sprite.physics.velsX[sprite.physics.velPos];
-    //     sprite.physics.vy = sprite.physics.velsY[sprite.physics.velPos];
-
-    //     if (sprite.physics.velChangeCounter > sprite.physics.velChangeCounter)
-    //         {
-    //             sprite.physics.velChangeCounter = 0;
-    //             sprite.physics.velPos++;
-    //         }
-    //     if (sprite.physics.velPos === sprite.physics.velsX.length)
-    //     {
-    //         sprite.physics.velPos = 0;
-    //     }
-
-    //     sprite.xPos += sprite.physics.vx * globals.deltaTime;
-    //     sprite.yPos += sprite.physics.vy * globals.deltaTime;
-
-    //     updateAnimationFrames(sprite);
-
-    // }
     function updateBoss(sprite)
     {
         switch (sprite.state)
@@ -877,19 +843,24 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
         console.log("Y Position:", sprite.yPos);
         console.log("X Position:", sprite.xPos);
 
-                console.log("Velocity: " + sprite.physics.vx);
+        console.log("Velocity: " + sprite.physics.vx);
         console.log("X Position: " + sprite.xPos);
         console.log("Y Position: " + sprite.yPos);
-    console.log(sprite.maxTimeToChangeDirection)
+        console.log(sprite.maxTimeToChangeDirection)
 
 
 
 
     }
-    // function updateLife()
-    // {
+    function updateLife(sprite)
+    {
+        if(sprite.isCollidingWithHealingPlace)
+            {
+                globals.life = MAX_HEARTS;
 
-    // }
+                createFireParticleHeal();
+            }
+    }
     
     function updateBAT(sprite) {
     

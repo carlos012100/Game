@@ -50,16 +50,14 @@ export default function render()
     }
 }
 
-function renderParticles(){
-
-    for (let i = 0; i < globals.particles.length; ++i) 
-        {
-            const particle = globals.particles[i];
-            renderParticle(particle);
-        }
-
+function renderParticles() {
+    for (let i = 0; i < globals.particles.length; ++i) {
+        const particle = globals.particles[i];
+        renderParticle(particle);
+    }
 }
-function renderFireParticle(particle) {
+
+function renderFireParticleHeal(particle) {
     if (particle.state != ParticleState.OFF) {
         globals.ctx.save();
 
@@ -68,7 +66,7 @@ function renderFireParticle(particle) {
         // Draw white tint
         globals.ctx.globalCompositeOperation = "source-atop";
         globals.ctx.fillStyle = "lightblue";
-        globals.ctx.filter =  'blur(2px) saturated(500%)';
+        globals.ctx.filter = 'blur(2px) saturated(500%)';
         globals.ctx.fillRect(particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
 
         // Reset composite operation
@@ -82,44 +80,70 @@ function renderFireParticle(particle) {
     }
 }
 
+function renderFireParticle(particle) {
+    if (particle.state != ParticleState.OFF) {
+        globals.ctx.save();
 
-function renderParticle(particle)
-{
+        globals.ctx.globalAlpha = particle.alpha; // Set transparency
+
+        // Draw white tint
+        globals.ctx.globalCompositeOperation = "source-atop";
+        globals.ctx.fillStyle = "lightblue";
+        globals.ctx.filter = 'blur(2px) saturated(500%)';
+        globals.ctx.fillRect(particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
+
+        // Reset composite operation
+        globals.ctx.globalCompositeOperation = "source-over";
+
+        // Draw the particle image
+        const particleImage = globals.particleImages[0]; // Get the preloaded image
+        globals.ctx.drawImage(particleImage, particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
+
+        globals.ctx.restore();
+    }
+}
+
+function renderParticle(particle) {
     const type = particle.id;
-    switch (type)
-    {
-        //Caso del jugador
+    switch (type) {
         case ParticleID.EXPLOTION:
-             if(globals.sprites[0].state === State.FAINT){
-
+            if (globals.sprites[0].state === State.FAINT) {
                 renderExplotionParticle(particle);
-
-            
             }
             break;
-
-        case ParticleID.FIRE: 
-
+        case ParticleID.FIRE:
             renderFireParticle(particle);
             break;
-
-        default:
+        case ParticleID.FIREHEAL:
+            renderFireParticleHeal(particle);
             break;
     }
 }
 
-function renderExplotionParticle(particle)
-{
-    if (particle.state != ParticleState.OFF)
-    {
+function renderExplotionParticle(particle) {
+    if (particle.state != ParticleState.OFF) {
         globals.ctx.fillStyle = "black";
-        globals.ctx.globalAlpha = particle.alpha; //Set alpha
+        globals.ctx.globalAlpha = particle.alpha; // Set alpha
         globals.ctx.beginPath();
         globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
         globals.ctx.fill();
-        globals.ctx.globalAlpha = 0.5 //Reset alpha
+        globals.ctx.globalAlpha = 0.5; // Reset alpha
     }
 }
+
+// function drawGame(){
+
+//     //Borramos la pantalla entera
+//     if (particle.state != ParticleState.OFF)
+//     {
+//         globals.ctx.fillStyle = "black";
+//         globals.ctx.globalAlpha = particle.alpha; //Set alpha
+//         globals.ctx.beginPath();
+//         globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
+//         globals.ctx.fill();
+//         globals.ctx.globalAlpha = 0.5 //Reset alpha
+//     }
+// }
 
 function drawGame(){
 
@@ -326,7 +350,6 @@ function drawAttackBox (sprite){
     
     
 
-    let heartSprites = [];
     function updateHudHearts ()
     {
         const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
@@ -336,7 +359,7 @@ function drawAttackBox (sprite){
         const startY = 10;  
 
           // Clear the array of heart sprites and HUD area
-        heartSprites = [];
+        globals.heartSprites = []; // Clear the array
         globals.ctxHUD.clearRect(0, 0, globals.canvasHUD.width, globals.canvasHUD.height);
 
 
@@ -345,7 +368,7 @@ function drawAttackBox (sprite){
         const destX = startX + i * 28;
 
         // Add a heart sprite's position to the heartSprites array
-        heartSprites.push({ x: destX, y: startY });
+        globals.heartSprites.push({ x: destX, y: startY });
 
         // Draw each heart sprite
         for (const sprite of hearts) {

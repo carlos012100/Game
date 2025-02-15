@@ -1,6 +1,7 @@
 import globals from "./globals.js";
 import {Game, SpriteID, State, FPS, Block, ParticleID, ParticleState} from "./constants.js";
 import { Player, Bat, Orc, Skull, Boss, Heart } from "./Sprite.js";
+import Sprite from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
 import {Level, levelx} from "./Level.js";
@@ -9,23 +10,20 @@ import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
 import Camera from "./Camera.js";
-import {ExplotionParticle, FireParticle} from "./Particle.js";
+import {ExplotionParticle, FireParticle, FireParticleHeal} from "./Particle.js";
 
-function initParticles()
-{
-    // initExplotion();
+function initParticles() {
     initFire();
 }
-function initFire()
-{
-    const numParticles = 100;
 
-    for (let i = 0; i < numParticles; ++i){
+function initFire() {
+    const numParticles = 50;
+    for (let i = 0; i < numParticles; ++i) {
         createFireParticle();
     }
 }
-export function createFireParticle()
-{
+
+function createFireParticle() {
     const alpha = 0.1;
     const velocity = Math.random() * 20;
     const physics = new Physics(velocity);
@@ -33,50 +31,76 @@ export function createFireParticle()
     const xInit = Math.random() * 50 + 155;
     const yInit = 210;
 
-    const radius = 4 * Math.random() + 12;
+    const radius = 2 * Math.random() + 20;
 
     const particle = new FireParticle(ParticleID.FIRE, ParticleState.ON, xInit, yInit, radius, alpha, physics);
 
-    //Asignamos angulo de propagacion de particulas (270 - 330)
-
     const randomAngle = Math.PI / 2; // 90 degrees, straight up
-    
     particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle); // Small horizontal movement
     particle.physics.vy = -Math.abs(particle.physics.vLimit * Math.sin(randomAngle)); // Always upward
-    
 
     globals.particles.push(particle);
 }
 
-function initExplotion(x , y)
-{
-    const numParticles = 300;
+function createFireParticleHeal() {
+    const numParticles = 1;
+    const alpha = 0.08;
+    const timeqToFadeMax = 2; // Max time for fade
+    const xInit = Math.random() * 50 + 155;
+    const yInit = 250;
 
+    const radius = 1 * Math.random() + 12;  // Random radius
+
+    for (let i = 0; i < numParticles; ++i) {
+        // Randomize time to fade within a range
+        const timeToFade = timeqToFadeMax * Math.random() + 1;
+
+        const velocity = Math.random() * 80;  // Random velocity
+        const physics = new Physics(velocity);
+
+        // Create a new FireParticleHeal instance
+        const particleHeal = new FireParticleHeal(
+            ParticleID.FIREHEAL, 
+            ParticleState.ON, 
+            xInit, 
+            yInit, 
+            radius, 
+            alpha, 
+            physics, 
+            timeToFade
+        );
+
+        // Random direction: Moving straight up
+        const randomAngle = Math.PI / 2;
+        particleHeal.physics.vx = particleHeal.physics.vLimit * Math.cos(randomAngle);
+        particleHeal.physics.vy = -Math.abs(particleHeal.physics.vLimit * Math.sin(randomAngle));
+
+        // Add the particle to the global particles array
+        globals.particles.push(particleHeal);
+    }
+}
+
+
+function initExplotion(x, y) {
+    const numParticles = 300;
     const radius = 5;
     const timeToFadeMax = 10;
     const alpha = 0.5;
 
-    for (let i = 0; i < numParticles; ++i)
-    {
+    for (let i = 0; i < numParticles; ++i) {
         const velocity = Math.random() * 25 + 80;
-
         const physics = new Physics(velocity);
-
         const timeToFade = timeToFadeMax * Math.random() + 1;
-        const particle = new ExplotionParticle(ParticleID.EXPLOTION, ParticleState.ON,x,y, radius, alpha, physics, timeToFade); 
-
-        //Asinamos velocidades segun angulo aleatorio 
+        const particle = new ExplotionParticle(ParticleID.EXPLOTION, ParticleState.ON, x, y, radius, alpha, physics, timeToFade);
 
         const randomAngle = Math.random() * 2 * Math.PI;
-
         particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle);
-
         particle.physics.vy = particle.physics.vLimit * Math.sin(randomAngle);
 
         globals.particles.push(particle);
     }
-    
 }
+
 //Function que incializa los elementos HTML
 function initHTMLelements(){
     //Canvas
@@ -93,42 +117,9 @@ function initHTMLelements(){
     //Eliminacion del Anti-Aliasing
     globals.ctx.imageSmoothingEnabled = false;
 
-    // globals.startScreen = document.getElementById('mainMenuScreen');
-
-    // globals.ctxstartScreen = globals.startScreen.getContext('2d'); // Add this
-
-    // globals.newGameScreen = document.getElementById('newGame');
-
-    // globals.ctxnewGameScreen = globals.newGameScreen.getContext('2d');
-
-    // globals.newGameScreen1 = document.getElementById('newGame1');
-
-    // globals.ctxnewGameScreen1 = globals.newGameScreen1.getContext('2d');
-
-    // globals.highScore = document.getElementById('highscore');
-
-    // globals.ctxshightScore = globals.highScore.getContext('2d');
-
-    // globals.controls = document.getElementById('controls');
-
-    // globals.ctxcontrols = globals.controls.getContext('2d');
-
-    // globals.gameover = document.getElementById('controls');
-
-    // globals.ctxgameover = globals.gameover.getContext('2d');
 
 
 }
-// function showScreen(gameScreen) {
-//     // Hide all canvases
-//     const screens = document.querySelectorAll('canvas');
-//     screens.forEach(screen => screen.style.display = 'none');
-    
-//     // Show the selected canvas
-//     document.getElementById(gameScreen).style.display = 'block';
-// }
-//Funcion que inicializa las variables del juego
-//function que inicializa las variables de juego con la siguente espficicaiones: 
 
 function initEvents()
 {
@@ -248,7 +239,9 @@ function initTimer()
         // createFire,
         initCamera,
         initParticles,
-        initExplotion
+        initExplotion,
+        createFireParticle,
+        createFireParticleHeal
         
 
     }
@@ -268,42 +261,6 @@ function initTimer()
         tileSet.src = "./images/protagonist2.png";
         globals.tileSets.push(tileSet);
         globals.assetsToLoad.push(tileSet);
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/protagonist.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);
-
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/ORC.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);
-
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/Skull.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);
-
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/boss.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);
-
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/bat.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);        
-
-        //Load the map image
-        // tileSet = new Image();
-        // tileSet.addEventListener("load", loadHandler, false);
-        // tileSet.src = "./images/mapsmall.png"; //ruta es relativa al HTML, no al JS 
-        // globals.tileSets.push(tileSet);
-        // globals.assetsToLoad.push(tileSet);
 
         tileSet = new Image();
         tileSet.addEventListener("load", loadHandler, false);
@@ -394,7 +351,7 @@ function initTimer()
 
     //     globals.sprites.push(bullet);
     // }
-    
+
     function initPlayer(){
 
         //Creamos las propiedades de las imagenes: xSize, ySize, gridSize, xOffset, yOffset
@@ -426,7 +383,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 1000, 600, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 100, 100, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
 
         //Añadimos el player al array de sprites
 
@@ -570,6 +527,21 @@ function initSKULL1(skullData) {
         globals.sprites.push(heart);
 
     }
+    function initChest()
+    {
+
+        const imageSet = new ImageSet(73, 0, 48, 48, 64, 64, 0, 0);
+
+        const frames = new Frames(4, 5);
+
+        const physics = new Physics(0);
+
+        const chest = new Sprite(SpriteID.CHEST, State.CHEST_CLOSED, 85, 12, imageSet, frames, physics);
+        
+        globals.sprites.push(chest);
+
+    }
+
     function initLevel(){
 
         //Creamos las propiedades de las images del mapa: initFil, initCol, xSize, ySize, gridSize, xOffset, yOffset
@@ -601,6 +573,7 @@ function initSKULL1(skullData) {
             { x: 185, y: 360, state: State.ORC_IDLEUP }
         ]);
         initHeart();
+        initChest();
 
 
     }

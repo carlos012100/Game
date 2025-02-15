@@ -61,11 +61,16 @@ export default {
 
     particleImages: [],
 
+    heartSprites: [], // Initialize as an empty array
 
     level: {},
 
     //Objecto que guarda el estado de la tecla pulsada
-    action: {}
+    action: {},
+
+    isHealingActive: false,
+    healCount: 0,
+    healDuration: 2 // Duration in seconds
 
     
     
