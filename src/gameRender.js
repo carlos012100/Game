@@ -59,23 +59,30 @@ function renderParticles(){
         }
 
 }
-function renderFireParticle(particle)
-{
-    if (particle.state != ParticleState.OFF)
-    {
+function renderFireParticle(particle) {
+    if (particle.state != ParticleState.OFF) {
         globals.ctx.save();
-        globals.ctx.fillStyle = "red";
-        globals.ctx.filter = "blur(2px) saturate(200%)";
 
-        globals.ctx.globalAlpha = particle.alpha; //Set alpha
+        globals.ctx.globalAlpha = particle.alpha; // Set transparency
 
-        globals.ctx.beginPath();
-        globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, Math.PI * 2);
+        // Draw white tint
+        globals.ctx.globalCompositeOperation = "source-atop";
+        globals.ctx.fillStyle = "lightblue";
+        globals.ctx.filter =  'blur(2px) saturated(500%)';
+        globals.ctx.fillRect(particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
 
-        globals.ctx.fill();
+        // Reset composite operation
+        globals.ctx.globalCompositeOperation = "source-over";
+
+        // Draw the particle image
+        const particleImage = globals.particleImages[0]; // Get the preloaded image
+        globals.ctx.drawImage(particleImage, particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
+
         globals.ctx.restore();
     }
 }
+
+
 function renderParticle(particle)
 {
     const type = particle.id;
@@ -398,7 +405,7 @@ function drawAttackBox (sprite){
     //     //Draw life 
 
         globals.ctxHUD.font = '8px emulogic';
-        globals.ctxHUD.fillStyle = 'darkred';
+        globals.ctxHUD.fillStyle = '#B22222';
         globals.ctxHUD.fillText("Health", 10, 10);
         globals.ctxHUD.fillStyle = 'red';
         // globals.ctxHUD.fillText(" " + globals.life, 10, 25);
@@ -438,15 +445,15 @@ function drawAttackBox (sprite){
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'lightblue';
         globals.ctxHUD.fillText("Psynergy", 120, 10);
-        globals.ctxHUD.fillStyle = 'navy';
+        globals.ctxHUD.fillStyle = '#8A2BE2';
         globals.ctxHUD.fillRect(120, 15, mana, 5);
 
         //Madness
         globals.ctxHUD.font = '8px emulogic';
-        globals.ctxHUD.fillStyle = 'darkviolet';
-        globals.ctxHUD.fillText("Madness", 200, 10);
-        globals.ctxHUD.fillStyle = 'violet';
-        globals.ctxHUD.fillRect(200, 15, madness, 5);
+        globals.ctxHUD.fillStyle = 'lightblue';
+        globals.ctxHUD.fillText("Madness", 120, 35);
+        globals.ctxHUD.fillStyle = '#404040';
+        globals.ctxHUD.fillRect(120, 40, madness, 5);
 
 //         //JUNK
 //         // Draw health icon
@@ -482,7 +489,7 @@ function drawAttackBox (sprite){
 // }
 
         globals.ctxHUD.font = '8px emulogic';
-        globals.ctxHUD.fillStyle = 'gray';
+        globals.ctxHUD.fillStyle = 'lightblue';
         globals.ctxHUD.fillText("JUNK", 280, 10);
         globals.ctxHUD.fillStyle = 'silver';
         globals.ctxHUD.fillText(" x " + junk, 280, 25);        
@@ -736,5 +743,4 @@ function drawAttackBox (sprite){
         globals.ctx.fillText("TRY AGAIN", 300, 200)
 
         };
-    
-    
+

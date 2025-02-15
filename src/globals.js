@@ -59,6 +59,8 @@ export default {
 
     particles: [],
 
+    particleImages: [],
+
 
     level: {},
 

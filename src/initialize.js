@@ -27,24 +27,23 @@ function initFire()
 export function createFireParticle()
 {
     const alpha = 0.1;
-    const velocity = Math.random() * 20 + 10;
+    const velocity = Math.random() * 20;
     const physics = new Physics(velocity);
 
-    // const xInit = Math.random() * 50 + 100;
-    const xInit = Math.random() * 50 + 150;
+    const xInit = Math.random() * 50 + 155;
+    const yInit = 210;
 
-    const yInit = 200;
-
-    const radius = 8 * Math.random() + 2;
+    const radius = 4 * Math.random() + 12;
 
     const particle = new FireParticle(ParticleID.FIRE, ParticleState.ON, xInit, yInit, radius, alpha, physics);
 
     //Asignamos angulo de propagacion de particulas (270 - 330)
 
-    const randomAngle = Math.random() * Math.PI / 3 + 3 * Math.PI / 2;
-
-    particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle);
-    particle.physics.vy = particle.physics.vLimit * Math.sin(randomAngle);
+    const randomAngle = Math.PI / 2; // 90 degrees, straight up
+    
+    particle.physics.vx = particle.physics.vLimit * Math.cos(randomAngle); // Small horizontal movement
+    particle.physics.vy = -Math.abs(particle.physics.vLimit * Math.sin(randomAngle)); // Always upward
+    
 
     globals.particles.push(particle);
 }
@@ -60,6 +59,7 @@ function initExplotion(x , y)
     for (let i = 0; i < numParticles; ++i)
     {
         const velocity = Math.random() * 25 + 80;
+
         const physics = new Physics(velocity);
 
         const timeToFade = timeToFadeMax * Math.random() + 1;
@@ -260,6 +260,7 @@ function initTimer()
 
         let tileSet;
         let bImage;
+        let particleImage;
 
         //load the tileSet image
         tileSet = new Image();
@@ -349,6 +350,11 @@ function initTimer()
         globals.bImages.push(bImage);
         globals.assetsToLoad.push(bImage);
 
+        particleImage = new Image();
+        particleImage.addEventListener("load", loadHandler, false);
+        particleImage.src = "./images/sparkle.png"; // Ensure the path is correct
+        globals.particleImages.push(particleImage);
+        globals.assetsToLoad.push(particleImage);
 
     }
 

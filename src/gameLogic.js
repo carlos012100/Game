@@ -169,6 +169,13 @@ function updateExplotionParticle(particle)
 }
 function updateFireParticle(particle)
 {
+    // if(globals.sprites[0].isCollidingWithHealingPlace === true)
+    // {
+    //     particle.state = ParticleState.OFF;
+    // }
+    // else if (!globals.sprites[0].isCollidingWithHealingPlace) {
+    //     globals.sprites[0].isCollidingWithHealingPlace = false;  // Only reset if it was never `true`
+    // }
     //Cogemos las velocidades de los arrays
     switch (particle.state)
     {

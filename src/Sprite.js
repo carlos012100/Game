@@ -17,6 +17,7 @@ export default class Sprite
         this.isCollidingWithLeftBlock = false;
         this.isCollidingWithBottomBlock = false;
         this.isCollidingWithRightBlock = false;
+        this.isCollidingWithHealingPlace = false;
         this.spriteIsDead = false;
         this.isDrawn = true;
         this.damageCounter = 0;

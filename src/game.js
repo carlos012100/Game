@@ -6,7 +6,8 @@ import render from "./gameRender.js";
 
 //GAME INIT
 
-window.onload = init;
+window.onload = init    ;
+
 
 
 
