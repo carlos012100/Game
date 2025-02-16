@@ -81,41 +81,49 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
         return true;
     }
 }
-
-export default function detectCollisions()
-{
-    //calcula y detecta si hay una colision entre sprites
-    for (let i = 1; i < globals.sprites.length; ++i)
-    {
+export default function detectCollisions() {
+    // Calculate and detect if there is a collision between sprites
+    for (let i = 1; i < globals.sprites.length; ++i) {
         const sprite = globals.sprites[i];
 
         sprite.isCollidingWithPlayer = false;
-        
-
         detectCollisionBetweenPlayerAndSprite(sprite);
 
         console.log("Player attacking:", globals.sprites[0].isPlayerAttacking);
 
-        if (globals.sprites[0].isPlayerAttacking){
-
-
-            CollisionAttackSprite (sprite);
-
-
-
+        if (globals.sprites[0].isPlayerAttacking) {
+            CollisionAttackSprite(sprite);
         }
 
+        // Detect collision with sword
+        if (sprite.id === SpriteID.SWORDLIGHT) {  // Assuming sword has a unique ID like SpriteID.SWORDLIGHT
+            detectCollisionWithSword(sprite);
+        }
     }
-    // if (globals.sprites[4])
-    // {
-    //         detectCollisionBetweenSpriteandWorld();
 
-    // }
-    //Calculamos colision del player con los obstucalos del mapa
+    // Other world object collision detections
     detectCollisionBetweenPlayerAndObstacles();
     detectCollisionBetweenOrcandWorld();
-    detectCollisionBetweenSkullandWorld ();
-    detectCollisionBetweenBatandWorld ();
+    detectCollisionBetweenSkullandWorld();
+    detectCollisionBetweenBatandWorld();
+}
+
+function detectCollisionWithSword(sprite) {
+    const player = globals.sprites[0]; // Assuming the player is the first sprite
+
+    // Check if the sword is colliding with the player
+    if (sprite.isCollidingWithPlayer) {
+        console.log("⚔️ Player collided with the sword!");
+
+        // Remove the sword from the game using splice
+        const index = globals.sprites.indexOf(sprite);
+        if (index !== -1) {
+            globals.sprites.splice(index, 1); // Remove sword from array
+        }
+    }
+}
+
+
 
     function CollisionAttackSprite(sprite) {
         // Reset collision data
@@ -123,37 +131,60 @@ export default function detectCollisions()
     
         const player = globals.sprites[0];
     
-        // 🔹 Ensure player has an active attack hitbox
+        // Ensure player has an active attack hitbox
         if (!player.activeHitbox || !sprite.hitBox) { 
             console.warn("Missing hitbox! Active attack hitbox:", player.activeHitbox, "Enemy hitbox:", sprite.hitBox);
             return; 
         }
     
-        // 🔹 Get player active attack hitbox position & size
+        // Get player active attack hitbox position & size
         const x1 = player.xPos + player.activeHitbox.xOffset;
         const y1 = player.yPos + player.activeHitbox.yOffset;
         const w1 = player.activeHitbox.xSize;
         const h1 = player.activeHitbox.ySize;
     
-        // 🔹 Get enemy hitbox position & size
+        // Get enemy hitbox position & size
         const x2 = sprite.xPos + sprite.hitBox.xOffset;
         const y2 = sprite.yPos + sprite.hitBox.yOffset;
         const w2 = sprite.hitBox.xSize;
         const h2 = sprite.hitBox.ySize;
     
-        // 🔹 Print hitbox values for debugging
+        // Print hitbox values for debugging
         console.log("Player attack hitbox:", { x1, y1, w1, h1 });
         console.log("Enemy hitbox:", { x2, y2, w2, h2 });
     
-        // 🔹 Check for overlap using rectIntersect
+        // Check for overlap using rectIntersect
         const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
-    
         if (isOverlap) {
             sprite.isCollidingWithAttack = true;
             console.log("⚔️ Attack hitbox collided with enemy!");
-        } else {
-            console.log("❌ No collision detected.");
+            
+            // Add more debug here to ensure knockback is applied
+            console.log("Sprite before knockback:", sprite.xPos, sprite.yPos);
+        
+            // Apply knockback based on the direction of the player
+            switch (player.state) {
+                case State.UP:
+                    sprite.yPos -= 15; // Knock enemy upwards
+                    console.log("Knockback UP: " + sprite.yPos);
+                    break;
+                case State.DOWN:
+                    sprite.yPos += 15; // Knock enemy downwards
+                    console.log("Knockback DOWN: " + sprite.yPos);
+                    break;
+                case State.LEFT:
+                    sprite.xPos -= 15; // Knock enemy left
+                    console.log("Knockback LEFT: " + sprite.xPos);
+                    break;
+                case State.RIGHT:
+                    sprite.xPos += 15; // Knock enemy right
+                    console.log("Knockback RIGHT: " + sprite.xPos);
+                    break;
+            }
+        
+            console.log("Sprite after knockback:", sprite.xPos, sprite.yPos);
         }
+        
     }
     
     
@@ -201,23 +232,23 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
         switch(direction) {
 
             case State.UP:
-                overlapY = Math.floor(sprite.yPos) % h2 + 40;
+                overlapY =  Math.floor(sprite.yPos) % h2 + 10;
                 player.yPos += overlapY;
              
                 break;
         
             case State.DOWN:
-                overlapY = Math.floor(sprite.yPos) % h2 + 40;
+                overlapY = Math.floor(sprite.yPos) % h2 + 10;
                 player.yPos -= overlapY;
                 break;
         
             case State.LEFT:
-                overlapX = Math.floor(sprite.xPos) % w2 + 40;
+                overlapX = Math.floor(sprite.xPos) % w2 + 10;
                 player.xPos += overlapX;
                 break;
         
             case State.RIGHT:
-                overlapX = Math.floor(sprite.xPos) % w2 + 40;
+                overlapX = Math.floor(sprite.xPos) % w2 + 10;
                 player.xPos -= overlapX;
                 break;
         
@@ -729,6 +760,7 @@ function  detectCollisionBetweenPlayerAndObstacles()
             
             case State.RIGHT:
                 for (let i = 0; i < globals.objectTile.length; i++){
+                    
                     const obstacleId = globals.objectTile[i];
             
                     // Collision at the bottom-right corner (feet area)
@@ -1059,5 +1091,4 @@ if (player.physics.vx < 0)
 
 
 
-}
 }

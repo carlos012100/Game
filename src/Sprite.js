@@ -40,8 +40,8 @@ export class Player extends Sprite
         this.maxTimeToChangeDirection = maxTimeToChangeDirection; //Maximo tiempo para cambio de direccion (seconds)
         this.modeDAMAGE = false;
         this.invincivilityCounter = 0; // Counter for damage mode duration
-        this.invincivility = 1.5;
-        this.damageInterval = 0.2;
+        this.invincivility = 24;
+        this.damageInterval = 8;
         this.isPlayerAttacking = false;
         this.attackTimer = 0;
         this.attackDuration = 0.2;
@@ -52,8 +52,8 @@ export class Player extends Sprite
         this.attackHitboxDown = false;
         this.activeHitbox = null;
         this.breathCount = 0;
-
-
+        this.hasHealed = false;
+        
     }
 }
 export class Bat extends Sprite

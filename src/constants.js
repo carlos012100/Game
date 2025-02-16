@@ -24,7 +24,7 @@ export const SpriteID = {
     ORC: 4,
     HEART: 7,
     BULLET: 6,
-    CHEST: 8,
+    SWORDLIGHT: 8,
 };
 
 // Identificador de Estado de sprite
@@ -80,6 +80,9 @@ export const State = {
 
     //CHest
     CHEST_CLOSED: 0,
+
+    //SWORDS
+    LIGHT: 0,
     
 };
 

@@ -1,7 +1,7 @@
 import globals from "./globals.js";
 import {Game, State, SpriteID, ParticleState, ParticleID, MAX_HEARTS} from "./constants.js";
 import detectCollisions from "./collisions.js";
-import { createFireParticle, createFireParticleHeal, initExplotion } from './initialize.js';
+import { createFireParticle, createFireParticleHeal, initExplotion, initSwordLight } from './initialize.js';
 
 
 export default function update(){
@@ -234,7 +234,10 @@ function updateGameTime()
 }
 
 function playGame(){
-
+    if (globals.sprites[0].isCollidingWithHealingPlace && !globals.sprites[0].hasHealed) {
+        initSwordLight();
+        // globals.sprites[0].hasHealed = true; // Prevents spawning multiple times
+    }
     updateSprites();
     updateParticles();
     detectCollisions();
@@ -448,6 +451,7 @@ else if(sprite.spriteIsDead && State.FAINT)
     }
 
     updateLife(sprite);
+    resetHealingFlag(sprite);
     
 
 
@@ -852,15 +856,24 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
 
 
     }
-    function updateLife(sprite)
-    {
-        if(sprite.isCollidingWithHealingPlace)
-            {
-                globals.life = MAX_HEARTS;
-
-                createFireParticleHeal();
-            }
+    function resetHealingFlag(sprite) {
+        if (!sprite.isCollidingWithHealingPlace) {
+            sprite.hasHealed = false;
+        }
     }
+    function updateLife(sprite) {
+        if (sprite.isCollidingWithHealingPlace && !sprite.hasHealed) {
+            for (let i = 0; i < globals.heartSprites.length; ++i) {
+                if (globals.life < MAX_HEARTS) { // ✅ Prevent overhealing
+                    globals.life += 1;
+                }
+            }
+            sprite.hasHealed = true; // Prevents healing multiple times
+    
+            createFireParticleHeal();
+        }
+    }
+    
     
     function updateBAT(sprite) {
     

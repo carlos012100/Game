@@ -43,19 +43,19 @@ function createFireParticle() {
 }
 
 function createFireParticleHeal() {
-    const numParticles = 1;
-    const alpha = 0.08;
+    const numParticles = 50;
+    const alpha = 0.2;
     const timeqToFadeMax = 2; // Max time for fade
-    const xInit = Math.random() * 50 + 155;
-    const yInit = 250;
+    const xInit = 175;
+    const yInit = 240;
 
-    const radius = 1 * Math.random() + 12;  // Random radius
+    const radius = 2 * Math.random() + 15;  // Random radius
 
     for (let i = 0; i < numParticles; ++i) {
         // Randomize time to fade within a range
         const timeToFade = timeqToFadeMax * Math.random() + 1;
 
-        const velocity = Math.random() * 80;  // Random velocity
+        const velocity = Math.random() * 200;  // Random velocity
         const physics = new Physics(velocity);
 
         // Create a new FireParticleHeal instance
@@ -241,8 +241,8 @@ function initTimer()
         initParticles,
         initExplotion,
         createFireParticle,
-        createFireParticleHeal
-        
+        createFireParticleHeal,
+        initSwordLight,
 
     }
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 
@@ -527,20 +527,36 @@ function initSKULL1(skullData) {
         globals.sprites.push(heart);
 
     }
-    function initChest()
-    {
+    function initSwordLight() {
 
-        const imageSet = new ImageSet(73, 0, 48, 48, 64, 64, 0, 0);
+        const imageSet = new ImageSet(64, 0, 50, 50, 64, 64, 6, 6);
 
-        const frames = new Frames(4, 5);
+        const frames = new Frames(0, 1);
 
         const physics = new Physics(0);
-
-        const chest = new Sprite(SpriteID.CHEST, State.CHEST_CLOSED, 85, 12, imageSet, frames, physics);
         
-        globals.sprites.push(chest);
+        const hitBox = new HitBox(30, 25, 12, 6);
 
+        const swordLight = new Sprite(SpriteID.SWORDLIGHT, State.LIGHT, 150, 50, imageSet, frames, physics, hitBox);
+
+        globals.sprites.push(swordLight);
     }
+    // function initChest()
+    // {
+
+    //     const imageSet = new ImageSet(73, 0, 48, 48, 64, 64, 0, 0);
+
+    //     const frames = new Frames(4, 5);
+
+    //     const physics = new Physics(0);
+
+    //     const hitBox = new HitBox(22, 25, 12, 15);
+
+    //     const chest = new Sprite(SpriteID.CHEST, State.CHEST_CLOSED, 85, 12, imageSet, frames, physics, hitBox);
+        
+    //     globals.sprites.push(chest);
+
+    // }
 
     function initLevel(){
 
@@ -573,7 +589,7 @@ function initSKULL1(skullData) {
             { x: 185, y: 360, state: State.ORC_IDLEUP }
         ]);
         initHeart();
-        initChest();
+        // initChest();
 
 
     }
