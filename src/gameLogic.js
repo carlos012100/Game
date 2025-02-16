@@ -879,26 +879,27 @@ function updateDamage(sprite) {
     }
 }
 
+if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE && sprite.lightState) {
+    sprite.life -= 8; // Light attack does more damage
+} 
+else if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
+    sprite.life -= 1; // Normal attack damage
+}
 
-// Check for collision between the player and the sprite (e.g., player attacks sprite)
 if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
-    if (sprite.isCollidingWithAttack) {
-        sprite.life--; // Reduce life for ONLY this skull
+    if (sprite.life <= 0) {
+        const index = globals.sprites.indexOf(sprite);
+        if (index > -1) {
+            globals.sprites.splice(index, 1); // Remove dead enemy
+        }
+    }
+    
+    // Enter damage mode
+    sprite.modeDAMAGE = true;
+    sprite.damageCounter = 0;
+    sprite.invincivilityCounter = 0;
+}
 
-        if (sprite.life <= 0) {
-            // Remove only this SKULL from globals.sprites
-            const index = globals.sprites.indexOf(sprite);
-            if (index > -1) {
-                globals.sprites.splice(index, 1); // Remove dead enemy
-            }
-
-}
-}
-        // Enter damage mode for the sprite
-        sprite.modeDAMAGE = true;
-        sprite.damageCounter = 0; // Reset the flickering counter
-        sprite.invincivilityCounter = 0; // Reset the duration counter
-}
 }
 
     

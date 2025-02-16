@@ -82,21 +82,26 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
     }
 }
 export default function detectCollisions() {
-    // Calculate and detect if there is a collision between sprites
+    const player = globals.sprites[0];  // Store the player reference
+
     for (let i = 1; i < globals.sprites.length; ++i) {
         const sprite = globals.sprites[i];
 
         sprite.isCollidingWithPlayer = false;
         detectCollisionBetweenPlayerAndSprite(sprite);
 
-        console.log("Player attacking:", globals.sprites[0].isPlayerAttacking);
+        console.log("Player attacking:", player.isPlayerAttacking);
 
-        if (globals.sprites[0].isPlayerAttacking) {
+        if (player.isPlayerAttacking) {
             CollisionAttackSprite(sprite);
         }
 
+        if (player.isPlayerAttacking && player.lightState) {  
+            CollisionAttacklight(sprite);
+        }
+
         // Detect collision with sword
-        if (sprite.id === SpriteID.SWORDLIGHT) {  // Assuming sword has a unique ID like SpriteID.SWORDLIGHT
+        if (sprite.id === SpriteID.SWORDLIGHT) {
             detectCollisionWithSword(sprite);
         }
     }
@@ -189,6 +194,68 @@ function detectCollisionWithSword(sprite) {
         }
         
     }
+    function CollisionAttacklight(sprite) {
+        // Reset collision data
+        sprite.isCollidingWithAttack = false;
+    
+        const player = globals.sprites[0];
+    
+        // Ensure player has an active attack hitbox
+        if (!player.activeLight || !sprite.hitBox) { 
+            console.warn("Missing hitbox! Active attack hitbox:", player.activeLight, "Enemy hitbox:", sprite.hitBox);
+            return; 
+        }
+    
+        // Get player active attack hitbox position & size
+        const x1 = player.xPos + player.activeLight.xOffset;
+        const y1 = player.yPos + player.activeLight.yOffset;
+        const w1 = player.activeLight.xSize;
+        const h1 = player.activeLight.ySize;
+    
+        // Get enemy hitbox position & size
+        const x2 = sprite.xPos + sprite.hitBox.xOffset;
+        const y2 = sprite.yPos + sprite.hitBox.yOffset;
+        const w2 = sprite.hitBox.xSize;
+        const h2 = sprite.hitBox.ySize;
+    
+        // Print hitbox values for debugging
+        console.log("Player attack hitbox:", { x1, y1, w1, h1 });
+        console.log("Enemy hitbox:", { x2, y2, w2, h2 });
+    
+        // Check for overlap using rectIntersect
+        const isOverlap = rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2);
+        if (isOverlap) {
+            sprite.isCollidingWithAttack = true;
+            console.log("⚔️ Attack hitbox collided with enemy!");
+            
+            // Add more debug here to ensure knockback is applied
+            console.log("Sprite before knockback:", sprite.xPos, sprite.yPos);
+        
+            // Apply knockback based on the direction of the player
+            switch (player.state) {
+                case State.UP:
+                    sprite.yPos -= 15; // Knock enemy upwards
+                    console.log("Knockback UP: " + sprite.yPos);
+                    break;
+                case State.DOWN:
+                    sprite.yPos += 15; // Knock enemy downwards
+                    console.log("Knockback DOWN: " + sprite.yPos);
+                    break;
+                case State.LEFT:
+                    sprite.xPos -= 15; // Knock enemy left
+                    console.log("Knockback LEFT: " + sprite.xPos);
+                    break;
+                case State.RIGHT:
+                    sprite.xPos += 15; // Knock enemy right
+                    console.log("Knockback RIGHT: " + sprite.xPos);
+                    break;
+            }
+        
+            console.log("Sprite after knockback:", sprite.xPos, sprite.yPos);
+        }
+        
+    }
+    
     
     
 function detectCollisionBetweenPlayerAndSprite(sprite) {
