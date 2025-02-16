@@ -31,7 +31,7 @@ export default class Sprite
 //Clase Player
 export class Player extends Sprite
 {
-    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox)
+    constructor (id, state, xPos, yPos, imageSet, frames, physics, maxTimeToChangeDirection, hitBox, attackHitbox, lightHitbox)
     {
         //Llamamos al constructor de la clase Sprite
         super(id, state, xPos, yPos, imageSet, frames, physics, hitBox);
@@ -46,13 +46,12 @@ export class Player extends Sprite
         this.attackTimer = 0;
         this.attackDuration = 0.2;
         this.attackHitbox = attackHitbox;
-        this.attackHitboxRight = false;
-        this.attackHitboxLeft = false;
-        this.attackHitboxUp = false;
-        this.attackHitboxDown = false;
         this.activeHitbox = null;
         this.breathCount = 0;
         this.hasHealed = false;
+        this.lightHitbox = lightHitbox;
+        this.lightState = false;
+        this.activeLight = null;
         
     }
 }

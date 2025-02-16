@@ -69,6 +69,7 @@ export default {
     action: {},
 
     isHealingActive: false,
+    blessingActive: false,
     healCount: 0,
     healDuration: 2 // Duration in seconds
 

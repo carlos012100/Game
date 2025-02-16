@@ -10,10 +10,11 @@ import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
 import Camera from "./Camera.js";
-import {ExplotionParticle, FireParticle, FireParticleHeal} from "./Particle.js";
+import {ExplotionParticle, FireParticle, FireParticleHeal, Shining} from "./Particle.js";
 
 function initParticles() {
     initFire();
+    // initShining();
 }
 
 function initFire() {
@@ -80,7 +81,6 @@ function createFireParticleHeal() {
     }
 }
 
-
 function initExplotion(x, y) {
     const numParticles = 300;
     const radius = 5;
@@ -98,6 +98,78 @@ function initExplotion(x, y) {
         particle.physics.vy = particle.physics.vLimit * Math.sin(randomAngle);
 
         globals.particles.push(particle);
+    }
+}
+
+// function initShining() {
+//     const numParticles = 10;  // Number of waves to create
+//     const radius = 20;        // Initial radius of each wave
+//     const timeToFadeMax = 5; // Maximum time before the particle fades
+//     const alpha = 1;         // Initial transparency of the wave
+
+//     // Create particles that represent sound waves
+//     for (let i = 0; i < numParticles; ++i) {
+//         const velocity = Math.random() * 25 + 10;  // Random velocity for variation
+//         const physics = new Physics(velocity);
+//         const timeToFade = timeToFadeMax * Math.random() + 1; // Random fade time
+
+//         // Create a new sound wave particle
+//         const blessing = new Shining(
+//             ParticleID.BLESSING,
+//             ParticleState.ON,
+//             150,  // xPos (Central point)
+//             50,   // yPos (Central point)
+//             radius,  // Initial radius of the wave
+//             alpha,   // Initial alpha (opacity)
+//             physics,
+//             timeToFade
+//         );
+
+//         // Random angle for the direction the wave will expand in
+//         const randomAngle = Math.random() * 2 * Math.PI;
+//         blessing.physics.vx = blessing.physics.vLimit * Math.cos(randomAngle);
+//         blessing.physics.vy = blessing.physics.vLimit * Math.sin(randomAngle);
+
+//         // Add the particle to the global particles array
+//         globals.particles.push(blessing);
+//     }
+// }
+function initShining() {
+    const numParticles = 20;  // Number of particles
+    const radius = 4;        // Initial radius of each particle
+    const timeToFadeMax = 5; // Maximum time before the particle fades
+    const alpha = 2;         // Initial transparency of the particle
+
+    // Central point for circular motion
+    const centerX = 180;
+    const centerY = 80;
+
+    // Create particles
+    for (let i = 0; i < numParticles; ++i) {
+        const velocity = Math.random() * 25 + 50;  // Random velocity for variation
+        const physics = new Physics(velocity);
+        const timeToFade = timeToFadeMax * Math.random() + 1; // Random fade time
+
+        // Create the particle
+        const blessing = new Shining(
+            ParticleID.BLESSING,
+            ParticleState.ON,
+            centerX,  // Central x position
+            centerY,  // Central y position
+            radius,   // Initial radius of the particle
+            alpha,    // Initial alpha (opacity)
+            physics,
+            timeToFade
+        );
+
+        // Initial angle for the circular motion
+        blessing.physics.angle = Math.random() * 2 * Math.PI; // Random starting angle
+
+        // Set the velocity based on the circular path
+        blessing.physics.vx = velocity * Math.cos(blessing.physics.angle); // X velocity for circular motion
+        blessing.physics.vy = velocity * Math.sin(blessing.physics.angle); // Y velocity for circular motion
+
+        globals.particles.push(blessing);
     }
 }
 
@@ -243,6 +315,7 @@ function initTimer()
         createFireParticle,
         createFireParticleHeal,
         initSwordLight,
+        initShining,
 
     }
     //Carga de activos: TILEMAPS, IMAGES,SOUNDS 
@@ -313,6 +386,11 @@ function initTimer()
         globals.particleImages.push(particleImage);
         globals.assetsToLoad.push(particleImage);
 
+        particleImage = new Image();
+        particleImage.addEventListener("load", loadHandler, false);
+        particleImage.src = "./images/nova.png"; // Ensure the path is correct
+        globals.particleImages.push(particleImage);
+        globals.assetsToLoad.push(particleImage);
     }
 
     //FUncion que se llama cada vez que se carga un activo 
@@ -369,10 +447,16 @@ function initTimer()
         // const attackHitboxRight = new HitBox(15, 32 ,8, 18);
 
         // const attackHitboxLeft =  new HitBox(15, 32 ,8, 18);
- 
+ 6
         // const attackHitboxUp =  new HitBox(15, 32 ,8, 18);
  
         // const attackHitboxDown =  new HitBox(15, 32 ,8, 18);
+        const lightHitbox = {
+            right: new HitBox(30, 60, 38, 5),
+            left: new HitBox(30, 55, -6, 5),
+            up: new HitBox(60, 30, 6, -2),
+            down: new HitBox(60, 30, 5, 40)
+        };
 
         const attackHitbox = {
             right: new HitBox(15, 32, 38, 18),
@@ -383,7 +467,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 100, 100, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 100, 100, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox, lightHitbox);
 
         //Añadimos el player al array de sprites
 
@@ -590,6 +674,7 @@ function initSKULL1(skullData) {
         ]);
         initHeart();
         // initChest();
+        // initShining();
 
 
     }

@@ -114,6 +114,9 @@ function detectCollisionWithSword(sprite) {
     // Check if the sword is colliding with the player
     if (sprite.isCollidingWithPlayer) {
         console.log("⚔️ Player collided with the sword!");
+        globals.blessingActive = false;  // Disable new Blessing particles
+        player.lightState = true;  // enable player light state
+        
 
         // Remove the sword from the game using splice
         const index = globals.sprites.indexOf(sprite);

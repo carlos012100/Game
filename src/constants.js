@@ -46,6 +46,11 @@ export const State = {
     LEFT_ATTACK: 9,
     DOWN_ATTACK: 8,
     FAINT : 12,
+    SWORDDISPLAY: 64,
+    UP_ATTACK2: 68,
+    RIGHT_ATTACK2: 67,
+    LEFT_ATTACK2: 66,
+    DOWN_ATTACK2: 65,
     // BEATING: 14,
     // BULLET_LEFT: 15,
     // BULLET_RIGHT: 16,
@@ -228,10 +233,10 @@ export const Key = {
 
 };
 export const ParticleID = {
-
     EXPLOTION: 0,
     FIRE: 1,
     FIREHEAL: 2,
+    BLESSING: 3,    
     
 }
 export const ParticleState = {

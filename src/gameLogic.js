@@ -1,7 +1,7 @@
 import globals from "./globals.js";
 import {Game, State, SpriteID, ParticleState, ParticleID, MAX_HEARTS} from "./constants.js";
 import detectCollisions from "./collisions.js";
-import { createFireParticle, createFireParticleHeal, initExplotion, initSwordLight } from './initialize.js';
+import { createFireParticle, createFireParticleHeal, initExplotion, initSwordLight, initShining } from './initialize.js';
 
 
 export default function update(){
@@ -40,7 +40,6 @@ export default function update(){
     }
 }
 function readKeyboardAndAssignState(sprite) {
-
     if (!sprite.isPlayerAttacking && !sprite.spriteIsDead) {
 
         sprite.state = globals.action.moveLeft && globals.action.moveUp ? State.UP_LEFT :
@@ -62,12 +61,44 @@ function readKeyboardAndAssignState(sprite) {
                        sprite.state;
     }
 
-    //**Trigger Attack** (Only if not already attacking)
-    if (globals.action.attack && !sprite.isPlayerAttacking) {
-        sprite.isPlayerAttacking = true;  // Start attack
-        sprite.attackTimer = 0;  // Reset attack timer
+    // **Check Light State FIRST**
+    if (globals.sprites[0].lightState) {  
+        if (globals.action.attack && !sprite.isPlayerAttacking) {
+            sprite.isPlayerAttacking = true;
+            sprite.attackTimer = 0;
 
-        // Set ATTACK STATE based on last movement
+            // Set Light Attack State
+            sprite.state = sprite.state === State.RIGHT || sprite.state === State.RIGHT_STILL ? State.RIGHT_ATTACK2 :
+                           sprite.state === State.LEFT || sprite.state === State.LEFT_STILL ? State.LEFT_ATTACK2 :
+                           sprite.state === State.UP || sprite.state === State.UP_LEFT || sprite.state === State.UP_RIGHT || sprite.state === State.UP_STILL ? State.UP_ATTACK2 :
+                           sprite.state === State.DOWN || sprite.state === State.DOWN_LEFT || sprite.state === State.DOWN_RIGHT || sprite.state === State.DOWN_STILL ? State.DOWN_ATTACK2 :
+                           sprite.state;
+        }
+
+        // **Handle Light Attack Animation**
+        if (sprite.isPlayerAttacking) {
+            sprite.attackTimer += globals.deltaTime;
+
+            if (sprite.attackTimer >= sprite.attackDuration) {
+                sprite.isPlayerAttacking = false;
+
+                // Return to last movement's idle state
+                sprite.state = sprite.state === State.RIGHT_ATTACK2 ? State.RIGHT_STILL :
+                               sprite.state === State.LEFT_ATTACK2 ? State.LEFT_STILL :
+                               sprite.state === State.UP_ATTACK2 ? State.UP_STILL :
+                               sprite.state === State.DOWN_ATTACK2 ? State.DOWN_STILL :
+                               sprite.state;
+            }
+        }
+        return; // ✅ Prevents the normal attack logic from running
+    }
+
+    // **Trigger Normal Attack**
+    if (globals.action.attack && !sprite.isPlayerAttacking) {
+        sprite.isPlayerAttacking = true;
+        sprite.attackTimer = 0;
+
+        // Set Normal Attack State
         sprite.state = sprite.state === State.RIGHT || sprite.state === State.RIGHT_STILL ? State.RIGHT_ATTACK :
                        sprite.state === State.LEFT || sprite.state === State.LEFT_STILL ? State.LEFT_ATTACK :
                        sprite.state === State.UP || sprite.state === State.UP_LEFT || sprite.state === State.UP_RIGHT || sprite.state === State.UP_STILL ? State.UP_ATTACK :
@@ -75,12 +106,12 @@ function readKeyboardAndAssignState(sprite) {
                        sprite.state;
     }
 
-    // ⏳ **Handle Attack Animation**
+    // **Handle Normal Attack Animation**
     if (sprite.isPlayerAttacking) {
-        sprite.attackTimer += globals.deltaTime;  // Correct timer update
+        sprite.attackTimer += globals.deltaTime;
 
-        if (sprite.attackTimer >= sprite.attackDuration) {  
-            sprite.isPlayerAttacking = false;  //  Attack ends after full duration
+        if (sprite.attackTimer >= sprite.attackDuration) {
+            sprite.isPlayerAttacking = false;
 
             // Return to last movement's idle state
             sprite.state = sprite.state === State.RIGHT_ATTACK ? State.RIGHT_STILL :
@@ -103,7 +134,23 @@ function updateParticles() {
         } else if (particle.id === ParticleID.FIREHEAL && particle.state === ParticleState.OFF) {
             globals.particles.splice(i, 1);
             i--;
-        } else {
+        }
+        else if (particle.id === ParticleID.BLESSING && particle.state === ParticleState.OFF) {
+        // else if (particle.id === ParticleID.BLESSING && particle.state === ParticleState.OFF) {
+            globals.particles.splice(i, 1);
+            i--;
+            if (globals.blessingActive) {  // Only spawn if the effect is still active
+                initShining();
+            }
+
+        }
+        // else if (globals.sprites[6].isCollidingWithPlayer && particle.id === ParticleID.BLESSING && particle.state === ParticleState.ON) 
+        //     {
+        //         globals.particles.splice(i, 1);
+        //         i--;
+        //     }
+    
+        else {
             updateParticle(particle);
         }
     }
@@ -123,8 +170,54 @@ function updateParticle(particle) {
         case ParticleID.FIREHEAL:
             updateFireParticleHeal(particle);
             break;
+        case ParticleID.BLESSING:
+            updateBlessingParticle(particle);
+            break;
     }
 }
+function updateBlessingParticle(particle) {
+    if (particle.state === ParticleState.ON) {
+        // Update the angle to make the particle move in a circle
+        particle.physics.angle += 0.05; // Change the angle increment to adjust speed of rotation
+        particle.physics.vx = particle.physics.vLimit * Math.cos(particle.physics.angle); // Update X velocity
+        particle.physics.vy = particle.physics.vLimit * Math.sin(particle.physics.angle); // Update Y velocity
+
+        // Move the particle based on the circular motion
+        particle.xPos += particle.physics.vx * globals.deltaTime;
+        particle.yPos += particle.physics.vy * globals.deltaTime;
+
+        // Optionally, fade the particle and check its state
+        particle.alpha -= 0.01; // Fade over time
+        if (particle.alpha <= 0) {
+            particle.state = ParticleState.OFF;  // Turn off the particle when fully faded
+        }
+        if (globals.sprites[6].isCollidingWithPlayer) {
+            globals.blessingActive = false
+            particle.state = ParticleState.OFF;
+        }
+
+    }
+}
+
+
+// function resetBlessingParticle(particle) {
+//     // Reset to spawn position
+//     let someSpawnX = 100;
+//     let someSpawnY = 100;
+//     particle.xPos = someSpawnX;
+//     particle.yPos = someSpawnY;
+
+//     // Reset transparency and other properties
+//     particle.alpha = 1;
+//     particle.fadeCounter = 0;
+
+//     // Randomize new movement
+//     particle.physics.vx = (Math.random() - 0.5) * 2;  // Random X velocity
+//     particle.physics.vy = (Math.random() - 0.5) * 2;  // Random Y velocity
+
+//     // Set back to ON state to start the cycle again
+//     particle.state = ParticleState.ON;
+// }
 
 function updateExplotionParticle(particle) {
     particle.fadeCounter += globals.deltaTime;
@@ -149,6 +242,7 @@ function updateExplotionParticle(particle) {
     particle.xPos += particle.physics.vx * globals.deltaTime;
     particle.yPos += particle.physics.vy * globals.deltaTime;
 }
+
 
 function updateFireParticleHeal(particle) {
     // Increment the fade counter using deltaTime
@@ -236,6 +330,8 @@ function updateGameTime()
 function playGame(){
     if (globals.sprites[0].isCollidingWithHealingPlace && !globals.sprites[0].hasHealed) {
         initSwordLight();
+        initShining();
+        globals.blessingActive = true;  // This controls whether new Blessing particles should spawn
         // globals.sprites[0].hasHealed = true; // Prevents spawning multiple times
     }
     updateSprites();
@@ -362,9 +458,24 @@ function updateAttackHitbox(sprite) {
         case State.RIGHT_ATTACK:
             sprite.activeHitbox = sprite.attackHitbox.right;
             break;
+        case State.UP_ATTACK2:
+            sprite.activeLight = sprite.lightHitbox.up;
+            break;
+        case State.DOWN_ATTACK2:
+            sprite.activeLight = sprite.lightHitbox.down;
+            break;
+        case State.LEFT_ATTACK2:
+            sprite.activeLight = sprite.lightHitbox.left;
+            break;  
+        case State.RIGHT_ATTACK2:
+            sprite.activeLight = sprite.lightHitbox.right;
+            break;
         default:
             sprite.activeHitbox = null; // No attack hitbox active
+            sprite.activeLight = null;
             break;
+
+
     }
 }
 

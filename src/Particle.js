@@ -41,8 +41,20 @@ class FireParticleHeal extends Particle
 
     }
 }
+class Shining extends Particle
+{
+    constructor(id, state, xPos, yPos, radius, alpha, physics, timeToFade)
+    {
+        super(id, state, xPos, yPos, radius, alpha, physics);
+
+        this.fadeCounter = 0;
+        this.timeToFade = timeToFade;
+
+    }
+}
 export {
     ExplotionParticle,
     FireParticle,
-    FireParticleHeal
+    FireParticleHeal,
+    Shining
 }

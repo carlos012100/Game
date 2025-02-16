@@ -80,6 +80,25 @@ function renderFireParticleHeal(particle) {
     }
 }
 
+function renderBlessingParticle(particle) {
+    if (particle.state === ParticleState.ON) {
+        globals.ctx.save();
+        globals.ctx.globalAlpha = particle.alpha;  // Set transparency
+        // Make the particle brighter using a stronger color and glow effect
+        globals.ctx.fillStyle = "rgba(255, 215, 0, 0.8)";  // Brighter gold color (increased opacity)
+
+        // Optional: Add a glow effect
+        globals.ctx.shadowColor = "rgba(255, 215, 0, 1)";  // Same gold color for glow
+        globals.ctx.shadowBlur = 200;  // Apply glow blur effect
+
+        // Draw the particle (circle)
+        globals.ctx.beginPath();
+        globals.ctx.arc(particle.xPos, particle.yPos, particle.radius, 0, 2 * Math.PI);
+        globals.ctx.fill();
+        globals.ctx.restore();
+    }
+}
+
 function renderFireParticle(particle) {
     if (particle.state != ParticleState.OFF) {
         globals.ctx.save();
@@ -90,6 +109,7 @@ function renderFireParticle(particle) {
         globals.ctx.globalCompositeOperation = "source-atop";
         globals.ctx.fillStyle = "lightblue";
         globals.ctx.filter = 'blur(2px) saturated(500%)';
+        // globals.ctx.filter = 'hue-rotate(180deg)'; // Change the color
         globals.ctx.fillRect(particle.xPos - particle.radius, particle.yPos - particle.radius, particle.radius * 2, particle.radius * 2);
 
         // Reset composite operation
@@ -117,6 +137,9 @@ function renderParticle(particle) {
         case ParticleID.FIREHEAL:
             renderFireParticleHeal(particle);
             break;
+        case ParticleID.BLESSING:
+            renderBlessingParticle(particle);
+            
     }
 }
 
@@ -203,7 +226,9 @@ function renderSprite(sprite) {
         screenX, screenY,               // Destination on canvas (with or without camera adjustment)
         sprite.imageSet.xSize,          // Destination width
         sprite.imageSet.ySize           // Destination height
+
     );
+
 }
 
 
@@ -234,36 +259,54 @@ function drawAttackBox (sprite){
     globals.ctx.strokeRect(sprite.hitBox.x1, sprite.hitBox.y1, sprite.hitBox.w1, sprite.hitBox.h1);
 
 }
+function drawlightbox(sprite) {
+    const x1 = Math.floor(sprite.xPos) + Math.floor(sprite.activeLight.xOffset); 
+    const y1 = Math.floor(sprite.yPos) + Math.floor(sprite.activeLight.yOffset);
+    const w1 = sprite.activeLight.xSize;
+    const h1 = sprite.activeLight.ySize;
 
-    function drawSprites(){
-            for (let i = 0; i < globals.sprites.length; ++i) {
-                const sprite = globals.sprites[i];
-              
-                // Only apply `isDrawn` check to the player
-                if (sprite.id === SpriteID.PLAYER) {  
-                    if (sprite.isDrawn) {
-                        renderSprite(sprite, globals.ctx);
-                    }
-                } else if (sprite.id !== SpriteID.HEART) {
+    console.log(`Drawing Light Hitbox at: x=${x1}, y=${y1}, w=${w1}, h=${h1}`);
 
-                    renderSprite(sprite, globals.ctx);
+    if (w1 > 0 && h1 > 0) { // Ensure valid dimensions
+        globals.ctx.strokeStyle = "yellow"; 
+        globals.ctx.lineWidth = 3; // Make it more visible
+        globals.ctx.strokeRect(x1, y1, w1, h1);
+    } else {
+        console.log("Invalid hitbox size, not drawing.");
+    }
+}
 
-                }
-        
-                // Draw hitboxes if they exist
-                if (sprite.hitBox)  {
-                    drawHitBox(sprite);
-                }
-                if (sprite.activeHitbox && sprite.isPlayerAttacking){
 
-                    drawAttackBox(sprite);
+function drawSprites() {
+    for (let i = 0; i < globals.sprites.length; ++i) {
+        const sprite = globals.sprites[i];
 
-                    console.log("is player attack: " + sprite.activeHitbox)
-                } 
-                
+        // Only apply `isDrawn` check to the player
+        if (sprite.id === SpriteID.PLAYER) {  
+            if (sprite.isDrawn) {
+                renderSprite(sprite, globals.ctx);
             }
+        } else if (sprite.id !== SpriteID.HEART) {
+            renderSprite(sprite, globals.ctx);
         }
-        
+
+        // Draw hitboxes if they exist
+        if (sprite.hitBox) {
+            drawHitBox(sprite);
+        }
+
+        if (sprite.activeHitbox && sprite.isPlayerAttacking) {
+            drawAttackBox(sprite);
+            console.log("Active attack hitbox: ", sprite.activeHitbox);
+        }
+
+        if (sprite.activeLight && sprite.lightState) {
+            drawlightbox(sprite);
+            console.log("Light hitbox drawn: ", sprite.lightHitbox);
+        }  
+    }
+}
+
 
         // if (sprite.hitBox) {
         //     drawHitBox(sprite);  // Only draw hitbox for sprites with hitBox
