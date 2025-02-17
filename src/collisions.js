@@ -20,6 +20,7 @@ function swapDirection(sprite)
         case SpriteID.ORC:
             sprite.state = sprite.state === State.ORC_DOWNRUN ? State.ORC_UPRUN : State.ORC_DOWNRUN;
             break;
+            
         case SpriteID.SKULL1:
             sprite.state = sprite.state === State.DOWN_SKULLWALK ? State.UP_SKULLWALK: State.DOWN_SKULLWALK;
             break;

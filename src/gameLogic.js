@@ -882,7 +882,7 @@ function updateDamage(sprite) {
 }
 
 if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE && sprite.lightState) {
-    sprite.life -= 8; // Light attack does more damage
+    sprite.life = 0; // Light attack does more damage
 } 
 else if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
     sprite.life -= 1; // Normal attack damage
@@ -947,26 +947,12 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
 
         sprite.yPos = sprite.physics.yRef + amplitude * Math.sin(sprite.angle); // Apply sine wave
 
-        console.log("amp: " + amplitude)
 
-        console.log("yref: " + sprite.physics.yRef)
-
-        console.log("deltatime: " + globals.deltaTime)
-
-        console.log("deltatime: " + sprite)
 
 
         updateAnimationFrames(sprite);
 
-        //  Debugging logs
-        console.log("Angle:", sprite.physics.angle);
-        console.log("Y Position:", sprite.yPos);
-        console.log("X Position:", sprite.xPos);
 
-        console.log("Velocity: " + sprite.physics.vx);
-        console.log("X Position: " + sprite.xPos);
-        console.log("Y Position: " + sprite.yPos);
-        console.log(sprite.maxTimeToChangeDirection)
 
 
 
@@ -1063,6 +1049,7 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
 
     //     }
     // }
+
  function updateCamera()
  {
     //Centramos la camara en el player

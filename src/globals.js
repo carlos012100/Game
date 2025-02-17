@@ -71,6 +71,10 @@ export default {
     heartSprites: [], // Initialize as an empty array
 
     level: {},
+    levelCell: {},
+
+    currentScreen: newScreen,
+
 
     //Objecto que guarda el estado de la tecla pulsada
     action: {},

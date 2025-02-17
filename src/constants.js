@@ -246,3 +246,10 @@ export const ParticleState = {
 }
 
 export const MAX_HEARTS = 4; // Define the maximum number of hearts
+
+export const Maps = {
+
+    PRISON: 0,
+    CELL1: 1
+
+}

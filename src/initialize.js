@@ -1,10 +1,10 @@
 import globals from "./globals.js";
-import {Game, SpriteID, State, FPS, Block, ParticleID, ParticleState} from "./constants.js";
+import {Game, SpriteID, State, FPS, Block, ParticleID, ParticleState, Maps} from "./constants.js";
 import { Player, Bat, Orc, Skull, Boss, Heart } from "./Sprite.js";
 import Sprite from "./Sprite.js";
 import ImageSet from "./ImageSet.js";
 import Frames from "./Frames.js";
-import {Level, levelx} from "./Level.js";
+import {Level, levelCell1, levelx} from "./Level.js";
 import Timer from "./Timer.js";
 import Physics from "./Physics.js";
 import {keydownHandler, keyupHandler} from "./events.js";
@@ -135,7 +135,7 @@ function initExplotion(x, y) {
 //     }
 // }
 function initShining() {
-    const numParticles = 20;  // Number of particles
+    const numParticles = 5;  // Number of particles
     const radius = 4;        // Initial radius of each particle
     const timeToFadeMax = 5; // Maximum time before the particle fades
     const alpha = 2;         // Initial transparency of the particle
@@ -313,6 +313,7 @@ function initTimer()
         initSprites,
         initHeart,
         initLevel,
+        initCell1,
         initTimer,
         initEvents,
         // createFire,
@@ -661,6 +662,12 @@ function initSKULL1(skullData) {
         
         
     }  
+    function initCell1()
+    {
+        const imageSet = new ImageSet(0,0,32,32,32,32,0,0)
+
+        globals.levelCell = new Level (levelCell1, imageSet);
+    }
     
 
     function initSprites(){
