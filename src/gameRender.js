@@ -441,10 +441,10 @@ function drawSprites() {
         // const destHeight = 25;  
         // const startX = 0;
         // const startY = 5;  
-        const mana = 10;
+        const mana = globals.manapoints;
         const madness = 20;
         const junk = 2;
-        const score = 100;
+        const score = globals.score;
         const highscore = 50000;
         const time = globals.levelTime.value;
            // Get all heart sprites
@@ -511,15 +511,15 @@ function drawSprites() {
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'lightblue';
         globals.ctxHUD.fillText("Psynergy", 120, 10);
-        globals.ctxHUD.fillStyle = '#8A2BE2';
+        globals.ctxHUD.fillStyle = '#navy';
         globals.ctxHUD.fillRect(120, 15, mana, 5);
-
+        404040
         //Madness
         globals.ctxHUD.font = '8px emulogic';
         globals.ctxHUD.fillStyle = 'lightblue';
-        globals.ctxHUD.fillText("Madness", 120, 35);
-        globals.ctxHUD.fillStyle = '#404040';
-        globals.ctxHUD.fillRect(120, 40, madness, 5);
+        globals.ctxHUD.fillText("Sanity", 120, 35);
+        globals.ctxHUD.fillStyle = '#8A2BE2';
+        globals.ctxHUD.fillRect(120, 40, time/2, 5);
 
 //         //JUNK
 //         // Draw health icon

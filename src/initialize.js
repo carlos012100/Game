@@ -141,8 +141,8 @@ function initShining() {
     const alpha = 2;         // Initial transparency of the particle
 
     // Central point for circular motion
-    const centerX = 180;
-    const centerY = 80;
+    const centerX = 125;
+    const centerY = 720;
 
     // Create particles
     for (let i = 0; i < numParticles; ++i) {
@@ -229,6 +229,12 @@ function initVars(){
 
     globals.life = 4;
 
+    globals.manapoints = 0;
+
+    globals.sanity = globals.levelTime.value;
+
+    globals.score = 0;
+
 
     globals.objectTile = [ 
             Block.Darkness,
@@ -296,7 +302,8 @@ function initVars(){
 function initTimer()
 {
     //Creamos timer de valor 200, con cambios cada 0.5 segundos
-    globals.levelTime = new Timer(200, 0.5);
+    globals.levelTime = new Timer(100, 0.5);
+
 }
     //Exportamos las funciones
     export {
@@ -467,7 +474,7 @@ function initTimer()
         const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
 
         //Creamos nuestro sprite
-        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 100, 100, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox, lightHitbox);
+        const player = new Player(SpriteID.PLAYER, State.DOWN_STILL, 900, 180, imageSet, frames, physics, initTimeToChangeDirection, hitBox, attackHitbox, lightHitbox);
 
         //Añadimos el player al array de sprites
 
@@ -511,7 +518,7 @@ function initSKULL1(skullData) {
         const imageSet = new ImageSet(56, 0, 50, 50, 64, 64, 5, 6);
         const frames = new Frames(4, 5);
         const velsX = [20, 40, 0, 60, 0, 100];
-        const velsY = [10, 40, 0, 60, 0, 400];
+        const velsY = [10, 40, 0, 60, 0, 100];
         const velChangeValue = 1;
         const physics = new Physics(100, 0, 0, 0, velsX, velsY, velChangeValue);
         const hitBox = new HitBox(30, 25, 12, 6);
@@ -621,7 +628,7 @@ function initSKULL1(skullData) {
         
         const hitBox = new HitBox(30, 25, 12, 6);
 
-        const swordLight = new Sprite(SpriteID.SWORDLIGHT, State.LIGHT, 150, 50, imageSet, frames, physics, hitBox);
+        const swordLight = new Sprite(SpriteID.SWORDLIGHT, State.LIGHT, 100, 700, imageSet, frames, physics, hitBox);
 
         globals.sprites.push(swordLight);
     }

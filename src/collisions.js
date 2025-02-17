@@ -357,7 +357,6 @@ function detectCollisionBetweenPlayerAndSprite(sprite) {
 
     }
 }
-//Devuelve el Ed del tile del mapa para las coordenadas xPos, yPos
 //Make sure you fix or debugg
 function getMapTileId(xPos, yPos, layerIndex) {
 
@@ -416,7 +415,7 @@ function detectCollisionBetweenBatandWorld ()
         const bat = globals.sprites[i];
 
         if (bat.id !== SpriteID.BAT) {
-            continue; // Skip non-orc sprites
+            continue; 
 
     }
     
@@ -1068,23 +1067,33 @@ if (player.physics.vx < 0)
 
 
         // Bottom-Left Corner (4)
+    
         xPos = player.xPos + player.hitBox.xOffset;
+        
         yPos = player.yPos + player.hitBox.yOffset + player.hitBox.ySize - 1;
+
         isCollidingOnPos4 = isCollidingWithObstacleAt(xPos, yPos, obstacleId);
 
         if (isCollidingOnPos4) {
             overlapY = (Math.floor(yPos) % brickSize) + 1;
-            overlapX = brickSize - (Math.floor(xPos) % brickSize);
+
+            overlapX = brickSize - (Math.floor(xPos) % brickSize) + 1;
 
             if (overlapX <= overlapY) {
+
                 player.xPos += overlapX;
+
                 player.physics.vx = 0;
-            } else {
+            } 
+            else {
                 if (player.physics.vy > 0) {
                     player.yPos -= overlapY;
+
                     player.physics.vy = 0;
-                } else if (player.physics.vy < 0) {
+                } 
+                else if (player.physics.vy < 0) {
                     player.yPos += overlapY;
+
                     player.physics.vy = 0;
                 }
             }

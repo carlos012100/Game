@@ -25,6 +25,13 @@ export default {
 
     //Life
     life: 0,
+
+    sanity: 0,
+
+    score: 0,
+
+    manapoints: 0,
+
     damageInterval: 0.2, // Flicker interval (200 milliseconds)
     invincivility: 3, // Total duration of damage mode (4 seconds)
     invincivilityCounter: 0, // Counter for player's damage mode duration

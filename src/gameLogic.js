@@ -6,7 +6,10 @@ import { createFireParticle, createFireParticleHeal, initExplotion, initSwordLig
 
 export default function update(){
 
-    
+    if(globals.levelTime.value <= 0)
+        {
+            globals.gameState = Game.GAME_OVER;
+        }
     //Change what the game is doing based on the game state
     switch(globals.gameState){
         case Game.LOADING:
@@ -14,6 +17,7 @@ export default function update(){
             break;
 
         case Game.PLAYING:
+  
             playGame();
             break;
 
@@ -545,21 +549,19 @@ function updatePlayer(sprite) {
 
 }
 
-else if(sprite.spriteIsDead && State.FAINT)
-    {
-        const lastBreaths = 10;
+else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTime.value <= 0) {
+    const lastBreaths = 10;
 
-        sprite.breathCount += globals.deltaTime;
-        
-        if (sprite.breathCount >= lastBreaths)
-        {
+    sprite.breathCount += globals.deltaTime;
+
+    if (sprite.breathCount >= lastBreaths) {
         globals.gameState = Game.GAME_OVER;
-
-        }
-    const xDeath = globals.sprites[0].xPos + globals.level.imageSet.xGridWidth
-    const yDeath = globals.sprites[0].yPos + globals.level.imageSet.yGridHeight;
-        initExplotion(xDeath, yDeath);
     }
+
+    const xDeath = globals.sprites[0].xPos + globals.level.imageSet.xGridWidth;
+    const yDeath = globals.sprites[0].yPos + globals.level.imageSet.yGridHeight;
+    initExplotion(xDeath, yDeath);
+}
 
     updateLife(sprite);
     resetHealingFlag(sprite);
@@ -888,9 +890,11 @@ else if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
 
 if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
     if (sprite.life <= 0) {
+        globals.score += 100; // Increase score
         const index = globals.sprites.indexOf(sprite);
         if (index > -1) {
             globals.sprites.splice(index, 1); // Remove dead enemy
+
         }
     }
     
@@ -983,6 +987,7 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
             sprite.hasHealed = true; // Prevents healing multiple times
     
             createFireParticleHeal();
+            globals.manapoints += 80;
         }
     }
     
