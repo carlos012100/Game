@@ -235,6 +235,8 @@ function initVars(){
 
     globals.score = 0;
 
+    globals.highscore = 500;
+
 
     globals.objectTile = [ 
             Block.Darkness,

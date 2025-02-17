@@ -154,19 +154,19 @@ export const levelCell1 = [
 export const maps = [levelx, levelCell1]
 
 
-export const borders = [
- {
-    left: INVALID,
-    up: CELL1,
-    right:INVALID,
-    down: INVALID
+// export const borders = [
+//  {
+//     left: INVALID,
+//     up: CELL1,
+//     right:INVALID,
+//     down: INVALID
 
     
- },   
- {
-    left: INVALID,
-    up: INVALID,
-    right: INVALID,
-    down: PRISON
- }
-]
+//  },   
+//  {
+//     left: INVALID,
+//     up: INVALID,
+//     right: INVALID,
+//     down: PRISON
+//  }
+// ]

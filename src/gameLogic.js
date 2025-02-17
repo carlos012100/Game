@@ -204,6 +204,7 @@ function updateBlessingParticle(particle) {
 }
 
 
+
 // function resetBlessingParticle(particle) {
 //     // Reset to spawn position
 //     let someSpawnX = 100;
@@ -485,6 +486,12 @@ function updateAttackHitbox(sprite) {
 
 
 function updatePlayer(sprite) {
+    let points = 1000;
+
+    if (globals.score >= globals.highscore) {
+        globals.highscore += points; // ✅ Increase highscore by points
+    }
+    
 
     updateAttackHitbox(sprite);
 
@@ -965,17 +972,14 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
     }
     function updateLife(sprite) {
         if (sprite.isCollidingWithHealingPlace && !sprite.hasHealed) {
-            for (let i = 0; i < globals.heartSprites.length; ++i) {
-                if (globals.life < MAX_HEARTS) { // ✅ Prevent overhealing
-                    globals.life += 1;
-                }
-            }
-            sprite.hasHealed = true; // Prevents healing multiple times
+            globals.life = MAX_HEARTS; // ✅ Fully heal the player
+            sprite.hasHealed = true; // ✅ Prevent multiple heals
     
             createFireParticleHeal();
             globals.manapoints += 80;
         }
     }
+    
     
     
     function updateBAT(sprite) {

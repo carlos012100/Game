@@ -445,7 +445,7 @@ function drawSprites() {
         const madness = 20;
         const junk = 2;
         const score = globals.score;
-        const highscore = 50000;
+        const highscore = globals.highscore;
         const time = globals.levelTime.value;
            // Get all heart sprites
     // const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);

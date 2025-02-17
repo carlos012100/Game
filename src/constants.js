@@ -253,3 +253,25 @@ export const Maps = {
     CELL1: 1
 
 }
+export const MapValue = 
+{
+    INVALID: -1,
+    PRISON: 0,
+    CELL1: 1
+}
+export const borders = [
+    {
+       left: MapValue.INVALID,
+       up: MapValue.CELL1,
+       right:MapValue.INVALID,
+       down: MapValue.INVALID
+   
+       
+    },   
+    {
+       left: MapValue.INVALID,
+       up: MapValue.INVALID,
+       right: MapValue.INVALID,
+       down: MapValue.PRISON
+    }
+   ]

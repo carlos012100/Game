@@ -73,7 +73,7 @@ export default {
     level: {},
     levelCell: {},
 
-    currentScreen: newScreen,
+    currentScreen: 0,
 
 
     //Objecto que guarda el estado de la tecla pulsada
