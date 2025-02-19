@@ -188,7 +188,9 @@ function drawGame(){
     restoreCamara();
 
     if (globals.gameState === Game.PLAYING){
+        
         renderHUD();
+
     }
 
 
@@ -286,7 +288,7 @@ function drawSprites() {
             if (sprite.isDrawn) {
                 renderSprite(sprite, globals.ctx);
             }
-        } else if (sprite.id !== SpriteID.HEART) {
+        } else if (sprite.id !== SpriteID.HEART && sprite.id !== SpriteID.SCRAP_METALHUD) {
             renderSprite(sprite, globals.ctx);
         }
 
@@ -393,46 +395,72 @@ function drawSprites() {
     
     
 
-    function updateHudHearts ()
-    {
+    function updateHudHearts() {
         const hearts = globals.sprites.filter(sprite => sprite.id === SpriteID.HEART);
         const destWidth = 25; // Adjust as needed for HUD scaling
         const destHeight = 28;  
         const startX = 0;
         const startY = 10;  
-
-          // Clear the array of heart sprites and HUD area
-        globals.heartSprites = []; // Clear the array
-        globals.ctxHUD.clearRect(0, 0, globals.canvasHUD.width, globals.canvasHUD.height);
-
-
-          // Repopulate the array and draw hearts based on the current life value
-    for (let i = 0; i < globals.life; i++) {
-        const destX = startX + i * 28;
-
-        // Add a heart sprite's position to the heartSprites array
-        globals.heartSprites.push({ x: destX, y: startY });
-
-        // Draw each heart sprite
-        for (const sprite of hearts) {
-            globals.ctxHUD.drawImage(
-                globals.tileSets[Tile.PROTA_64],
-                sprite.imageSet.initCol * sprite.imageSet.xGridWidth + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
-                sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
-                sprite.imageSet.xSize, sprite.imageSet.ySize,
-                destX, startY,
-                destWidth, destHeight
-            );
+    
+        // Clear only the area where hearts are drawn
+        globals.ctxHUD.clearRect(startX, startY, globals.life * 28, destHeight);
+    
+        // Repopulate the array and draw hearts based on the current life value
+        for (let i = 0; i < globals.life; i++) {
+            const destX = startX + i * 28;
+    
+            // Add a heart sprite's position to the heartSprites array
+            globals.heartSprites.push({ x: destX, y: startY });
+    
+            // Draw each heart sprite
+            for (const sprite of hearts) {
+                globals.ctxHUD.drawImage(
+                    globals.tileSets[Tile.PROTA_64],
+                    sprite.imageSet.initCol * sprite.imageSet.xGridWidth + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
+                    sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
+                    sprite.imageSet.xSize, sprite.imageSet.ySize,
+                    destX, startY,
+                    destWidth, destHeight
+                );
+            }
         }
     }
+    
+    function renderJunkHUD() {
+        const metaljunk = globals.sprites.filter(sprite => sprite.id === SpriteID.SCRAP_METALHUD);
+        const destWidth = 48; // Adjust as needed for HUD scaling
+        const destHeight = 48;
+        const startX = 230;
+        const startY = -20;
+    
+        // Clear only the area where junk is drawn
+        globals.ctxHUD.clearRect(startX, startY,0, destHeight);
+    
+        // Draw each junk sprite
+            for (const sprite of metaljunk) {
+                
+                globals.ctxHUD.drawImage(
+                    globals.tileSets[Tile.PROTA_64],
+                    sprite.imageSet.initCol * sprite.imageSet.xGridWidth + sprite.frames.framesCounter * sprite.imageSet.xGridWidth + sprite.imageSet.xOffset,
+                    sprite.imageSet.initFil * sprite.imageSet.yGridHeight + sprite.state * sprite.imageSet.yGridHeight + sprite.imageSet.yOffset,
+                    sprite.imageSet.xSize, sprite.imageSet.ySize,
+                    startX, startY,
+                    destWidth, destHeight
+                );
+            }
+    }
+        
         // for ( let i = 0; )
         //     {
 
         //     }
-    }
-    function renderHUD(sprite){
+    
+    function renderHUD(){
 
         updateHudHearts();
+        renderJunkHUD();
+
+        // renderJunkHUD();
         
         //TEST: Datos metidos en bruto
         // const life = 20;
@@ -443,7 +471,7 @@ function drawSprites() {
         // const startY = 5;  
         const mana = globals.manapoints;
         const madness = 20;
-        const junk = 2;
+        const junk = globals.junk;
         const score = globals.score;
         const highscore = globals.highscore;
         const time = globals.levelTime.value;

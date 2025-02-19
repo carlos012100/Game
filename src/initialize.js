@@ -11,6 +11,7 @@ import {keydownHandler, keyupHandler} from "./events.js";
 import HitBox from "./HitBox.js";
 import Camera from "./Camera.js";
 import {ExplotionParticle, FireParticle, FireParticleHeal, Shining} from "./Particle.js";
+import getMapTileId from "./collisions.js";
 
 function initParticles() {
     initFire();
@@ -222,7 +223,7 @@ function initVars(){
         moveDown: false,
         attackRight : false
     }
-
+    globals.junktaken = false,
     //Variables logica juego
 
     //varables de damage
@@ -236,6 +237,8 @@ function initVars(){
     globals.score = 0;
 
     globals.highscore = 500;
+
+    globals.junk = 0;
 
 
     globals.objectTile = [ 
@@ -621,6 +624,38 @@ function initSKULL1(skullData) {
         globals.sprites.push(heart);
 
     }
+    function initJunkHUD()
+    {
+        const imageSet = new ImageSet(75, 0, 32, 32, 64, 64, 5, 5);
+        const frames = new Frames(0,1);
+        const physics = new Physics (0);
+        // const hitBox = new HitBox(30, 25, 12, 6);
+        const scraphud = new Sprite(SpriteID.SCRAP_METALHUD, State.SCRAPHUD, 10, 6, imageSet, frames, physics);
+
+        globals.sprites.push(scraphud);
+
+    }
+    function initJunk() {
+        const imageSet = new ImageSet(75, 0, 32, 32, 64, 64, 5, 5);
+        const frames = new Frames(0, 1);
+        const physics = new Physics(0);
+        const hitBox = new HitBox(15, 15, 16, 16);
+        
+        let x = Math.floor(Math.random() * 200) + 50; 
+
+        
+        let y = Math.floor(Math.random() * 250) + 50;
+    
+        const scrap = new Sprite(SpriteID.SCRAP_METAL, State.SCRAP, x, y, imageSet, frames, physics, hitBox);
+        
+        globals.sprites.push(scrap);
+    
+        // Reposition if overlapping (handled in game loop)
+    }
+    
+    
+    
+    
     function initSwordLight() {
 
         const imageSet = new ImageSet(64, 0, 50, 50, 64, 64, 6, 6);
@@ -652,6 +687,7 @@ function initSKULL1(skullData) {
 
     // }
 
+
     function initLevel(){
 
         //Creamos las propiedades de las images del mapa: initFil, initCol, xSize, ySize, gridSize, xOffset, yOffset
@@ -670,6 +706,8 @@ function initSKULL1(skullData) {
 
         globals.levelCell = new Level (levelCell1, imageSet);
     }
+
+
     
 
     function initSprites(){
@@ -689,6 +727,14 @@ function initSKULL1(skullData) {
             { x: 185, y: 360, state: State.ORC_IDLEUP }
         ]);
         initHeart();
+        initJunk();
+        // initJunk([
+        //     { x: 650, y: 180, state: State.SCRAP },
+        //     { x: 800, y: 200, state: State.SCRAP },
+        //     { x: 185, y: 400, state: State.SCRAP },
+        //     { x: 185, y: 360, state: State.SCRAP }
+        // ]);
+        initJunkHUD();
         // initChest();
         // initShining();
 

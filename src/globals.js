@@ -30,7 +30,11 @@ export default {
 
     score: 0,
 
+    highscore: 0,
+
     manapoints: 0,
+
+    junk: 0,
 
     damageInterval: 0.2, // Flicker interval (200 milliseconds)
     invincivility: 3, // Total duration of damage mode (4 seconds)
@@ -81,6 +85,7 @@ export default {
 
     isHealingActive: false,
     blessingActive: false,
+    junktaken: false,
     healCount: 0,
     healDuration: 2 // Duration in seconds
 

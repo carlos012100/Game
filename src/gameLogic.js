@@ -342,6 +342,7 @@ function playGame(){
     updateSprites();
     updateParticles();
     detectCollisions();
+    
     updateGameTime();
     updateLevelTime();
     // updateLife();    
@@ -649,6 +650,10 @@ else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTim
             case SpriteID.BOSS:
                 updateBoss(sprite);
                 break;
+
+            case SpriteID.SCRAP_METAL:
+                updateJunk(sprite);
+                break;
       
             // Caso del enemigo
             default:
@@ -656,6 +661,31 @@ else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTim
     
         }
     }
+   function updateJunk(sprite)
+   {
+    // if (globals.junktaken)
+    // {
+    //     globals.junk += 1;
+    //     globals.junktaken = false;
+    // }
+    if (sprite.isCollidingWithPlayer) {  
+        globals.junktaken = true; // Mark it first before deleting
+        
+        // Remove the junk from the game
+        const index = globals.sprites.indexOf(sprite);
+        if (index !== -1) {
+            globals.sprites.splice(index, 1);
+        }
+    }
+    
+            if (globals.junktaken)
+            {
+                globals.junk += 1;
+                globals.junktaken = false;
+            }
+            console.log("check collision: " + sprite.isCollidingWithPlayer
+)
+   }
   
     function updateHearts(sprite) {
     // Get all heart sprites
@@ -733,7 +763,9 @@ else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTim
          // Apply unique behavior based on the SKULL's name
     switch (sprite.name) {
         case "Reaper":
-            sprite.physics.vy *= 2; // Reaper moves faster
+            if(globals.sanity <= 60){
+                sprite.physics.vy *= 2; // Reaper moves faster
+            }
             break;
         case "Bonecrusher":
             sprite.physics.vx *= 0.8; // Bonecrusher moves slower

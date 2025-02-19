@@ -22,9 +22,11 @@ export const SpriteID = {
     BAT: 2,
     BOSS:3,
     ORC: 4,
-    HEART: 7,
-    BULLET: 6,
+    HEART: 5,
+    SCRAP_METALHUD: 6,
+    SCRAP_METAL: 7,
     SWORDLIGHT: 8,
+    
 };
 
 // Identificador de Estado de sprite
@@ -88,6 +90,12 @@ export const State = {
 
     //SWORDS
     LIGHT: 0,
+
+    //JUNK FOR HUD
+    SCRAPHUD: 0,
+
+    //junk for map
+    SCRAP: 0
     
 };
 

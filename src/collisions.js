@@ -83,13 +83,17 @@ function rectIntersect (x1, y1, w1, h1, x2, y2, w2, h2)
     }
 }
 export default function detectCollisions() {
+    // globals.junktaken = false;
     const player = globals.sprites[0];  // Store the player reference
 
     for (let i = 1; i < globals.sprites.length; ++i) {
         const sprite = globals.sprites[i];
 
         sprite.isCollidingWithPlayer = false;
+
         detectCollisionBetweenPlayerAndSprite(sprite);
+
+        
 
         console.log("Player attacking:", player.isPlayerAttacking);
 
@@ -112,7 +116,9 @@ export default function detectCollisions() {
     detectCollisionBetweenOrcandWorld();
     detectCollisionBetweenSkullandWorld();
     detectCollisionBetweenBatandWorld();
+
 }
+
 
 function detectCollisionWithSword(sprite) {
     const player = globals.sprites[0]; // Assuming the player is the first sprite
@@ -259,7 +265,7 @@ function detectCollisionWithSword(sprite) {
     
     
     
-function detectCollisionBetweenPlayerAndSprite(sprite) {
+  function detectCollisionBetweenPlayerAndSprite(sprite) {
     // Reset collision data
     sprite.isCollidingWithPlayer = false;
 
@@ -669,7 +675,6 @@ function detectCollisionBetweenOrcandWorld() {
         // Update direction randomly for this specific orc
     }
 }
-
 function  detectCollisionBetweenPlayerAndObstacles()
 {
     const player = globals.sprites[0];
