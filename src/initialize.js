@@ -230,9 +230,7 @@ function initVars(){
 
     globals.life = 4;
 
-    globals.manapoints = 0;
-
-    globals.sanity = globals.levelTime.value;
+    globals.manapoints = 10;
 
     globals.score = 0;
 
@@ -307,7 +305,7 @@ function initVars(){
 function initTimer()
 {
     //Creamos timer de valor 200, con cambios cada 0.5 segundos
-    globals.levelTime = new Timer(100, 0.5);
+    globals.timerToInsanity = new Timer(100, 1);
 
 }
     //Exportamos las funciones
@@ -599,7 +597,7 @@ function initSKULL1(skullData) {
                 const initTimeToChangeDirection = Math.floor(Math.random() * 2) + 1;
         
                 // Create the orc with the predefined state and position
-                const orc = new Orc(SpriteID.ORC, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox, 2);
+                const orc = new Orc(SpriteID.ORC, state, x, y, imageSet, frames, physics, initTimeToChangeDirection, hitBox, 4);
                 
                 globals.sprites.push(orc);
             }

@@ -6,7 +6,7 @@ import { createFireParticle, createFireParticleHeal, initExplotion, initSwordLig
 
 export default function update(){
 
-    if(globals.levelTime.value <= 0)
+    if(globals.timerToInsanity.value <= 0)
         {
             globals.gameState = Game.GAME_OVER;
         }
@@ -77,6 +77,11 @@ function readKeyboardAndAssignState(sprite) {
                            sprite.state === State.UP || sprite.state === State.UP_LEFT || sprite.state === State.UP_RIGHT || sprite.state === State.UP_STILL ? State.UP_ATTACK2 :
                            sprite.state === State.DOWN || sprite.state === State.DOWN_LEFT || sprite.state === State.DOWN_RIGHT || sprite.state === State.DOWN_STILL ? State.DOWN_ATTACK2 :
                            sprite.state;
+        globals.manapoints = Math.max(0, globals.manapoints - 20); // Ensure manapoints do not go below 0
+                           if (globals.manapoints <= 0) {
+                               globals.manapoints = 0;
+                               sprite.lightState = false;
+                           }
         }
 
         // **Handle Light Attack Animation**
@@ -315,13 +320,13 @@ function updateLevelTime()
 {
     //Incrementamos el contador de cambio de valor
 
-    globals.levelTime.timeChangeCounter += globals.deltaTime;
+    globals.timerToInsanity.timeChangeCounter += globals.deltaTime;
     //SI ha pasado el tiempo necesario, cambiamos el valor del timer
-    if (globals.levelTime.timeChangeCounter > globals.levelTime.timeChangeValue)
+    if (globals.timerToInsanity.timeChangeCounter > globals.timerToInsanity.timeChangeValue)
     {
-        globals.levelTime.value--;
+        globals.timerToInsanity.value--;
         //Reseteamos timeChangerCounter
-        globals.levelTime.timeChangeCounter = 0;
+        globals.timerToInsanity.timeChangeCounter = 0;
     }
 
 }
@@ -557,7 +562,7 @@ function updatePlayer(sprite) {
 
 }
 
-else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTime.value <= 0) {
+else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.timerToInsanity.value <= 0) {
     const lastBreaths = 10;
 
     sprite.breathCount += globals.deltaTime;
@@ -683,8 +688,7 @@ else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.levelTim
                 globals.junk += 1;
                 globals.junktaken = false;
             }
-            console.log("check collision: " + sprite.isCollidingWithPlayer
-)
+    
    }
   
     function updateHearts(sprite) {
@@ -875,7 +879,6 @@ function updateDamage(sprite) {
         if(globals.life == 0)
             {
                 player.spriteIsDead = true;
-                console.log("dead: " +  player.spriteIsDead)
 
                 
             }
@@ -908,7 +911,6 @@ function updateDamage(sprite) {
     if (sprite.damageCounter >= globals.damageInterval) {
         sprite.damageCounter = 0; // Reset the flickering counter
         sprite.isDrawn = !sprite.isDrawn; // Toggle visibility
-        console.log("Sprite drawn: " + sprite.isDrawn);
     }
 
     // Check if damage mode should end (after 4 seconds)
@@ -916,27 +918,28 @@ function updateDamage(sprite) {
         sprite.invincivilityCounter = 0; // Reset the duration counter
         sprite.isDrawn = true; // Ensure the sprite is visible
         sprite.modeDAMAGE = false; // End damage mode
-        console.log("Sprite damagemode: " + sprite.modeDAMAGE);
     }
 }
 
+
+
 if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE && sprite.lightState) {
-    sprite.life = 0; // Light attack does more damage
-} 
+    sprite.life -= 2;
+}
+
 else if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
-    sprite.life -= 1; // Normal attack damage
+    sprite.life -= 1;
 }
 
 if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
-    if (sprite.life <= 0) {
-        globals.score += 100; // Increase score
-        const index = globals.sprites.indexOf(sprite);
-        if (index > -1) {
-            globals.sprites.splice(index, 1); // Remove dead enemy
+    // if (sprite.life === 0) {
+    //     globals.score += 100; // Increase score
+    //     const index = globals.sprites.indexOf(sprite);
+    //     if (index > -1) {
+    //         globals.sprites.splice(index, 1); // Remove dead enemy
+    //     }
+    // }
 
-        }
-    }
-    
     // Enter damage mode
     sprite.modeDAMAGE = true;
     sprite.damageCounter = 0;
@@ -946,34 +949,38 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
 }
 
     
-    function updateORC(sprite){
-
-        switch (sprite.state) {       
-            case State.ORC_DOWNRUN:
-                sprite.physics.vy = sprite.physics.vLimit;
-                break;
-            case State.ORC_UPRUN:
-                sprite.physics.vy = -sprite.physics.vLimit;
-                break;
-            case State.ORC_IDLE:
-                sprite.physics.vy = 0;  // Orc does not move
-                break;
-            case State.ORC_IDLEUP:
-                sprite.physics.vy = 0;
-                break;
-            default:
-                console.error("Error: State invalid");
-        }
-    
-        sprite.yPos += sprite.physics.vy * globals.deltaTime;
+function updateORC(sprite) {
+    // 🔹 Check life before doing anything else
+    if (sprite.life <= 0) {
+        console.log(`Removing enemy at index: ${globals.sprites.indexOf(sprite)}`);
         
-        updateAnimationFrames(sprite);
-
-        updateDamage(sprite);
-
-
-    
+        const index = globals.sprites.indexOf(sprite);
+        if (index > -1) {
+            globals.sprites.splice(index, 1); // ✅ Remove enemy instantly
+        }
+        return; // ✅ Stop updating this enemy
     }
+
+    switch (sprite.state) {
+        case State.ORC_DOWNRUN:
+            sprite.physics.vy = sprite.physics.vLimit;
+            break;
+        case State.ORC_UPRUN:
+            sprite.physics.vy = -sprite.physics.vLimit;
+            break;
+        case State.ORC_IDLE:
+        case State.ORC_IDLEUP:
+            sprite.physics.vy = 0;  
+            break;
+        default:
+            console.error("Error: State invalid");
+    }
+
+    sprite.yPos += sprite.physics.vy * globals.deltaTime;
+    updateAnimationFrames(sprite);
+    updateDamage(sprite);
+}
+
     function updateBATosc(sprite)
     {
         const amplitude = 10; // Amplitude of the oscillation
@@ -1008,7 +1015,9 @@ if (sprite.isCollidingWithAttack && !sprite.modeDAMAGE) {
             sprite.hasHealed = true; // ✅ Prevent multiple heals
     
             createFireParticleHeal();
+            globals.timerToInsanity.value += 50;
             globals.manapoints += 80;
+    
         }
     }
     

@@ -67,6 +67,9 @@ export class Bat extends Sprite
         // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
         this.life = life;
+        this.invincivilityCounter = 0; // Counter for damage mode duration
+        this.invincivility = 24;
+        this.damageInterval = 8;
 
 
 
@@ -84,6 +87,9 @@ export class Orc extends Sprite
         // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
         this.life = life;
+        this.invincivilityCounter = 0; // Counter for damage mode duration
+        this.invincivility = 24;
+        this.damageInterval = 8;
 
 
     }
@@ -100,6 +106,9 @@ export class Skull extends Sprite
         // this.attackHitbox = attackHitbox;
         this.modeDAMAGE = false;
         this.life = life;
+        this.invincivilityCounter = 0; // Counter for damage mode duration
+        this.invincivility = 24;
+        this.damageInterval = 8;
 
 
     }

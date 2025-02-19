@@ -26,7 +26,7 @@ export default {
     //Life
     life: 0,
 
-    sanity: 0,
+    
 
     score: 0,
 
@@ -41,7 +41,7 @@ export default {
     invincivilityCounter: 0, // Counter for player's damage mode duration
 
     //Temporizacion nivel
-    levelTime: {},
+    timerToInsanity: {},
 
     //Estado de juego, Inicializamos a INVALIDO
     gameState: Game.INVALID,
