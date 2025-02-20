@@ -607,14 +607,25 @@ else if (sprite.spriteIsDead && sprite.state === State.FAINT || globals.timerToI
 }
     
 
-    function updateSprites(){
-    
-        for (let i = 0; i < globals.sprites.length; ++i)
-            {
-            const sprite = globals.sprites[i];
-            updateSprite(sprite);
-            }
+function updateSprites() {
+    for (let i = 1; i < globals.sprites.length; ++i) { // Start from 1 to skip player
+        const sprite = globals.sprites[i];
+
+        // If sprite is dead, remove it immediately
+        if (sprite.spriteIsDead) {
+            globals.sprites.splice(i, 1);
+            i--; // Adjust index to avoid skipping next element
+            continue;
+        }
+
+        // Otherwise, update normally
+        updateSprite(sprite);
     }
+
+    // Ensure player (index 0) is always updated
+    updateSprite(globals.sprites[0]);
+}
+
     function updateSprite(sprite){
     
         const type = sprite.id;

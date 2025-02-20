@@ -837,4 +837,3 @@ function drawSprites() {
         globals.ctx.fillText("TRY AGAIN", 300, 200)
 
         };
-
